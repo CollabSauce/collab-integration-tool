@@ -5,8 +5,9 @@ import Slider from 'rc-slider';
 import Select from 'react-select';
 import 'rc-slider/assets/index.css';
 
-import { stringifyBoxShadow } from 'src/utils/boxShadow';
+import { Switch } from 'src/components/Switch';
 import { STYLE_CONFIG, WIDGET_TYPES } from 'src/config';
+import { stringifyBoxShadow } from 'src/utils/boxShadow';
 
 const isParent = (obj, parentObj) => {
   while (obj !== undefined && obj !== null && obj.tagName.toUpperCase() !== 'BODY') {
@@ -172,6 +173,18 @@ export const DraggableToolbar = () => {
     }
   };
 
+  const setSwitchVal = (key, val) => {
+    const newState = { ...adjustableStyleProps, [key]: val };
+    setAdjustableStyleProps(newState);
+    if (STYLE_CONFIG[key].customSetAttribute) {
+      const fnName = STYLE_CONFIG[key].customSetAttribute;
+      customSetAttributes[fnName](newState);
+    } else {
+      const attrKey = STYLE_CONFIG[key].styleAttributeName || key;
+      setAttribute({ [attrKey]: val });
+    }
+  };
+
   const getBorderWidthAttribute = (newStyleProps) => {
     const { borderTopWidth, borderRightWidth, borderBottomWidth, borderLeftWidth } = newStyleProps;
     if (borderTopWidth === borderRightWidth && borderTopWidth === borderBottomWidth && borderTopWidth === borderLeftWidth) {
@@ -218,7 +231,7 @@ export const DraggableToolbar = () => {
 
   const getBoxShadowAttribute = (newStyleProps) => {
     return stringifyBoxShadow([{
-      inset: false,
+      inset: newStyleProps.boxShadowInsetOutset,
       offsetX: newStyleProps.boxShadowHorizontalOffset,
       offsetY: newStyleProps.boxShadowVerticalOffset,
       blurRadius: newStyleProps.boxShadowBlurRadius,
@@ -255,6 +268,16 @@ export const DraggableToolbar = () => {
                 value={adjustableStyleProps[key]}
                 onChange={(option) => setSelectVal(key, option)}
                 options={item.selectOptions}
+              />
+            );
+          } else if (item.widget === WIDGET_TYPES.SWITCH) {
+            Widget = (
+              <Switch
+                isOn={adjustableStyleProps[key]}
+                onColor="#EF476F"
+                handleToggle={() => setSwitchVal(key, !adjustableStyleProps[key])}
+                labelLeft={item.inputLabelLeft}
+                labelRight={item.inputLabelRight}
               />
             );
           }

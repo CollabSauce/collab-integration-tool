@@ -1,9 +1,10 @@
 import { parseBoxShadow } from 'src/utils/boxShadow';
 
 export const WIDGET_TYPES = {
-  SELECT: 'select',
   COLOR: 'color',
-  SLIDER: 'slider'
+  SELECT: 'select',
+  SLIDER: 'slider',
+  SWITCH: 'switch'
 };
 
 export const BORDER_STYLE_OPTIONS = [
@@ -351,14 +352,22 @@ export const STYLE_CONFIG = {
   },
   boxShadowColor: {
     default: '',
-    label: 'Box Shadoww Color:',
+    label: 'Box Shadow Color:',
     parsePx: false,
     widget: WIDGET_TYPES.COLOR,
     customParseFn: (val) => { return parseBoxShadow(val)[0].color },
     customParseFnKey: 'boxShadow',
     customSetAttribute: 'setBoxShadowAttributes',
   },
-//   boxShadowInsetOutset: {
-//
-//   },
+  boxShadowInsetOutset: {
+    default: false,
+    label: 'Box Shadow Inset/Outset',
+    inputLabelLeft: 'Outset',
+    inputLabelRight: 'Inset',
+    parsePx: false,
+    widget: WIDGET_TYPES.SWITCH,
+    customParseFn: (val) => { return parseBoxShadow(val)[0].inset },
+    customParseFnKey: 'boxShadow',
+    customSetAttribute: 'setBoxShadowAttributes',
+  },
 };
