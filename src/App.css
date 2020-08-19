@@ -2,37 +2,51 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+.App-body {
+  /*background-color: #282c34;*/
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  /*color: white;*/
 }
 
 .App-link {
-  color: #61dafb;
+  /*color: #61dafb;*/
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.toolbar {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 150px;
+  bottom: 0px;
+  cursor: initial;
+  background-color: grey;
+  overflow-y: auto;
+  /* same zIndex that intercom uses */
+  z-index: 2147483647;
+}
+
+.__outline__ {
+  outline: 2px solid #6585FF !important;
+  /*cursor: url(img/target.png) 12 12, auto !important;*/
+}
+
+.__outline__:active {
+  outline: 2px solid red !important;
+}
+
+.__special-cursor__ {
+  cursor: crosshair;
+}
+
+a {
+ cursor: crosshair;
+}
+
+.draggableTarget {
+  cursor: move;
 }
