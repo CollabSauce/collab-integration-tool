@@ -20,6 +20,25 @@ export const BORDER_STYLE_OPTIONS = [
   {value: 'hidden', label: 'hidden'},
 ];
 
+export const TEXT_ALIGN_OPTIONS = [
+  {value: 'left', label: 'left'},
+  {value: 'center', label: 'center'},
+  {value: 'right', label: 'right'},
+  {value: 'justify', label: 'justify'},
+];
+
+export const FONT_WEIGHT_OPTIONS = [
+  {value: 100, label: '100'},
+  {value: 200, label: '200'},
+  {value: 300, label: '300'},
+  {value: 400, label: '400'},
+  {value: 500, label: '500'},
+  {value: 600, label: '600'},
+  {value: 700, label: '700'},
+  {value: 800, label: '800'},
+  {value: 900, label: '900'},
+];
+
 export const STYLE_CONFIG = {
   widthAndHeight: {
     default: 0,
@@ -369,5 +388,39 @@ export const STYLE_CONFIG = {
     customParseFn: (val) => { return parseBoxShadow(val)[0].inset },
     customParseFnKey: 'boxShadow',
     customSetAttribute: 'setBoxShadowAttributes',
+  },
+  fontSize: {
+    default: 0,
+    label: 'Font Size:',
+    parsePx: true,
+    widget: WIDGET_TYPES.SLIDER,
+    styleAttributeName: 'font-size',
+    widgetProps: {
+      min: 0,
+      max: 200,
+    }
+  },
+  textAlign: {
+    default: '',
+    label: 'Text Align:',
+    styleAttributeName: 'text-align',
+    parsePx: false,
+    widget: WIDGET_TYPES.SELECT,
+    selectOptions: TEXT_ALIGN_OPTIONS,
+  },
+  fontColor: {
+    default: '',
+    label: 'Font Color:',
+    parsePx: false,
+    widget: WIDGET_TYPES.COLOR,
+    styleAttributeName: 'color',
+  },
+  fontWeight: {
+    default: 500,
+    label: 'Font Weight:',
+    styleAttributeName: 'font-weight',
+    parsePx: false,
+    widget: WIDGET_TYPES.SELECT,
+    selectOptions: FONT_WEIGHT_OPTIONS,
   },
 };
