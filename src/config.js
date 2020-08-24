@@ -1,4 +1,4 @@
-import { parseBoxShadow } from 'src/utils/boxShadow';
+import { parseBoxShadow, stringifyBoxShadow } from 'src/utils/boxShadow';
 
 export const WIDGET_TYPES = {
   COLOR: 'color',
@@ -76,7 +76,6 @@ export const STYLE_CONFIG = {
     label: 'Background:',
     parsePx: false,
     widget: WIDGET_TYPES.COLOR,
-    styleAttributeName: 'background-color'
   },
   borderAllWidth: {
     default: 0,
@@ -84,7 +83,6 @@ export const STYLE_CONFIG = {
     parsePx: false,
     widget: WIDGET_TYPES.SLIDER,
     additionalKeysToUpdate: ['borderTopWidth','borderRightWidth','borderBottomWidth','borderLeftWidth'],
-    customSetAttribute: 'setBorderAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -95,7 +93,6 @@ export const STYLE_CONFIG = {
     label: 'Border: Top width:',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setBorderAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -106,7 +103,6 @@ export const STYLE_CONFIG = {
     label: 'Border: Right width:',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setBorderAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -117,7 +113,6 @@ export const STYLE_CONFIG = {
     label: 'Border: Bottom width:',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setBorderAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -128,7 +123,6 @@ export const STYLE_CONFIG = {
     label: 'Border: Left width:',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setBorderAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -139,7 +133,6 @@ export const STYLE_CONFIG = {
     label: 'Border-color:',
     parsePx: false,
     widget: WIDGET_TYPES.COLOR,
-    customSetAttribute: 'setBorderAttributes'
   },
   borderStyle: {
     default: '',
@@ -147,7 +140,6 @@ export const STYLE_CONFIG = {
     parsePx: false,
     widget: WIDGET_TYPES.SELECT,
     selectOptions: BORDER_STYLE_OPTIONS,
-    customSetAttribute: 'setBorderAttributes'
   },
   borderAllRadius: {
     default: 0,
@@ -155,7 +147,6 @@ export const STYLE_CONFIG = {
     parsePx: false,
     widget: WIDGET_TYPES.SLIDER,
     additionalKeysToUpdate: ['borderTopLeftRadius','borderTopRightRadius','borderBottomRightRadius','borderBottomLeftRadius'],
-    customSetAttribute: 'setBorderRadiusAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -166,7 +157,6 @@ export const STYLE_CONFIG = {
     label: 'Border Radius Top Left',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setBorderRadiusAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -177,7 +167,6 @@ export const STYLE_CONFIG = {
     label: 'Border Radius Top Right',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setBorderRadiusAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -188,7 +177,6 @@ export const STYLE_CONFIG = {
     label: 'Border Radius Bottom Right',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setBorderRadiusAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -199,7 +187,6 @@ export const STYLE_CONFIG = {
     label: 'Border Radius Bottom Left',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setBorderRadiusAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -211,7 +198,6 @@ export const STYLE_CONFIG = {
     parsePx: false,
     widget: WIDGET_TYPES.SLIDER,
     additionalKeysToUpdate: ['marginTop','marginRight','marginBottom','marginLeft'],
-    customSetAttribute: 'setMarginAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -222,7 +208,6 @@ export const STYLE_CONFIG = {
     label: 'Margin Top:',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setMarginAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -233,7 +218,6 @@ export const STYLE_CONFIG = {
     label: 'Margin Right:',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setMarginAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -244,7 +228,6 @@ export const STYLE_CONFIG = {
     label: 'Margin Bottom:',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setMarginAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -255,7 +238,6 @@ export const STYLE_CONFIG = {
     label: 'Margin Left:',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setMarginAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -267,7 +249,6 @@ export const STYLE_CONFIG = {
     parsePx: false,
     widget: WIDGET_TYPES.SLIDER,
     additionalKeysToUpdate: ['paddingTop','paddingRight','paddingBottom','paddingLeft'],
-    customSetAttribute: 'setPaddingAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -278,7 +259,6 @@ export const STYLE_CONFIG = {
     label: 'Padding Top:',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setPaddingAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -289,7 +269,6 @@ export const STYLE_CONFIG = {
     label: 'Padding Right:',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setPaddingAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -300,7 +279,6 @@ export const STYLE_CONFIG = {
     label: 'Padding Bottom:',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setPaddingAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -311,7 +289,6 @@ export const STYLE_CONFIG = {
     label: 'Padding Left:',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customSetAttribute: 'setPaddingAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -324,7 +301,6 @@ export const STYLE_CONFIG = {
     widget: WIDGET_TYPES.SLIDER,
     customParseFn: (val) => { return parseBoxShadow(val)[0].offsetX },
     customParseFnKey: 'boxShadow',
-    customSetAttribute: 'setBoxShadowAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -337,7 +313,6 @@ export const STYLE_CONFIG = {
     widget: WIDGET_TYPES.SLIDER,
     customParseFn: (val) => { return parseBoxShadow(val)[0].offsetY },
     customParseFnKey: 'boxShadow',
-    customSetAttribute: 'setBoxShadowAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -350,7 +325,6 @@ export const STYLE_CONFIG = {
     widget: WIDGET_TYPES.SLIDER,
     customParseFn: (val) => { return parseBoxShadow(val)[0].blurRadius },
     customParseFnKey: 'boxShadow',
-    customSetAttribute: 'setBoxShadowAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -363,7 +337,6 @@ export const STYLE_CONFIG = {
     widget: WIDGET_TYPES.SLIDER,
     customParseFn: (val) => { return parseBoxShadow(val)[0].spreadRadius },
     customParseFnKey: 'boxShadow',
-    customSetAttribute: 'setBoxShadowAttributes',
     widgetProps: {
       min: 0,
       max: 200,
@@ -376,7 +349,6 @@ export const STYLE_CONFIG = {
     widget: WIDGET_TYPES.COLOR,
     customParseFn: (val) => { return parseBoxShadow(val)[0].color },
     customParseFnKey: 'boxShadow',
-    customSetAttribute: 'setBoxShadowAttributes',
   },
   boxShadowInsetOutset: {
     default: false,
@@ -387,14 +359,12 @@ export const STYLE_CONFIG = {
     widget: WIDGET_TYPES.SWITCH,
     customParseFn: (val) => { return parseBoxShadow(val)[0].inset },
     customParseFnKey: 'boxShadow',
-    customSetAttribute: 'setBoxShadowAttributes',
   },
   fontSize: {
     default: 0,
     label: 'Font Size:',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    styleAttributeName: 'font-size',
     widgetProps: {
       min: 0,
       max: 200,
@@ -403,24 +373,84 @@ export const STYLE_CONFIG = {
   textAlign: {
     default: '',
     label: 'Text Align:',
-    styleAttributeName: 'text-align',
     parsePx: false,
     widget: WIDGET_TYPES.SELECT,
-    selectOptions: TEXT_ALIGN_OPTIONS,
+    selectOptions: TEXT_ALIGN_OPTIONS
   },
-  fontColor: {
+  color: {
     default: '',
     label: 'Font Color:',
     parsePx: false,
     widget: WIDGET_TYPES.COLOR,
-    styleAttributeName: 'color',
   },
   fontWeight: {
     default: 500,
     label: 'Font Weight:',
-    styleAttributeName: 'font-weight',
     parsePx: false,
     widget: WIDGET_TYPES.SELECT,
     selectOptions: FONT_WEIGHT_OPTIONS,
+    parseIntOnRead: true
   },
 };
+
+export const STYLE_ATTRIBUTE_CONFIG = {
+  'width': (styleData) => `${styleData.width}px`,
+  'height': (styleData) => `${styleData.height}px`,
+  'background-color': (styleData) => styleData.backgroundColor,
+  'border-width': (styleData) => {
+    const { borderTopWidth, borderRightWidth, borderBottomWidth, borderLeftWidth } = styleData;
+    if (borderTopWidth === borderRightWidth && borderTopWidth === borderBottomWidth && borderTopWidth === borderLeftWidth) {
+      return `${borderTopWidth}px`;
+    } else if (borderTopWidth === borderBottomWidth && borderLeftWidth === borderRightWidth) {
+      return `${borderTopWidth}px ${borderLeftWidth}px`;
+    } else {
+      return `${borderTopWidth}px ${borderRightWidth}px ${borderBottomWidth}px ${borderLeftWidth}px`;
+    }
+  },
+  'border-color': (styleData) => styleData.borderColor,
+  'border-style': (styleData) => styleData.borderStyle ? styleData.borderStyle.value : '',
+  'border-radius': (styleData) => {
+    const { borderTopLeftRadius, borderTopRightRadius, borderBottomRightRadius, borderBottomLeftRadius } = styleData;
+    if (borderTopLeftRadius === borderTopRightRadius && borderTopLeftRadius === borderBottomRightRadius && borderTopLeftRadius === borderBottomLeftRadius) {
+      return `${borderTopLeftRadius}px`;
+    } else if (borderTopLeftRadius === borderBottomRightRadius && borderTopRightRadius === borderBottomLeftRadius) {
+      return `${borderTopLeftRadius}px ${borderTopRightRadius}px`;
+    } else {
+      return `${borderTopLeftRadius}px ${borderTopRightRadius}px ${borderBottomRightRadius}px ${borderBottomLeftRadius}px`;
+    }
+  },
+  'margin': (styleData) => {
+    const { marginTop, marginRight, marginBottom, marginLeft } = styleData;
+    if (marginTop === marginRight && marginTop === marginBottom && marginTop === marginLeft) {
+      return `${marginTop}px`;
+    } else if (marginTop === marginBottom && marginLeft === marginRight) {
+      return `${marginTop}px ${marginLeft}px`;
+    } else {
+      return `${marginTop}px ${marginRight}px ${marginBottom}px ${marginLeft}px`;
+    }
+  },
+  'padding': (styleData) => {
+    const { paddingTop, paddingRight, paddingBottom, paddingLeft } = styleData;
+    if (paddingTop === paddingRight && paddingTop === paddingBottom && paddingTop === paddingLeft) {
+      return `${paddingTop}px`;
+    } else if (paddingTop === paddingBottom && paddingLeft === paddingRight) {
+      return `${paddingTop}px ${paddingLeft}px`;
+    } else {
+      return `${paddingTop}px ${paddingRight}px ${paddingBottom}px ${paddingLeft}px`;
+    }
+  },
+  'box-shadow': (styleData) => {
+    return stringifyBoxShadow([{
+      inset: styleData.boxShadowInsetOutset,
+      offsetX: styleData.boxShadowHorizontalOffset,
+      offsetY: styleData.boxShadowVerticalOffset,
+      blurRadius: styleData.boxShadowBlurRadius,
+      spreadRadius: styleData.boxShadowSpreadRadius,
+      color: styleData.boxShadowColor
+    }])
+  },
+  'font-size': (styleData) => `${styleData.fontSize}px`,
+  'text-align': (styleData) => styleData.textAlign ? styleData.textAlign.value : undefined,
+  'color': (styleData) => styleData.color,
+  'font-weight': (styleData) => styleData.fontWeight ? styleData.fontWeight.value : undefined
+}

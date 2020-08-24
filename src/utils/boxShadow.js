@@ -5,15 +5,32 @@ const VALUES_REG = /,(?![^\(]*\))/
 const PARTS_REG = /\s(?![^(]*\))/
 const LENGTH_REG = /^[0-9]+[a-zA-Z%]+?$/
 
+
+const isColor = (strColor) => {
+  const s = new Option().style;
+  s.color = strColor;
+  return s.color === strColor || (typeof strColor === 'string' && strColor.includes('rgb'));
+};
+
+const getColor = (parts) => {
+  const first = parts.slice(0,1)[0];
+  const last = parts.slice(-1)[0];
+  if (!isLength(first) && isColor(first)) {
+    return first;
+  } else if (!isLength(last) && isColor(last)) {
+    return last;
+  }
+};
+
 const parseValue = str => {
-  const parts = str.split(PARTS_REG)
-  const inset = parts.includes('inset')
-  const last = parts.slice(-1)[0]
-  const color = !isLength(last) ? last : undefined
+  const parts = str.split(PARTS_REG);
+  const inset = parts.includes('inset');
+  const color = getColor(parts);
 
   const nums = parts
     .filter(n => n !== 'inset')
     .filter(n => n !== color)
+    .filter(n => n !== 'none')
     .map(toNum)
   const [ offsetX, offsetY, blurRadius, spreadRadius ] = nums
 
@@ -41,7 +58,7 @@ const stringifyValue = obj => {
     (inset ? 'inset' : null),
     offsetX,
     offsetY,
-    blurRadius ,
+    blurRadius,
     spreadRadius,
     color
   ].filter(v => v !== null && v !== undefined)
