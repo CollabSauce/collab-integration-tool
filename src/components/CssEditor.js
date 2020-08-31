@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { SketchPicker } from 'react-color';
 import Slider from 'rc-slider';
 import Select from 'react-select';
 import 'rc-slider/assets/index.css';
 
 import { Switch } from 'src/components/Switch';
-import { STYLE_ATTRIBUTE_CONFIG, STYLE_CONFIG, WIDGET_TYPES } from 'src/config';
+import { STYLE_ATTRIBUTE_CONFIG, STYLE_CONFIG, WIDGET_TYPES } from 'src/utils/cssEditorConfig';
 
-
-export const Toolbar = () => {
-
+export const CssEditor = () => {
   const [adjustableStyleProps, setAdjustableStyleProps] = useState(null);
   const [originalStyleAttributes, setOriginalStyleAttributes] = useState([]);
   const [currentTargetInfo, setCurrentTargetInfo] = useState({});
-  const [parentOrigin, setParentOrigin] = useState('');
-
+  const parentOrigin = useSelector((state) => state.app.parentOrigin);
 
   const parsePx = (val) => {
     if (typeof val === 'string' && val.slice(-2) === 'px') {
@@ -28,13 +26,14 @@ export const Toolbar = () => {
     function receiveMessage(e) {
       let targetStyle, targetDomPath, targetCssText, targetId;
       try {
-        const message = JSON.parse(e.data)
-        if (message.type !== 'newClickedTarget') { return; }
+        const message = JSON.parse(e.data);
+        if (message.type !== 'newClickedTarget') {
+          return;
+        }
         targetStyle = message.targetStyle;
         targetDomPath = message.targetDomPath;
         targetCssText = message.targetCssText;
         targetId = message.targetId;
-        setParentOrigin(e.origin)
       } catch (err) {
         return;
       }
@@ -42,7 +41,7 @@ export const Toolbar = () => {
       const styleData = Object.entries(STYLE_CONFIG).reduce((currentResult, [key, config]) => {
         let val;
         if (config.customParseFn) {
-          val  = config.customParseFn(targetStyle[config.customParseFnKey]);
+          val = config.customParseFn(targetStyle[config.customParseFnKey]);
         } else if (config.additionalKeysToUpdate) {
           val = config.default;
         } else if (config.widget === WIDGET_TYPES.SELECT) {
@@ -57,15 +56,22 @@ export const Toolbar = () => {
         return { ...currentResult, [key]: val };
       }, {});
 
-      const styleAttributeDataForElement = findStyleAttributeForElement(originalStyleAttributes, targetId, targetDomPath);
+      const styleAttributeDataForElement = findStyleAttributeForElement(
+        originalStyleAttributes,
+        targetId,
+        targetDomPath
+      );
       if (!styleAttributeDataForElement) {
         // Save original data for comparison. If we already have the original data, no need to update it.
-        setOriginalStyleAttributes([...originalStyleAttributes, {
-          id: targetId,
-          domPath: targetDomPath,
-          originalCssText: targetCssText,
-          originalStylingTrackedByUs: calculateStyleAttributes(styleData)
-        }]);
+        setOriginalStyleAttributes([
+          ...originalStyleAttributes,
+          {
+            id: targetId,
+            domPath: targetDomPath,
+            originalCssText: targetCssText,
+            originalStylingTrackedByUs: calculateStyleAttributes(styleData),
+          },
+        ]);
       }
       setCurrentTargetInfo({ targetId, targetDomPath });
 
@@ -73,15 +79,16 @@ export const Toolbar = () => {
       setAdjustableStyleProps(styleData);
     }
     window.addEventListener('message', receiveMessage);
-    return () => window.removeEventListener('message', receiveMessage)
+    return () => window.removeEventListener('message', receiveMessage);
   }, [originalStyleAttributes]);
 
   const findStyleAttributeForElement = (originalStyleAttributes, targetId, targetDomPath) => {
     // First try to find it by the id of the element. If that doesn't exist find it by the DOM path.
     let originalAttribute = targetId ? originalStyleAttributes.find((attrData) => attrData.id === targetId) : null;
-    return originalAttribute ? originalAttribute : originalStyleAttributes.find((attrData) => attrData.domPath === targetDomPath);
+    return originalAttribute
+      ? originalAttribute
+      : originalStyleAttributes.find((attrData) => attrData.domPath === targetDomPath);
   };
-
 
   const calculateStyleAttributes = (styleData) => {
     return Object.entries(STYLE_ATTRIBUTE_CONFIG).reduce((currentObj, [property, fn]) => {
@@ -97,7 +104,9 @@ export const Toolbar = () => {
 
     const styleAttrsToSet = Object.entries(styleAttributes).reduce((currentUpdateObj, [property, value]) => {
       // only add the values to the styleStr if it differs from the original value
-      return originalStyleForElement[property] === value ? currentUpdateObj : {...currentUpdateObj, [property]: value };
+      return originalStyleForElement[property] === value
+        ? currentUpdateObj
+        : { ...currentUpdateObj, [property]: value };
     }, {});
 
     // dispatch event to parent
@@ -132,9 +141,7 @@ export const Toolbar = () => {
   };
 
   if (!adjustableStyleProps) {
-    return (
-      <div>Click any element on page to adjust styling.</div>
-    );
+    return <div>Click any element on page to adjust styling.</div>;
   }
 
   return (
@@ -152,10 +159,7 @@ export const Toolbar = () => {
           );
         } else if (item.widget === WIDGET_TYPES.COLOR) {
           Widget = (
-            <SketchPicker
-              onChange={(color) => setColorVal(key, color)}
-              color={adjustableStyleProps[key] || ''}
-            />
+            <SketchPicker onChange={(color) => setColorVal(key, color)} color={adjustableStyleProps[key] || ''} />
           );
         } else if (item.widget === WIDGET_TYPES.SELECT) {
           Widget = (
@@ -181,8 +185,8 @@ export const Toolbar = () => {
             <p>{item.label}</p>
             {Widget}
           </div>
-        )
+        );
       })}
     </div>
   );
-}
+};

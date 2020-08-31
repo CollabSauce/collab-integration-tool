@@ -4,39 +4,39 @@ export const WIDGET_TYPES = {
   COLOR: 'color',
   SELECT: 'select',
   SLIDER: 'slider',
-  SWITCH: 'switch'
+  SWITCH: 'switch',
 };
 
 export const BORDER_STYLE_OPTIONS = [
-  {value: 'dotted', label: 'dotted'},
-  {value: 'dashed', label: 'dashed'},
-  {value: 'solid', label: 'solid'},
-  {value: 'double', label: 'double'},
-  {value: 'groove', label: 'groove'},
-  {value: 'ridge', label: 'ridge'},
-  {value: 'inset', label: 'inset'},
-  {value: 'outset', label: 'outset'},
-  {value: 'none', label: 'none'},
-  {value: 'hidden', label: 'hidden'},
+  { value: 'dotted', label: 'dotted' },
+  { value: 'dashed', label: 'dashed' },
+  { value: 'solid', label: 'solid' },
+  { value: 'double', label: 'double' },
+  { value: 'groove', label: 'groove' },
+  { value: 'ridge', label: 'ridge' },
+  { value: 'inset', label: 'inset' },
+  { value: 'outset', label: 'outset' },
+  { value: 'none', label: 'none' },
+  { value: 'hidden', label: 'hidden' },
 ];
 
 export const TEXT_ALIGN_OPTIONS = [
-  {value: 'left', label: 'left'},
-  {value: 'center', label: 'center'},
-  {value: 'right', label: 'right'},
-  {value: 'justify', label: 'justify'},
+  { value: 'left', label: 'left' },
+  { value: 'center', label: 'center' },
+  { value: 'right', label: 'right' },
+  { value: 'justify', label: 'justify' },
 ];
 
 export const FONT_WEIGHT_OPTIONS = [
-  {value: 100, label: '100'},
-  {value: 200, label: '200'},
-  {value: 300, label: '300'},
-  {value: 400, label: '400'},
-  {value: 500, label: '500'},
-  {value: 600, label: '600'},
-  {value: 700, label: '700'},
-  {value: 800, label: '800'},
-  {value: 900, label: '900'},
+  { value: 100, label: '100' },
+  { value: 200, label: '200' },
+  { value: 300, label: '300' },
+  { value: 400, label: '400' },
+  { value: 500, label: '500' },
+  { value: 600, label: '600' },
+  { value: 700, label: '700' },
+  { value: 800, label: '800' },
+  { value: 900, label: '900' },
 ];
 
 export const STYLE_CONFIG = {
@@ -49,7 +49,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: () => Math.max(window.innerWidth, window.innerHeight),
-    }
+    },
   },
   width: {
     default: 0,
@@ -59,7 +59,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: () => Math.max(window.innerWidth, window.innerHeight),
-    }
+    },
   },
   height: {
     default: 0,
@@ -69,7 +69,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: () => Math.max(window.innerWidth, window.innerHeight),
-    }
+    },
   },
   backgroundColor: {
     default: '',
@@ -82,11 +82,11 @@ export const STYLE_CONFIG = {
     label: 'Border: All width:',
     parsePx: false,
     widget: WIDGET_TYPES.SLIDER,
-    additionalKeysToUpdate: ['borderTopWidth','borderRightWidth','borderBottomWidth','borderLeftWidth'],
+    additionalKeysToUpdate: ['borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth'],
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   borderTopWidth: {
     default: 0,
@@ -96,7 +96,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   borderRightWidth: {
     default: 0,
@@ -106,7 +106,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   borderBottomWidth: {
     default: 0,
@@ -116,7 +116,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   borderLeftWidth: {
     default: 0,
@@ -126,7 +126,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   borderColor: {
     default: '',
@@ -146,11 +146,16 @@ export const STYLE_CONFIG = {
     label: 'Border Radius: All Corners:',
     parsePx: false,
     widget: WIDGET_TYPES.SLIDER,
-    additionalKeysToUpdate: ['borderTopLeftRadius','borderTopRightRadius','borderBottomRightRadius','borderBottomLeftRadius'],
+    additionalKeysToUpdate: [
+      'borderTopLeftRadius',
+      'borderTopRightRadius',
+      'borderBottomRightRadius',
+      'borderBottomLeftRadius',
+    ],
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   borderTopLeftRadius: {
     default: 0,
@@ -160,7 +165,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   borderTopRightRadius: {
     default: 0,
@@ -170,7 +175,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   borderBottomRightRadius: {
     default: 0,
@@ -180,7 +185,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   borderBottomLeftRadius: {
     default: 0,
@@ -190,18 +195,18 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   marginAll: {
     default: 0,
     label: 'Margin All:',
     parsePx: false,
     widget: WIDGET_TYPES.SLIDER,
-    additionalKeysToUpdate: ['marginTop','marginRight','marginBottom','marginLeft'],
+    additionalKeysToUpdate: ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   marginTop: {
     default: 0,
@@ -211,7 +216,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   marginRight: {
     default: 0,
@@ -221,7 +226,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   marginBottom: {
     default: 0,
@@ -231,7 +236,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   marginLeft: {
     default: 0,
@@ -241,18 +246,18 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   paddingAll: {
     default: 0,
     label: 'Padding All:',
     parsePx: false,
     widget: WIDGET_TYPES.SLIDER,
-    additionalKeysToUpdate: ['paddingTop','paddingRight','paddingBottom','paddingLeft'],
+    additionalKeysToUpdate: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   paddingTop: {
     default: 0,
@@ -262,7 +267,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   paddingRight: {
     default: 0,
@@ -272,7 +277,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   paddingBottom: {
     default: 0,
@@ -282,7 +287,7 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   paddingLeft: {
     default: 0,
@@ -292,62 +297,72 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   boxShadowHorizontalOffset: {
     default: 0,
     label: 'Box Shadow Horizontal Offset',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customParseFn: (val) => { return parseBoxShadow(val)[0].offsetX },
+    customParseFn: (val) => {
+      return parseBoxShadow(val)[0].offsetX;
+    },
     customParseFnKey: 'boxShadow',
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   boxShadowVerticalOffset: {
     default: 0,
     label: 'Box Shadow Vertical Offset',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customParseFn: (val) => { return parseBoxShadow(val)[0].offsetY },
+    customParseFn: (val) => {
+      return parseBoxShadow(val)[0].offsetY;
+    },
     customParseFnKey: 'boxShadow',
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   boxShadowBlurRadius: {
     default: 0,
     label: 'Box Shadow Blur Radius',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customParseFn: (val) => { return parseBoxShadow(val)[0].blurRadius },
+    customParseFn: (val) => {
+      return parseBoxShadow(val)[0].blurRadius;
+    },
     customParseFnKey: 'boxShadow',
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   boxShadowSpreadRadius: {
     default: 0,
     label: 'Box Shadow Spread Radius',
     parsePx: true,
     widget: WIDGET_TYPES.SLIDER,
-    customParseFn: (val) => { return parseBoxShadow(val)[0].spreadRadius },
+    customParseFn: (val) => {
+      return parseBoxShadow(val)[0].spreadRadius;
+    },
     customParseFnKey: 'boxShadow',
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   boxShadowColor: {
     default: '',
     label: 'Box Shadow Color:',
     parsePx: false,
     widget: WIDGET_TYPES.COLOR,
-    customParseFn: (val) => { return parseBoxShadow(val)[0].color },
+    customParseFn: (val) => {
+      return parseBoxShadow(val)[0].color;
+    },
     customParseFnKey: 'boxShadow',
   },
   boxShadowInsetOutset: {
@@ -357,7 +372,9 @@ export const STYLE_CONFIG = {
     inputLabelRight: 'Inset',
     parsePx: false,
     widget: WIDGET_TYPES.SWITCH,
-    customParseFn: (val) => { return parseBoxShadow(val)[0].inset },
+    customParseFn: (val) => {
+      return parseBoxShadow(val)[0].inset;
+    },
     customParseFnKey: 'boxShadow',
   },
   fontSize: {
@@ -368,14 +385,14 @@ export const STYLE_CONFIG = {
     widgetProps: {
       min: 0,
       max: 200,
-    }
+    },
   },
   textAlign: {
     default: '',
     label: 'Text Align:',
     parsePx: false,
     widget: WIDGET_TYPES.SELECT,
-    selectOptions: TEXT_ALIGN_OPTIONS
+    selectOptions: TEXT_ALIGN_OPTIONS,
   },
   color: {
     default: '',
@@ -389,17 +406,21 @@ export const STYLE_CONFIG = {
     parsePx: false,
     widget: WIDGET_TYPES.SELECT,
     selectOptions: FONT_WEIGHT_OPTIONS,
-    parseIntOnRead: true
+    parseIntOnRead: true,
   },
 };
 
 export const STYLE_ATTRIBUTE_CONFIG = {
-  'width': (styleData) => `${styleData.width}px`,
-  'height': (styleData) => `${styleData.height}px`,
+  width: (styleData) => `${styleData.width}px`,
+  height: (styleData) => `${styleData.height}px`,
   'background-color': (styleData) => styleData.backgroundColor,
   'border-width': (styleData) => {
     const { borderTopWidth, borderRightWidth, borderBottomWidth, borderLeftWidth } = styleData;
-    if (borderTopWidth === borderRightWidth && borderTopWidth === borderBottomWidth && borderTopWidth === borderLeftWidth) {
+    if (
+      borderTopWidth === borderRightWidth &&
+      borderTopWidth === borderBottomWidth &&
+      borderTopWidth === borderLeftWidth
+    ) {
       return `${borderTopWidth}px`;
     } else if (borderTopWidth === borderBottomWidth && borderLeftWidth === borderRightWidth) {
       return `${borderTopWidth}px ${borderLeftWidth}px`;
@@ -408,10 +429,14 @@ export const STYLE_ATTRIBUTE_CONFIG = {
     }
   },
   'border-color': (styleData) => styleData.borderColor,
-  'border-style': (styleData) => styleData.borderStyle ? styleData.borderStyle.value : '',
+  'border-style': (styleData) => (styleData.borderStyle ? styleData.borderStyle.value : ''),
   'border-radius': (styleData) => {
     const { borderTopLeftRadius, borderTopRightRadius, borderBottomRightRadius, borderBottomLeftRadius } = styleData;
-    if (borderTopLeftRadius === borderTopRightRadius && borderTopLeftRadius === borderBottomRightRadius && borderTopLeftRadius === borderBottomLeftRadius) {
+    if (
+      borderTopLeftRadius === borderTopRightRadius &&
+      borderTopLeftRadius === borderBottomRightRadius &&
+      borderTopLeftRadius === borderBottomLeftRadius
+    ) {
       return `${borderTopLeftRadius}px`;
     } else if (borderTopLeftRadius === borderBottomRightRadius && borderTopRightRadius === borderBottomLeftRadius) {
       return `${borderTopLeftRadius}px ${borderTopRightRadius}px`;
@@ -419,7 +444,7 @@ export const STYLE_ATTRIBUTE_CONFIG = {
       return `${borderTopLeftRadius}px ${borderTopRightRadius}px ${borderBottomRightRadius}px ${borderBottomLeftRadius}px`;
     }
   },
-  'margin': (styleData) => {
+  margin: (styleData) => {
     const { marginTop, marginRight, marginBottom, marginLeft } = styleData;
     if (marginTop === marginRight && marginTop === marginBottom && marginTop === marginLeft) {
       return `${marginTop}px`;
@@ -429,7 +454,7 @@ export const STYLE_ATTRIBUTE_CONFIG = {
       return `${marginTop}px ${marginRight}px ${marginBottom}px ${marginLeft}px`;
     }
   },
-  'padding': (styleData) => {
+  padding: (styleData) => {
     const { paddingTop, paddingRight, paddingBottom, paddingLeft } = styleData;
     if (paddingTop === paddingRight && paddingTop === paddingBottom && paddingTop === paddingLeft) {
       return `${paddingTop}px`;
@@ -440,17 +465,19 @@ export const STYLE_ATTRIBUTE_CONFIG = {
     }
   },
   'box-shadow': (styleData) => {
-    return stringifyBoxShadow([{
-      inset: styleData.boxShadowInsetOutset,
-      offsetX: styleData.boxShadowHorizontalOffset,
-      offsetY: styleData.boxShadowVerticalOffset,
-      blurRadius: styleData.boxShadowBlurRadius,
-      spreadRadius: styleData.boxShadowSpreadRadius,
-      color: styleData.boxShadowColor
-    }])
+    return stringifyBoxShadow([
+      {
+        inset: styleData.boxShadowInsetOutset,
+        offsetX: styleData.boxShadowHorizontalOffset,
+        offsetY: styleData.boxShadowVerticalOffset,
+        blurRadius: styleData.boxShadowBlurRadius,
+        spreadRadius: styleData.boxShadowSpreadRadius,
+        color: styleData.boxShadowColor,
+      },
+    ]);
   },
   'font-size': (styleData) => `${styleData.fontSize}px`,
-  'text-align': (styleData) => styleData.textAlign ? styleData.textAlign.value : undefined,
-  'color': (styleData) => styleData.color,
-  'font-weight': (styleData) => styleData.fontWeight ? styleData.fontWeight.value : undefined
-}
+  'text-align': (styleData) => (styleData.textAlign ? styleData.textAlign.value : undefined),
+  color: (styleData) => styleData.color,
+  'font-weight': (styleData) => (styleData.fontWeight ? styleData.fontWeight.value : undefined),
+};

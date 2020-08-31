@@ -1,23 +1,65 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import './App.css';
+import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import 'react-app-polyfill/ie11';
-// DO I NEED THESE?
-import 'core-js/features/array/find';
-import 'core-js/features/array/includes';
-import 'core-js/features/number/is-nan';
-import 'core-js/features/url/index';
-import 'core-js/features/url/to-json';
-import 'core-js/features/url-search-params/index';
-import "core-js/modules/es.object.from-entries";
+import 'src/styles/theme.scss';
+import { CssEditor } from 'src/components/CssEditor';
 
-import { Toolbar } from 'src/components/Toolbar';
+const App = () => {
+  const [ready, setReady] = useState(false);
+  const [fullToolbarVisible, setFullToolbarVisible] = useState(false);
+  const dispatch = useDispatch();
+  const parentOrigin = useSelector((state) => state.app.parentOrigin);
 
-function App() {
+  // Initialize the app - this should only be run once (on mount)
+  useEffect(() => {
+    dispatch.app.initializeApp().finally(() => {
+      setReady(true);
+    });
+  }, [dispatch.app]);
+
+  const hideToolBar = () => {
+    const message = { type: 'hideToolbar' };
+    window.parent.postMessage(JSON.stringify(message), parentOrigin);
+    setFullToolbarVisible(false);
+  };
+
+  const toggleFullToolbar = () => {
+    if (fullToolbarVisible) {
+      const message = { type: 'hideFullToolbar' };
+      window.parent.postMessage(JSON.stringify(message), parentOrigin);
+    } else {
+      const message = { type: 'showFullToolbar' };
+      window.parent.postMessage(JSON.stringify(message), parentOrigin);
+    }
+    setFullToolbarVisible(!fullToolbarVisible);
+  };
+
+  if (!ready) {
+    return (
+      <div className="vh-100 d-flex justify-content-center align-items-center">
+        <Spinner animation="border" variant="primary" />
+      </div>
+    );
+  }
+
   return (
-    <Toolbar />
+    <div className="vh-100 d-flex">
+      {fullToolbarVisible && <div className="flex-grow-1"></div>}
+      <div className="h-100 d-flex flex-column justify-content-between align-items-center py-3 w-60">
+        <p>collab</p>
+        <Button onClick={toggleFullToolbar}>
+          <FontAwesomeIcon icon="plus" />
+        </Button>
+        <Button onClick={hideToolBar} className="text-body" variant="link">
+          {'>'}
+        </Button>
+      </div>
+    </div>
   );
-}
+};
 
 export default App;

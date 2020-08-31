@@ -1,0 +1,20 @@
+//
+//
+// user-variables.scss
+//
+// Place your own variable overrides here, these will override any Bootstrap and theme variables.
+
+$spacer: 1rem !default; // same as bootstrap (i.e don't change) 1rem === 16px
+$spacers: () !default; // same as bootstrap (i.e. don't change).
+
+// this creates spacing by px (but still adjustable by rem)
+@for $i from 0 through 150 {
+  $spacers: map-merge(
+    (
+      $i: (
+        $i * ($spacer / 16),
+      ),
+    ),
+    $spacers
+  );
+} ;
