@@ -27,6 +27,11 @@ const App = () => {
     setFullToolbarVisible(false);
   };
 
+  const enterSelectionMode = () => {
+    const message = { type: 'enterSelectionMode' };
+    window.parent.postMessage(JSON.stringify(message), parentOrigin);
+  };
+
   const toggleFullToolbar = () => {
     if (fullToolbarVisible) {
       const message = { type: 'hideFullToolbar' };
@@ -51,7 +56,7 @@ const App = () => {
       {fullToolbarVisible && <div className="flex-grow-1"></div>}
       <div className="h-100 d-flex flex-column justify-content-between align-items-center py-3 w-60">
         <p>collab</p>
-        <Button onClick={toggleFullToolbar}>
+        <Button onClick={enterSelectionMode}>
           <FontAwesomeIcon icon="plus" />
         </Button>
         <Button onClick={hideToolBar} className="text-body" variant="link">
