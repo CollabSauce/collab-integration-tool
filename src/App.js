@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import 'src/styles/theme.scss';
-import { CssEditor } from 'src/components/CssEditor';
+import { BaseToolbar } from 'src/components/BaseToolbar';
+import { ExpandedToolbar } from 'src/components/ExpandedToolbar';
 
 const App = () => {
   const [ready, setReady] = useState(false);
   const [fullToolbarVisible, setFullToolbarVisible] = useState(false);
   const dispatch = useDispatch();
   const parentOrigin = useSelector((state) => state.app.parentOrigin);
+  const targetDomPath = useSelector((state) => state.app.targetDomPath);
 
   // Initialize the app - this should only be run once (on mount)
   useEffect(() => {
@@ -43,6 +43,12 @@ const App = () => {
     setFullToolbarVisible(!fullToolbarVisible);
   };
 
+  useEffect(() => {
+    if (targetDomPath) {
+      setFullToolbarVisible(true);
+    }
+  }, [targetDomPath]);
+
   if (!ready) {
     return (
       <div className="vh-100 d-flex justify-content-center align-items-center">
@@ -53,16 +59,8 @@ const App = () => {
 
   return (
     <div className="vh-100 d-flex">
-      {fullToolbarVisible && <div className="flex-grow-1"></div>}
-      <div className="h-100 d-flex flex-column justify-content-between align-items-center py-3 w-60">
-        <p>collab</p>
-        <Button onClick={enterSelectionMode}>
-          <FontAwesomeIcon icon="plus" />
-        </Button>
-        <Button onClick={hideToolBar} className="text-body" variant="link">
-          {'>'}
-        </Button>
-      </div>
+      {fullToolbarVisible && <ExpandedToolbar toggleFullToolbar={toggleFullToolbar} />}
+      <BaseToolbar enterSelectionMode={enterSelectionMode} hideToolBar={hideToolBar} />
     </div>
   );
 };

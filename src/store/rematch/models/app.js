@@ -1,9 +1,13 @@
-import { jsdataStore } from 'src/store/jsdata';
+// import { jsdataStore } from 'src/store/jsdata';
 
 export const app = {
   state: {
     currentUserId: null,
     parentOrigin: '',
+    targetStyle: {},
+    targetDomPath: '',
+    targetCssText: '',
+    targetId: '',
   },
   reducers: {
     setCurrentUserId(state, currentUserId) {
@@ -11,6 +15,9 @@ export const app = {
     },
     setParentOrigin(state, parentOrigin) {
       return { ...state, parentOrigin };
+    },
+    setTargetData(state, targetState) {
+      return { ...state, ...targetState };
     },
   },
   effects: (dispatch) => ({
@@ -23,10 +30,12 @@ export const app = {
     onWindowMessage(e) {
       try {
         const message = JSON.parse(e.data);
-        if (message.type !== 'setParentOrigin') {
-          return;
+        if (message.type === 'setParentOrigin') {
+          dispatch.app.setParentOrigin(e.origin);
+        } else if (message.type === 'newClickedTarget') {
+          const { targetStyle, targetDomPath, targetCssText, targetId } = message;
+          dispatch.app.setTargetData({ targetStyle, targetDomPath, targetCssText, targetId });
         }
-        dispatch.app.setParentOrigin(e.origin);
       } catch (err) {
         return;
       }

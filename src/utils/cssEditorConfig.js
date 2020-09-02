@@ -39,50 +39,32 @@ export const FONT_WEIGHT_OPTIONS = [
   { value: 900, label: '900' },
 ];
 
+export const TOP_LEVEL_CATEGORIES = {
+  BACKGROUND: 'Background',
+  BORDER: 'Border',
+  BORDER_RADIUS: 'Border Radius',
+  BOX_SHADOW: 'Box Shadow',
+  MARGIN: 'Margin',
+  PADDING: 'Padding',
+  SIZE: 'Size',
+  TYPOGRAPHY: 'Typography',
+};
+
 export const STYLE_CONFIG = {
-  widthAndHeight: {
-    default: 0,
-    label: 'Width & Height:',
-    parsePx: true,
-    widget: WIDGET_TYPES.SLIDER,
-    additionalKeysToUpdate: ['width', 'height'],
-    widgetProps: {
-      min: 0,
-      max: () => Math.max(window.innerWidth, window.innerHeight),
-    },
-  },
-  width: {
-    default: 0,
-    label: 'Width:',
-    parsePx: true,
-    widget: WIDGET_TYPES.SLIDER,
-    widgetProps: {
-      min: 0,
-      max: () => Math.max(window.innerWidth, window.innerHeight),
-    },
-  },
-  height: {
-    default: 0,
-    label: 'Height:',
-    parsePx: true,
-    widget: WIDGET_TYPES.SLIDER,
-    widgetProps: {
-      min: 0,
-      max: () => Math.max(window.innerWidth, window.innerHeight),
-    },
-  },
   backgroundColor: {
     default: '',
     label: 'Background:',
     parsePx: false,
+    category: TOP_LEVEL_CATEGORIES.BACKGROUND,
     widget: WIDGET_TYPES.COLOR,
   },
   borderAllWidth: {
     default: 0,
     label: 'Border: All width:',
     parsePx: false,
-    widget: WIDGET_TYPES.SLIDER,
     additionalKeysToUpdate: ['borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth'],
+    category: TOP_LEVEL_CATEGORIES.BORDER,
+    widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
       max: 200,
@@ -92,6 +74,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Border: Top width:',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.BORDER,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -102,6 +85,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Border: Right width:',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.BORDER,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -112,6 +96,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Border: Bottom width:',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.BORDER,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -122,6 +107,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Border: Left width:',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.BORDER,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -132,12 +118,14 @@ export const STYLE_CONFIG = {
     default: '',
     label: 'Border-color:',
     parsePx: false,
+    category: TOP_LEVEL_CATEGORIES.BORDER,
     widget: WIDGET_TYPES.COLOR,
   },
   borderStyle: {
     default: '',
     label: 'Border-style:',
     parsePx: false,
+    category: TOP_LEVEL_CATEGORIES.BORDER,
     widget: WIDGET_TYPES.SELECT,
     selectOptions: BORDER_STYLE_OPTIONS,
   },
@@ -145,13 +133,14 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Border Radius: All Corners:',
     parsePx: false,
-    widget: WIDGET_TYPES.SLIDER,
     additionalKeysToUpdate: [
       'borderTopLeftRadius',
       'borderTopRightRadius',
       'borderBottomRightRadius',
       'borderBottomLeftRadius',
     ],
+    category: TOP_LEVEL_CATEGORIES.BORDER_RADIUS,
+    widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
       max: 200,
@@ -161,6 +150,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Border Radius Top Left',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.BORDER_RADIUS,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -171,6 +161,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Border Radius Top Right',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.BORDER_RADIUS,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -181,6 +172,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Border Radius Bottom Right',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.BORDER_RADIUS,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -191,6 +183,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Border Radius Bottom Left',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.BORDER_RADIUS,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -201,8 +194,9 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Margin All:',
     parsePx: false,
-    widget: WIDGET_TYPES.SLIDER,
     additionalKeysToUpdate: ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
+    category: TOP_LEVEL_CATEGORIES.MARGIN,
+    widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
       max: 200,
@@ -212,6 +206,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Margin Top:',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.MARGIN,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -222,6 +217,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Margin Right:',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.MARGIN,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -232,6 +228,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Margin Bottom:',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.MARGIN,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -242,6 +239,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Margin Left:',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.MARGIN,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -252,8 +250,9 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Padding All:',
     parsePx: false,
-    widget: WIDGET_TYPES.SLIDER,
     additionalKeysToUpdate: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
+    category: TOP_LEVEL_CATEGORIES.PADDING,
+    widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
       max: 200,
@@ -263,6 +262,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Padding Top:',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.PADDING,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -273,6 +273,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Padding Right:',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.PADDING,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -283,6 +284,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Padding Bottom:',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.PADDING,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -293,6 +295,7 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Padding Left:',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.PADDING,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -303,11 +306,12 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Box Shadow Horizontal Offset',
     parsePx: true,
-    widget: WIDGET_TYPES.SLIDER,
     customParseFn: (val) => {
       return parseBoxShadow(val)[0].offsetX;
     },
+    category: TOP_LEVEL_CATEGORIES.BOX_SHADOW,
     customParseFnKey: 'boxShadow',
+    widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
       max: 200,
@@ -317,11 +321,12 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Box Shadow Vertical Offset',
     parsePx: true,
-    widget: WIDGET_TYPES.SLIDER,
     customParseFn: (val) => {
       return parseBoxShadow(val)[0].offsetY;
     },
     customParseFnKey: 'boxShadow',
+    category: TOP_LEVEL_CATEGORIES.BOX_SHADOW,
+    widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
       max: 200,
@@ -331,11 +336,12 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Box Shadow Blur Radius',
     parsePx: true,
-    widget: WIDGET_TYPES.SLIDER,
     customParseFn: (val) => {
       return parseBoxShadow(val)[0].blurRadius;
     },
     customParseFnKey: 'boxShadow',
+    category: TOP_LEVEL_CATEGORIES.BOX_SHADOW,
+    widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
       max: 200,
@@ -345,11 +351,12 @@ export const STYLE_CONFIG = {
     default: 0,
     label: 'Box Shadow Spread Radius',
     parsePx: true,
-    widget: WIDGET_TYPES.SLIDER,
     customParseFn: (val) => {
       return parseBoxShadow(val)[0].spreadRadius;
     },
     customParseFnKey: 'boxShadow',
+    category: TOP_LEVEL_CATEGORIES.BOX_SHADOW,
+    widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
       max: 200,
@@ -359,11 +366,12 @@ export const STYLE_CONFIG = {
     default: '',
     label: 'Box Shadow Color:',
     parsePx: false,
-    widget: WIDGET_TYPES.COLOR,
     customParseFn: (val) => {
       return parseBoxShadow(val)[0].color;
     },
     customParseFnKey: 'boxShadow',
+    category: TOP_LEVEL_CATEGORIES.BOX_SHADOW,
+    widget: WIDGET_TYPES.COLOR,
   },
   boxShadowInsetOutset: {
     default: false,
@@ -371,16 +379,52 @@ export const STYLE_CONFIG = {
     inputLabelLeft: 'Outset',
     inputLabelRight: 'Inset',
     parsePx: false,
-    widget: WIDGET_TYPES.SWITCH,
     customParseFn: (val) => {
       return parseBoxShadow(val)[0].inset;
     },
     customParseFnKey: 'boxShadow',
+    category: TOP_LEVEL_CATEGORIES.BOX_SHADOW,
+    widget: WIDGET_TYPES.SWITCH,
+  },
+  widthAndHeight: {
+    default: 0,
+    label: 'Width & Height:',
+    parsePx: true,
+    additionalKeysToUpdate: ['width', 'height'],
+    category: TOP_LEVEL_CATEGORIES.SIZE,
+    widget: WIDGET_TYPES.SLIDER,
+    widgetProps: {
+      min: 0,
+      max: () => Math.max(window.innerWidth, window.innerHeight),
+    },
+  },
+  width: {
+    default: 0,
+    label: 'Width:',
+    parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.SIZE,
+    widget: WIDGET_TYPES.SLIDER,
+    widgetProps: {
+      min: 0,
+      max: () => Math.max(window.innerWidth, window.innerHeight),
+    },
+  },
+  height: {
+    default: 0,
+    label: 'Height:',
+    parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.SIZE,
+    widget: WIDGET_TYPES.SLIDER,
+    widgetProps: {
+      min: 0,
+      max: () => Math.max(window.innerWidth, window.innerHeight),
+    },
   },
   fontSize: {
     default: 0,
     label: 'Font Size:',
     parsePx: true,
+    category: TOP_LEVEL_CATEGORIES.TYPOGRAPHY,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
       min: 0,
@@ -391,22 +435,25 @@ export const STYLE_CONFIG = {
     default: '',
     label: 'Text Align:',
     parsePx: false,
-    widget: WIDGET_TYPES.SELECT,
     selectOptions: TEXT_ALIGN_OPTIONS,
+    category: TOP_LEVEL_CATEGORIES.TYPOGRAPHY,
+    widget: WIDGET_TYPES.SELECT,
   },
   color: {
     default: '',
     label: 'Font Color:',
     parsePx: false,
+    category: TOP_LEVEL_CATEGORIES.TYPOGRAPHY,
     widget: WIDGET_TYPES.COLOR,
   },
   fontWeight: {
     default: 500,
     label: 'Font Weight:',
     parsePx: false,
-    widget: WIDGET_TYPES.SELECT,
     selectOptions: FONT_WEIGHT_OPTIONS,
     parseIntOnRead: true,
+    category: TOP_LEVEL_CATEGORIES.TYPOGRAPHY,
+    widget: WIDGET_TYPES.SELECT,
   },
 };
 
@@ -481,3 +528,13 @@ export const STYLE_ATTRIBUTE_CONFIG = {
   color: (styleData) => styleData.color,
   'font-weight': (styleData) => (styleData.fontWeight ? styleData.fontWeight.value : undefined),
 };
+
+export const NESTED_STYLE_CONFIG = Object.values(TOP_LEVEL_CATEGORIES).map((category) => {
+  const items = {};
+  Object.entries(STYLE_CONFIG).forEach(([key, item]) => {
+    if (item.category === category) {
+      items[key] = item;
+    }
+  });
+  return { category, items };
+});
