@@ -1,15 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { SketchPicker } from 'react-color';
-import Slider from 'rc-slider';
 import Select from 'react-select';
-import 'rc-slider/assets/index.css';
 
 import Accordion from 'react-bootstrap/Accordion';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { Switch } from 'src/components/Switch';
+import { RangeSlider, RangeInputBox } from 'src/components/RangeSlider';
 import { STYLE_ATTRIBUTE_CONFIG, STYLE_CONFIG, NESTED_STYLE_CONFIG, WIDGET_TYPES } from 'src/utils/cssEditorConfig';
 
 const ContextAwareToggle = ({ children, manualEventKey, callback, ...props }) => {
@@ -19,7 +18,7 @@ const ContextAwareToggle = ({ children, manualEventKey, callback, ...props }) =>
   return (
     <div {...props}>
       <FontAwesomeIcon icon="caret-right" transform={`rotate-${isOpen ? 90 : 0})`} />
-      <span className="font-weight-medium text-dark text-sans-serif pl-3">{children}</span>
+      <span className="font-weight-semi-bold text-sans-serif pl-3">{children}</span>
     </div>
   );
 };
@@ -164,13 +163,13 @@ export const CssEditor = () => {
               >
                 {category}
               </Accordion.Toggle>
-              <Accordion.Collapse eventKey={category} className="pl-2">
+              <Accordion.Collapse eventKey={category} className="px-2">
                 <>
                   {Object.entries(items).map(([key, item]) => {
                     let Widget;
                     if (item.widget === WIDGET_TYPES.SLIDER) {
                       Widget = (
-                        <Slider
+                        <RangeSlider
                           min={
                             typeof item.widgetProps.min === 'function' ? item.widgetProps.min() : item.widgetProps.min
                           }
@@ -178,7 +177,8 @@ export const CssEditor = () => {
                             typeof item.widgetProps.max === 'function' ? item.widgetProps.max() : item.widgetProps.max
                           }
                           value={adjustableStyleProps[key] || 0}
-                          onChange={(val) => setSliderVal(key, val)}
+                          onChange={(e) => setSliderVal(key, e.currentTarget.value)}
+                          tooltipPlacement="top"
                         />
                       );
                     } else if (item.widget === WIDGET_TYPES.COLOR) {
@@ -186,6 +186,8 @@ export const CssEditor = () => {
                         <SketchPicker
                           onChange={(color) => setColorVal(key, color)}
                           color={adjustableStyleProps[key] || ''}
+                          width={170}
+                          className="my-3"
                         />
                       );
                     } else if (item.widget === WIDGET_TYPES.SELECT) {
@@ -194,6 +196,7 @@ export const CssEditor = () => {
                           value={adjustableStyleProps[key] || null}
                           onChange={(option) => setSelectVal(key, option)}
                           options={item.selectOptions}
+                          className="my-3"
                         />
                       );
                     } else if (item.widget === WIDGET_TYPES.SWITCH) {
@@ -209,7 +212,15 @@ export const CssEditor = () => {
                     }
                     return (
                       <div key={key}>
-                        <p>{item.label}</p>
+                        <div className="d-flex align-items-center">
+                          <p className="fs--1 flex-grow-1 mb-0">{item.label}</p>
+                          {item.widget === WIDGET_TYPES.SLIDER && (
+                            <RangeInputBox
+                              value={adjustableStyleProps[key] || 0}
+                              onChange={(e) => setSliderVal(key, e.currentTarget.value)}
+                            />
+                          )}
+                        </div>
                         {Widget}
                       </div>
                     );

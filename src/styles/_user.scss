@@ -3,8 +3,10 @@
 // user.scss
 //
 // Place your own theme CSS or SCSS rules below this line, these rules will override any Bootstrap and theme variables.
-.w-60 {
-  width: 60px;
+@import 'switch';
+
+.m-w-60 {
+  min-width: 60px;
 }
 
 .clickable-icon {
@@ -25,4 +27,20 @@
   font-size: 13px;
   border-radius: 2px;
   border: 2px solid $collab-green;
+}
+
+.collab-sauce-range-slider {
+  // turn off arrows inside input field
+
+  /* Chrome, Safari, Edge, Opera */
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
 }

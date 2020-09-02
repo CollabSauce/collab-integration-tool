@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 
 export const BaseToolbar = ({ enterSelectionMode, hideToolBar }) => {
   return (
-    <div className="h-100 d-flex flex-column justify-content-between align-items-center pt-1 pb-3 w-60 bg-light">
+    <div className="h-100 d-flex flex-column justify-content-between align-items-center pt-1 pb-3 m-w-60 bg-light">
       <p>collab</p>
       <Button onClick={enterSelectionMode}>
         <FontAwesomeIcon icon="plus" />
