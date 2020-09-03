@@ -364,7 +364,7 @@ export const STYLE_CONFIG = {
   },
   boxShadowColor: {
     default: '',
-    label: 'Color:',
+    label: 'Color',
     parsePx: false,
     customParseFn: (val) => {
       return parseBoxShadow(val)[0].color;
