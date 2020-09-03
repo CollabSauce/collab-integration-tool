@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Button from 'react-bootstrap/Button';
+import { Button } from 'reactstrap';
 
 export const BaseToolbar = ({ enterSelectionMode, hideToolBar }) => {
   return (

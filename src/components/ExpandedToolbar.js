@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Form from 'react-bootstrap/Form';
+import { FormGroup, Input } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { CssEditor } from 'src/components/CssEditor';
@@ -12,9 +12,9 @@ export const ExpandedToolbar = ({ toggleFullToolbar }) => {
         <div className="text-sans-serif font-weight-bold">Create a Task</div>
         <FontAwesomeIcon className="clickable-icon" icon="times" onClick={toggleFullToolbar} />
       </div>
-      <Form.Group controlId="commentArea" className="mt-3">
-        <Form.Control as="textarea" rows="3" className="no-resize collab-comment-box" placeholder="Type a comment..." />
-      </Form.Group>
+      <FormGroup controlId="commentArea" className="mt-3">
+        <Input type="textarea" rows="3" className="no-resize collab-comment-box" placeholder="Type a comment..." />
+      </FormGroup>
 
       <CssEditor />
     </div>

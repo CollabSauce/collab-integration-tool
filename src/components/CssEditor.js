@@ -1,32 +1,30 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { SketchPicker } from 'react-color';
 import Select from 'react-select';
+import classNames from 'classnames';
 
-import Accordion from 'react-bootstrap/Accordion';
-import AccordionContext from 'react-bootstrap/AccordionContext';
+import { Collapse } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { Switch } from 'src/components/Switch';
 import { RangeSlider, RangeInputBox } from 'src/components/RangeSlider';
 import { STYLE_ATTRIBUTE_CONFIG, STYLE_CONFIG, NESTED_STYLE_CONFIG, WIDGET_TYPES } from 'src/utils/cssEditorConfig';
 
-const ContextAwareToggle = ({ children, manualEventKey, callback, ...props }) => {
-  const currentEventKey = useContext(AccordionContext);
-  const isOpen = currentEventKey === manualEventKey;
-
-  return (
-    <div {...props}>
-      <FontAwesomeIcon icon="caret-right" transform={`rotate-${isOpen ? 90 : 0})`} />
-      <span className="font-weight-semi-bold text-sans-serif pl-3">{children}</span>
-    </div>
-  );
-};
+const CollapseHeader = ({ children, onClick, isOpen, className }) => (
+  <div onClick={onClick} className={classNames('py-2 cursor-pointer', className)}>
+    <FontAwesomeIcon icon="caret-right" transform={`rotate-${isOpen ? 90 : 0})`} />
+    <span className="font-weight-semi-bold text-sans-serif pl-3">{children}</span>
+  </div>
+);
 
 export const CssEditor = () => {
   const [adjustableStyleProps, setAdjustableStyleProps] = useState(null);
   const [originalStyleAttributes, setOriginalStyleAttributes] = useState([]);
   const [currentTargetInfo, setCurrentTargetInfo] = useState({});
+
+  const [openCollapsibleStates, setOpenCollapsibleStates] = useState({});
+
   const parentOrigin = useSelector((state) => state.app.parentOrigin);
   const targetStyle = useSelector((state) => state.app.targetStyle);
   const targetDomPath = useSelector((state) => state.app.targetDomPath);
@@ -137,33 +135,31 @@ export const CssEditor = () => {
     notifyTargetOfNewStyle(newStyleData);
   };
 
+  const toggleOpenStates = (propName) => {
+    setOpenCollapsibleStates(!openCollapsibleStates[propName]);
+  };
+
   if (!adjustableStyleProps) {
     return <div>Click any element on page to adjust styling.</div>;
   }
 
   return (
-    <Accordion>
-      <Accordion.Toggle
-        as={ContextAwareToggle}
-        eventKey="design_edits"
-        manualEventKey="design_edits"
-        className="py-2 cursor-pointer"
-      >
+    <>
+      <CollapseHeader onClick={() => toggleOpenStates('designEdits')} isOpen={openCollapsibleStates.designEdits}>
         Design Edits
-      </Accordion.Toggle>
-      <Accordion.Collapse eventKey="design_edits">
+      </CollapseHeader>
+      <Collapse isOpen={openCollapsibleStates.designEdits}>
         <>
           {NESTED_STYLE_CONFIG.map(({ category, items }) => (
-            <Accordion key={category} className="ml-2">
-              <Accordion.Toggle
-                as={ContextAwareToggle}
-                eventKey={category}
-                manualEventKey={category}
-                className="py-2 cursor-pointer"
+            <>
+              <CollapseHeader
+                onClick={() => toggleOpenStates(category)}
+                isOpen={openCollapsibleStates[category]}
+                className="ml-2"
               >
                 {category}
-              </Accordion.Toggle>
-              <Accordion.Collapse eventKey={category} className="px-2">
+              </CollapseHeader>
+              <Collapse isOpen={openCollapsibleStates[category]} className="px-2">
                 <>
                   {Object.entries(items).map(([key, item]) => {
                     let Widget;
@@ -226,11 +222,11 @@ export const CssEditor = () => {
                     );
                   })}
                 </>
-              </Accordion.Collapse>
-            </Accordion>
+              </Collapse>
+            </>
           ))}
         </>
-      </Accordion.Collapse>
-    </Accordion>
+      </Collapse>
+    </>
   );
 };

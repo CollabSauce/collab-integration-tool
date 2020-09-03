@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import Spinner from 'react-bootstrap/Spinner';
+import { Spinner } from 'reactstrap';
 
 import 'src/styles/theme.scss';
 import { BaseToolbar } from 'src/components/BaseToolbar';
@@ -52,7 +52,7 @@ const App = () => {
   if (!ready) {
     return (
       <div className="vh-100 d-flex justify-content-center align-items-center">
-        <Spinner animation="border" variant="primary" />
+        <Spinner type="border" color="primary" />
       </div>
     );
   }
