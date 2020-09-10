@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
+import classNames from 'classnames';
 import { Spinner } from 'reactstrap';
 
 import 'src/styles/theme.scss';
@@ -11,6 +11,9 @@ const App = () => {
   const [ready, setReady] = useState(false);
   const dispatch = useDispatch();
   const fullToolbarVisible = useSelector((state) => state.app.fullToolbarVisible);
+  const alignRight = useSelector((state) => state.alignment.alignRight);
+  const alignDown = useSelector((state) => state.alignment.alignDown);
+  const alignLeft = useSelector((state) => state.alignment.alignLeft);
 
   // Initialize the app - this should only be run once (on mount)
   useEffect(() => {
@@ -28,9 +31,14 @@ const App = () => {
   }
 
   return (
-    <div className="vh-100 d-flex">
-      {fullToolbarVisible && <ExpandedToolbar />}
+    <div
+      className={classNames('vh-100 d-flex', {
+        'flex-row': alignLeft,
+        'flex-row-reverse': alignRight,
+      })}
+    >
       <BaseToolbar />
+      {fullToolbarVisible && <ExpandedToolbar />}
     </div>
   );
 };

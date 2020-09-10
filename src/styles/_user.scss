@@ -5,8 +5,19 @@
 // Place your own theme CSS or SCSS rules below this line, these rules will override any Bootstrap and theme variables.
 @import 'switch';
 
+.w-60 {
+  width: 60px;
+}
 .m-w-60 {
   min-width: 60px;
+}
+
+.w-40 {
+  width: 40px;
+}
+
+.mt--25 {
+  margin-top: -25px;
 }
 
 .clickable-icon {
@@ -43,4 +54,10 @@
   input[type='number'] {
     -moz-appearance: textfield;
   }
+}
+
+.collab-toolbar-tooltip {
+  font-size: 10px;
+  padding: 0.5rem 0rem;
+  width: 50px;
 }

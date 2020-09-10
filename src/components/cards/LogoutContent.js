@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import rocket from 'src/assets/rocket.png';
 
-const LogoutContent = ({ layout, titleTag: TitleTag }) => {
+const LogoutContent = ({ titleTag: TitleTag }) => {
   const dispatch = useDispatch();
 
   return (
@@ -26,12 +26,10 @@ const LogoutContent = ({ layout, titleTag: TitleTag }) => {
 };
 
 LogoutContent.propTypes = {
-  layout: PropTypes.string,
   titleTag: PropTypes.string,
 };
 
 LogoutContent.defaultProps = {
-  layout: 'basic',
   titleTag: 'h4',
 };
 

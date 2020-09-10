@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
 import { Button, Form, Row, Col, FormGroup, Input, Label, Spinner } from 'reactstrap';
 
 import { jsdataStore } from 'src/store/jsdata';
 import { setAuthToken } from 'src/utils/auth';
-import { handleNetworkError } from 'src/utils/error';
 
 const LoginForm = ({ hasLabel }) => {
   const [email, setEmail] = useState('');
@@ -24,11 +22,11 @@ const LoginForm = ({ hasLabel }) => {
       const credentials = { email, password };
       const response = await jsdataStore.getMapper('user').loginUser({ data: credentials });
       setAuthToken(response.data.key);
+      setLoading(false);
       await dispatch.app.initializeApp();
-      setLoading(false);
     } catch (e) {
-      toast.error(handleNetworkError(e));
       setLoading(false);
+      dispatch.views.setShowFailedLogin(true);
     }
   };
 
@@ -65,7 +63,7 @@ const LoginForm = ({ hasLabel }) => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Forget Password?
+            Forgot Password?
           </a>
         </Col>
       </Row>
@@ -74,6 +72,12 @@ const LoginForm = ({ hasLabel }) => {
           {loading ? <Spinner color="light" /> : 'Log in'}
         </Button>
       </FormGroup>
+      <p className="fs--1 text-600 text-center">
+        or{' '}
+        <a href="https://app.collabsauce.com/signup" target="_blank" rel="noopener noreferrer">
+          create an account
+        </a>
+      </p>
     </Form>
   );
 };

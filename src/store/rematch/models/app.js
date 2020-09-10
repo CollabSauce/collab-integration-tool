@@ -70,6 +70,7 @@ export const app = {
       dispatch.app.showFullToolbar();
     },
     toggleFullToolbar(_, rootState) {
+      // REMOVE? NOT EVEN USED?
       rootState.app.fullToolbarVisible ? dispatch.app.hideFullToolbar() : dispatch.app.showFullToolbar();
     },
     showFullToolbar(_, rootState) {
