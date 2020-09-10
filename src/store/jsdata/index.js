@@ -1,11 +1,17 @@
-import { DataStore, utils } from 'js-data';
-import { HttpAdapter, addAction } from 'js-data-http';
+import { DataStore, utils } from 'js-data/src/index';
+import { HttpAdapter, addAction } from 'js-data-http/src/index';
 // If we want sourcemaps to working properly while debugging, change above line to import from 'js-data-http/src/index';
+// If you do that, in that file you need to change line to do: import axios from 'axios'
 
-import { commentSchema, commentRelations } from 'src/store/jsdata/models/Comment';
+import { inviteSchema, inviteRelations, inviteActions } from 'src/store/jsdata/models/Invite';
+import { membershipSchema, membershipRelations } from 'src/store/jsdata/models/Membership';
 import { organizationSchema, organizationRelations } from 'src/store/jsdata/models/Organization';
 import { profileSchema, profileRelations } from 'src/store/jsdata/models/Profile';
-import { threadSchema, threadRelations } from 'src/store/jsdata/models/Thread';
+import { projectSchema, projectRelations } from 'src/store/jsdata/models/Project';
+import { taskSchema, taskRelations, taskActions } from 'src/store/jsdata/models/Task';
+import { taskColumnSchema, taskColumnRelations } from 'src/store/jsdata/models/TaskColumn';
+import { taskCommentSchema, taskCommentRelations, taskCommentActions } from 'src/store/jsdata/models/TaskComment';
+import { taskMetadataSchema, taskMetadataRelations } from 'src/store/jsdata/models/TaskMetadata';
 import { userSchema, userRelations, userActions } from 'src/store/jsdata/models/User';
 
 import { BASE_PATH, API_PATH } from 'src/constants';
@@ -63,7 +69,7 @@ const adapter = new HttpAdapter({
     const datastore = mapper.datastore;
     deserialize(response, datastore, mappers);
 
-    const key = opts.op === 'findAll' ? opts.endpoint : opts.name; // example: `users` or `user`
+    const key = opts.op === 'findAll' ? mapper.schema.plural : opts.name; // example: `users` or `user`. `taskColumns` or `taskColumn`
     response.data = response.data[key];
     return HttpAdapter.prototype.deserialize.call(this, mapper, response, opts);
   },
@@ -75,10 +81,16 @@ jsdataStore.registerAdapter('http', adapter, { default: true });
 ///////////////////////
 /// Register Models ///
 ///////////////////////
-jsdataStore.defineMapper('comment', {
-  endpoint: 'comments',
-  schema: commentSchema,
-  relations: commentRelations,
+jsdataStore.defineMapper('invite', {
+  endpoint: 'invites',
+  schema: inviteSchema,
+  relations: inviteRelations,
+});
+
+jsdataStore.defineMapper('membership', {
+  endpoint: 'memberships',
+  schema: membershipSchema,
+  relations: membershipRelations,
 });
 
 jsdataStore.defineMapper('organization', {
@@ -93,10 +105,34 @@ jsdataStore.defineMapper('profile', {
   relations: profileRelations,
 });
 
-jsdataStore.defineMapper('thread', {
-  endpoint: 'threads',
-  schema: threadSchema,
-  relations: threadRelations,
+jsdataStore.defineMapper('project', {
+  endpoint: 'projects',
+  schema: projectSchema,
+  relations: projectRelations,
+});
+
+jsdataStore.defineMapper('task', {
+  endpoint: 'tasks',
+  schema: taskSchema,
+  relations: taskRelations,
+});
+
+jsdataStore.defineMapper('taskColumn', {
+  endpoint: 'task_columns',
+  schema: taskColumnSchema,
+  relations: taskColumnRelations,
+});
+
+jsdataStore.defineMapper('taskComment', {
+  endpoint: 'task_comments',
+  schema: taskCommentSchema,
+  relations: taskCommentRelations,
+});
+
+jsdataStore.defineMapper('taskMetadata', {
+  endpoint: 'task_metadatas',
+  schema: taskMetadataSchema,
+  relations: taskMetadataRelations,
 });
 
 jsdataStore.defineMapper('user', {
@@ -128,6 +164,9 @@ function registerCustomActions(resource, actions) {
 }
 
 registerCustomActions('user', userActions);
+registerCustomActions('invite', inviteActions);
+registerCustomActions('task', taskActions);
+registerCustomActions('taskComment', taskCommentActions);
 
 /////////////////////////////
 /// Create Mappers Object ///

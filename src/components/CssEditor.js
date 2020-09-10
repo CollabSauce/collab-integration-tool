@@ -7,8 +7,8 @@ import classNames from 'classnames';
 import { Collapse } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { Switch } from 'src/components/Switch';
-import { RangeSlider, RangeInputBox } from 'src/components/RangeSlider';
+import Switch from 'src/components/Switch';
+import RangeSlider, { RangeInputBox } from 'src/components/RangeSlider';
 import { STYLE_ATTRIBUTE_CONFIG, STYLE_CONFIG, NESTED_STYLE_CONFIG, WIDGET_TYPES } from 'src/utils/cssEditorConfig';
 
 const CollapseHeader = ({ children, onClick, isOpen, className }) => (
@@ -18,7 +18,7 @@ const CollapseHeader = ({ children, onClick, isOpen, className }) => (
   </div>
 );
 
-export const CssEditor = () => {
+const CssEditor = () => {
   const [adjustableStyleProps, setAdjustableStyleProps] = useState(null);
   const [originalStyleAttributes, setOriginalStyleAttributes] = useState([]);
   const [currentTargetInfo, setCurrentTargetInfo] = useState({});
@@ -136,7 +136,11 @@ export const CssEditor = () => {
   };
 
   const toggleOpenStates = (propName) => {
-    setOpenCollapsibleStates(!openCollapsibleStates[propName]);
+    const newState = {
+      ...openCollapsibleStates,
+      [propName]: !openCollapsibleStates[propName],
+    };
+    setOpenCollapsibleStates(newState);
   };
 
   if (!adjustableStyleProps) {
@@ -151,7 +155,7 @@ export const CssEditor = () => {
       <Collapse isOpen={openCollapsibleStates.designEdits}>
         <>
           {NESTED_STYLE_CONFIG.map(({ category, items }) => (
-            <>
+            <React.Fragment key={category}>
               <CollapseHeader
                 onClick={() => toggleOpenStates(category)}
                 isOpen={openCollapsibleStates[category]}
@@ -223,10 +227,12 @@ export const CssEditor = () => {
                   })}
                 </>
               </Collapse>
-            </>
+            </React.Fragment>
           ))}
         </>
       </Collapse>
     </>
   );
 };
+
+export default CssEditor;

@@ -14,13 +14,17 @@ export const organizationSchema = new Schema({
 
 export const organizationRelations = {
   hasMany: {
-    thread: {
-      foreignKey: 'organizationId', // this needs to match the foreignKey field on the thread model (ie thread.organizationId)
-      localField: 'threads',
+    invite: {
+      foreignKey: 'organizationId', // this needs to match the foreignKey field on the invite model (ie invite.organizationId)
+      localField: 'invites',
     },
-    user: {
-      foreignKey: 'organizationId', // this needs to match the foreignKey field on the user model (ie user.organizationId)
-      localField: 'users',
+    membership: {
+      foreignKey: 'organizationId', // this needs to match the foreignKey field on the membership model (ie membership.organizationId)
+      localField: 'memberships',
+    },
+    project: {
+      foreignKey: 'organizationId', // this needs to match the foreignKey field on the project model (ie project.organizationId)
+      localField: 'projects',
     },
   },
 };

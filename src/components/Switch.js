@@ -1,7 +1,7 @@
 import React from 'react';
 
 // https://upmostly.com/tutorials/build-a-react-switch-toggle-component
-export const Switch = ({ isOn, handleToggle, onColor, labelLeft, labelRight }) => {
+const Switch = ({ isOn, handleToggle, onColor, labelLeft, labelRight }) => {
   return (
     <div className="d-flex align-items-center my-3">
       <p className="font-weight-normal text-sans-serif fs--2 m-0">{labelLeft}</p>
@@ -23,3 +23,5 @@ export const Switch = ({ isOn, handleToggle, onColor, labelLeft, labelRight }) =
     </div>
   );
 };
+
+export default Switch;

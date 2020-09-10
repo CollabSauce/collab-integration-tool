@@ -18,12 +18,6 @@ export const userSchema = new Schema({
 });
 
 export const userRelations = {
-  belongsTo: {
-    organization: {
-      foreignKey: 'organizationId',
-      localField: 'organization',
-    },
-  },
   hasOne: {
     profile: {
       foreignKey: 'profile',
@@ -31,14 +25,24 @@ export const userRelations = {
     },
   },
   hasMany: {
-    comment: {
-      foreignKey: 'creatorId', // this needs to match the foreignKey field on the comment model (ie comment.creatorId)
-      localField: 'comments',
+    invite: {
+      foreignKey: 'inviterId', // this needs to match the foreignKey field on the invite model (ie invite.inviterId)
+      localField: 'invitesSent',
+    },
+    membership: {
+      foreignKey: 'userId', // this needs to match the foreignKey field on the membership model (ie membership.inviterId)
+      localField: 'memberships',
+    },
+    task: {
+      foreignKey: 'creatorId', // this needs to match the foreignKey field on the task model (ie task.creatorId)
+      localField: 'createdTasks',
+    },
+    taskComment: {
+      foreignKey: 'creatorId', // this needs to match the foreignKey field on the taskComment model (ie taskComment.creatorId)
+      localField: 'createdTaskComments',
     },
   },
 };
-
-// organization
 
 export const userActions = {
   // GET /users/me
@@ -47,7 +51,7 @@ export const userActions = {
     method: 'GET',
     addResponseToStore: true,
     params: {
-      include: ['memberships.organization.threads.'],
+      include: ['memberships.organization.projects.'],
     },
   },
   // POST /rest-auth/login/

@@ -14,7 +14,7 @@ export const profileSchema = new Schema({
 export const profileRelations = {
   belongsTo: {
     user: {
-      foreignKey: 'profile', // this needs to match the foreignKey field on the user model (ie user.profile)
+      foreignKey: 'profile', // this needs to match the foreignKey field on the user model (ie user.profile) (other side of a 1-1 model)
       localField: 'user',
     },
   },
