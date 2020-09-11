@@ -61,7 +61,7 @@ const ExpandedToolbar = () => {
       </>
     );
     footerContent = (
-      <Button color="primary" block onClick={createTask} className="mb-3">
+      <Button color="primary" block onClick={createTask} className="mb-3" disabled>
         Create Task
       </Button>
     );

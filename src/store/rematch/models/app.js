@@ -11,6 +11,7 @@ export const app = {
     targetStyle: {},
     targetDomPath: '',
     targetCssText: '',
+    targetInElementStyling: '',
     targetId: '',
     projectKey: '',
   },
@@ -51,8 +52,9 @@ export const app = {
         if (message.type === 'setParentOrigin') {
           dispatch.app.setParentOrigin(e.origin);
         } else if (message.type === 'newClickedTarget') {
-          const { targetStyle, targetDomPath, targetCssText, targetId } = message;
-          dispatch.app.setTargetData({ targetStyle, targetDomPath, targetCssText, targetId });
+          const { targetStyle, targetDomPath, targetCssText, targetInElementStyling, targetId } = message;
+          // debugger;
+          dispatch.app.setTargetData({ targetStyle, targetDomPath, targetCssText, targetInElementStyling, targetId });
           dispatch.app.setFullToolbarVisible(true);
         } else if (message.type === 'projectKey') {
           dispatch.app.setProjectKey(message.projectKey);

@@ -1,5 +1,5 @@
-import { DataStore, utils } from 'js-data/src/index';
-import { HttpAdapter, addAction } from 'js-data-http/src/index';
+import { DataStore, utils } from 'js-data';
+import { HttpAdapter, addAction } from 'js-data-http';
 // If we want sourcemaps to working properly while debugging, change above line to import from 'js-data-http/src/index';
 // If you do that, in that file you need to change line to do: import axios from 'axios'
 

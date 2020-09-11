@@ -24,7 +24,11 @@ export const TEXT_ALIGN_OPTIONS = [
   { value: 'left', label: 'left' },
   { value: 'center', label: 'center' },
   { value: 'right', label: 'right' },
-  { value: 'justify', label: 'justify' },
+  { value: 'start', label: 'start' },
+  { value: 'end', label: 'end' },
+  { value: 'inherit', label: 'inherit' },
+  { value: 'initial', label: 'initial' },
+  { value: 'unset', label: 'unset' },
 ];
 
 export const FONT_WEIGHT_OPTIONS = [
@@ -461,56 +465,72 @@ export const STYLE_ATTRIBUTE_CONFIG = {
   width: (styleData) => `${styleData.width}px`,
   height: (styleData) => `${styleData.height}px`,
   'background-color': (styleData) => styleData.backgroundColor,
-  'border-width': (styleData) => {
-    const { borderTopWidth, borderRightWidth, borderBottomWidth, borderLeftWidth } = styleData;
-    if (
-      borderTopWidth === borderRightWidth &&
-      borderTopWidth === borderBottomWidth &&
-      borderTopWidth === borderLeftWidth
-    ) {
-      return `${borderTopWidth}px`;
-    } else if (borderTopWidth === borderBottomWidth && borderLeftWidth === borderRightWidth) {
-      return `${borderTopWidth}px ${borderLeftWidth}px`;
-    } else {
-      return `${borderTopWidth}px ${borderRightWidth}px ${borderBottomWidth}px ${borderLeftWidth}px`;
-    }
-  },
+  'border-top-width': (styleData) => `${styleData.borderTopWidth}px`,
+  'border-right-width': (styleData) => `${styleData.borderRightWidth}px`,
+  'border-bottom-width': (styleData) => `${styleData.borderBottomWidth}px`,
+  'border-left-width': (styleData) => `${styleData.borderLeftWidth}px`,
+  // 'border-width': (styleData) => {
+  //   const { borderTopWidth, borderRightWidth, borderBottomWidth, borderLeftWidth } = styleData;
+  //   if (
+  //     borderTopWidth === borderRightWidth &&
+  //     borderTopWidth === borderBottomWidth &&
+  //     borderTopWidth === borderLeftWidth
+  //   ) {
+  //     return `${borderTopWidth}px`;
+  //   } else if (borderTopWidth === borderBottomWidth && borderLeftWidth === borderRightWidth) {
+  //     return `${borderTopWidth}px ${borderLeftWidth}px`;
+  //   } else {
+  //     return `${borderTopWidth}px ${borderRightWidth}px ${borderBottomWidth}px ${borderLeftWidth}px`;
+  //   }
+  // },
   'border-color': (styleData) => styleData.borderColor,
   'border-style': (styleData) => (styleData.borderStyle ? styleData.borderStyle.value : ''),
-  'border-radius': (styleData) => {
-    const { borderTopLeftRadius, borderTopRightRadius, borderBottomRightRadius, borderBottomLeftRadius } = styleData;
-    if (
-      borderTopLeftRadius === borderTopRightRadius &&
-      borderTopLeftRadius === borderBottomRightRadius &&
-      borderTopLeftRadius === borderBottomLeftRadius
-    ) {
-      return `${borderTopLeftRadius}px`;
-    } else if (borderTopLeftRadius === borderBottomRightRadius && borderTopRightRadius === borderBottomLeftRadius) {
-      return `${borderTopLeftRadius}px ${borderTopRightRadius}px`;
-    } else {
-      return `${borderTopLeftRadius}px ${borderTopRightRadius}px ${borderBottomRightRadius}px ${borderBottomLeftRadius}px`;
-    }
-  },
-  margin: (styleData) => {
-    const { marginTop, marginRight, marginBottom, marginLeft } = styleData;
-    if (marginTop === marginRight && marginTop === marginBottom && marginTop === marginLeft) {
-      return `${marginTop}px`;
-    } else if (marginTop === marginBottom && marginLeft === marginRight) {
-      return `${marginTop}px ${marginLeft}px`;
-    } else {
-      return `${marginTop}px ${marginRight}px ${marginBottom}px ${marginLeft}px`;
-    }
-  },
-  padding: (styleData) => {
-    const { paddingTop, paddingRight, paddingBottom, paddingLeft } = styleData;
-    if (paddingTop === paddingRight && paddingTop === paddingBottom && paddingTop === paddingLeft) {
-      return `${paddingTop}px`;
-    } else if (paddingTop === paddingBottom && paddingLeft === paddingRight) {
-      return `${paddingTop}px ${paddingLeft}px`;
-    } else {
-      return `${paddingTop}px ${paddingRight}px ${paddingBottom}px ${paddingLeft}px`;
-    }
-  },
+  'border-top-left-radius': (styleData) => `${styleData.borderTopLeftRadius}px`,
+  'border-top-right-radius': (styleData) => `${styleData.borderTopRightRadius}px`,
+  'border-bottom-right-radius': (styleData) => `${styleData.borderBottomRightRadius}px`,
+  'border-bottom-left-radius': (styleData) => `${styleData.borderBottomLeftRadius}px`,
+  // 'border-radius': (styleData) => {
+  //   const { borderTopLeftRadius, borderTopRightRadius, borderBottomRightRadius, borderBottomLeftRadius } = styleData;
+  //   if (
+  //     borderTopLeftRadius === borderTopRightRadius &&
+  //     borderTopLeftRadius === borderBottomRightRadius &&
+  //     borderTopLeftRadius === borderBottomLeftRadius
+  //   ) {
+  //     return `${borderTopLeftRadius}px`;
+  //   } else if (borderTopLeftRadius === borderBottomRightRadius && borderTopRightRadius === borderBottomLeftRadius) {
+  //     return `${borderTopLeftRadius}px ${borderTopRightRadius}px`;
+  //   } else {
+  //     return `${borderTopLeftRadius}px ${borderTopRightRadius}px ${borderBottomRightRadius}px ${borderBottomLeftRadius}px`;
+  //   }
+  // },
+  'margin-top': (styleData) => `${styleData.marginTop}px`,
+  'margin-right': (styleData) => `${styleData.marginRight}px`,
+  'margin-bottom': (styleData) => `${styleData.marginBottom}px`,
+  'margin-left': (styleData) => `${styleData.marginLeft}px`,
+  // margin: (styleData) => {
+  //   const { marginTop, marginRight, marginBottom, marginLeft } = styleData;
+  //   if (marginTop === marginRight && marginTop === marginBottom && marginTop === marginLeft) {
+  //     return `${marginTop}px`;
+  //   } else if (marginTop === marginBottom && marginLeft === marginRight) {
+  //     return `${marginTop}px ${marginLeft}px`;
+  //   } else {
+  //     return `${marginTop}px ${marginRight}px ${marginBottom}px ${marginLeft}px`;
+  //   // }
+  // },
+  'padding-top': (styleData) => `${styleData.paddingTop}px`,
+  'padding-right': (styleData) => `${styleData.paddingRight}px`,
+  'padding-bottom': (styleData) => `${styleData.paddingBottom}px`,
+  'padding-left': (styleData) => `${styleData.paddingLeft}px`,
+  // padding: (styleData) => {
+  //   const { paddingTop, paddingRight, paddingBottom, paddingLeft } = styleData;
+  //   if (paddingTop === paddingRight && paddingTop === paddingBottom && paddingTop === paddingLeft) {
+  //     return `${paddingTop}px`;
+  //   } else if (paddingTop === paddingBottom && paddingLeft === paddingRight) {
+  //     return `${paddingTop}px ${paddingLeft}px`;
+  //   } else {
+  //     return `${paddingTop}px ${paddingRight}px ${paddingBottom}px ${paddingLeft}px`;
+  //   }
+  // },
   'box-shadow': (styleData) => {
     return stringifyBoxShadow([
       {

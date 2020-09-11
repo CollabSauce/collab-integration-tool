@@ -26,7 +26,7 @@ const BaseToolbar = () => {
   };
 
   return (
-    <div className="h-100 d-flex flex-column justify-content-between align-items-center pt-1 pb-3 w-60 m-w-60 bg-light">
+    <div className="h-100 d-flex flex-column justify-content-between align-items-center pt-1 pb-3 w-60 min-w-60 bg-light">
       <div className="d-flex flex-column justify-content-between align-items-center">
         <p className="mb-0">collab</p>
         <hr className="mt-2 mb-4 mh-0 w-40" />

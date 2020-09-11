@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { Spinner } from 'reactstrap';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import 'src/styles/theme.scss';
 import BaseToolbar from 'src/components/BaseToolbar';
@@ -38,6 +40,7 @@ const App = () => {
     >
       <BaseToolbar />
       {fullToolbarVisible && <ExpandedToolbar />}
+      <ToastContainer autoClose={10000} />
     </div>
   );
 };

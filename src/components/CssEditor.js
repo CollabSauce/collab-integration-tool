@@ -3,18 +3,23 @@ import { useSelector } from 'react-redux';
 import { SketchPicker } from 'react-color';
 import Select from 'react-select';
 import classNames from 'classnames';
+import { toast } from 'react-toastify';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import { Collapse } from 'reactstrap';
+import { Collapse, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import CodeHighlight from 'src/components/CodeHighlight';
 import Switch from 'src/components/Switch';
 import RangeSlider, { RangeInputBox } from 'src/components/RangeSlider';
 import { STYLE_ATTRIBUTE_CONFIG, STYLE_CONFIG, NESTED_STYLE_CONFIG, WIDGET_TYPES } from 'src/utils/cssEditorConfig';
 
-const CollapseHeader = ({ children, onClick, isOpen, className }) => (
+const CollapseHeader = ({ children, onClick, isOpen, className, classNameChildrenContent }) => (
   <div onClick={onClick} className={classNames('py-2 cursor-pointer', className)}>
     <FontAwesomeIcon icon="caret-right" transform={`rotate-${isOpen ? 90 : 0})`} />
-    <span className="font-weight-semi-bold text-sans-serif pl-3">{children}</span>
+    <span className={classNames('font-weight-semi-bold text-sans-serif pl-3', classNameChildrenContent)}>
+      {children}
+    </span>
   </div>
 );
 
@@ -24,12 +29,17 @@ const CssEditor = () => {
   const [currentTargetInfo, setCurrentTargetInfo] = useState({});
 
   const [openCollapsibleStates, setOpenCollapsibleStates] = useState({});
+  const [hasDesignChanges, setHasDesignChanges] = useState(false);
 
   const parentOrigin = useSelector((state) => state.app.parentOrigin);
   const targetStyle = useSelector((state) => state.app.targetStyle);
   const targetDomPath = useSelector((state) => state.app.targetDomPath);
   const targetCssText = useSelector((state) => state.app.targetCssText);
+  const targetInElementStyling = useSelector((state) => state.app.targetInElementStyling);
   const targetId = useSelector((state) => state.app.targetId);
+
+  const [codeChange, setCodeChange] = useState('');
+  const onCopyToClipboard = () => toast.info('Copied to clipboard!');
 
   const parsePx = (val) => {
     if (typeof val === 'string' && val.slice(-2) === 'px') {
@@ -42,17 +52,22 @@ const CssEditor = () => {
   useEffect(() => {
     const styleData = Object.entries(STYLE_CONFIG).reduce((currentResult, [key, config]) => {
       let val;
+      // the in-element-style object takes precedence over the new 'styleData', which is normal css.
+      const styleObjectToUse =
+        targetInElementStyling[config.customParseFnKey] || targetInElementStyling[key]
+          ? targetInElementStyling
+          : targetStyle;
       if (config.customParseFn) {
-        val = config.customParseFn(targetStyle[config.customParseFnKey]);
+        val = config.customParseFn(styleObjectToUse[config.customParseFnKey]);
       } else if (config.additionalKeysToUpdate) {
         val = config.default;
       } else if (config.widget === WIDGET_TYPES.SELECT) {
-        const valToCompare = config.parseIntOnRead ? parseInt(targetStyle[key]) : targetStyle[key];
+        const valToCompare = config.parseIntOnRead ? parseInt(styleObjectToUse[key]) : styleObjectToUse[key];
         val = config.selectOptions.find((option) => option.value === valToCompare);
       } else if (config.parsePx) {
-        val = parsePx(targetStyle[key]);
+        val = parsePx(styleObjectToUse[key]);
       } else {
-        val = targetStyle[key];
+        val = styleObjectToUse[key];
       }
 
       return { ...currentResult, [key]: val };
@@ -67,6 +82,8 @@ const CssEditor = () => {
           id: targetId,
           domPath: targetDomPath,
           originalCssText: targetCssText,
+          originalInElementStyling: targetInElementStyling,
+          originalStyleData: styleData,
           originalStylingTrackedByUs: calculateStyleAttributes(styleData),
         },
       ]);
@@ -75,7 +92,7 @@ const CssEditor = () => {
 
     // Now save the styleData the is used in our render function.
     setAdjustableStyleProps(styleData);
-  }, [originalStyleAttributes, targetStyle, targetDomPath, targetCssText, targetId]);
+  }, [originalStyleAttributes, targetStyle, targetDomPath, targetCssText, targetInElementStyling, targetId]);
 
   const findStyleAttributeForElement = (originalStyleAttributes, targetId, targetDomPath) => {
     // First try to find it by the id of the element. If that doesn't exist find it by the DOM path.
@@ -96,17 +113,36 @@ const CssEditor = () => {
     const { targetId, targetDomPath } = currentTargetInfo;
     const styleAttributeDataForElement = findStyleAttributeForElement(originalStyleAttributes, targetId, targetDomPath);
     const originalStyleForElement = styleAttributeDataForElement.originalStylingTrackedByUs;
+    const originalInElementStyling = styleAttributeDataForElement.originalInElementStyling;
+    const originalInElementStylingHash = Object.keys(originalInElementStyling).reduce(
+      (hash, key) => ({ ...hash, [key]: true }),
+      {}
+    );
 
     const styleAttrsToSet = Object.entries(styleAttributes).reduce((currentUpdateObj, [property, value]) => {
-      // only add the values to the styleStr if it differs from the original value
-      return originalStyleForElement[property] === value
-        ? currentUpdateObj
-        : { ...currentUpdateObj, [property]: value };
+      if (originalStyleForElement[property] === value) {
+        if (originalInElementStylingHash[property]) {
+          // if the value is the same as the original value and it is in-element-styling,
+          // don't clear the styling of that property
+          return currentUpdateObj;
+        } else {
+          // if the value is the same as the original value and it's not in-element-styling,
+          // set to the empty string so we clear the styling for that property
+          return { ...currentUpdateObj, [property]: '' };
+        }
+      } else {
+        // if the vale has changed from the original, set that property value
+        return { ...currentUpdateObj, [property]: value };
+      }
     }, {});
 
     // dispatch event to parent
     const message = { type: 'setStyleAttribute', styleAttrsToSet };
     window.parent.postMessage(JSON.stringify(message), parentOrigin);
+
+    // check to see if we made any changes - see if any element has a non-empty string.
+    setHasDesignChanges(!!Object.values(styleAttrsToSet).find((val) => val !== ''));
+    updateCodeChange(styleAttrsToSet);
   };
 
   const setSliderVal = (key, val) => {
@@ -118,7 +154,8 @@ const CssEditor = () => {
   };
 
   const setColorVal = (key, color) => {
-    const newStyleData = { ...adjustableStyleProps, [key]: color.hex };
+    const { r, g, b, a } = color.rgb;
+    const newStyleData = { ...adjustableStyleProps, [key]: `rgba(${r}, ${g}, ${b}, ${a})` };
     setAdjustableStyleProps(newStyleData);
     notifyTargetOfNewStyle(newStyleData);
   };
@@ -143,14 +180,44 @@ const CssEditor = () => {
     setOpenCollapsibleStates(newState);
   };
 
+  const restoreChanges = () => {
+    const styleAttributeDataForElement = findStyleAttributeForElement(originalStyleAttributes, targetId, targetDomPath);
+    const { originalCssText, originalStyleData } = styleAttributeDataForElement;
+    const message = { type: 'restoreChanges', originalCssText };
+    window.parent.postMessage(JSON.stringify(message), parentOrigin);
+    setAdjustableStyleProps(originalStyleData);
+    setHasDesignChanges(false);
+  };
+
+  const updateCodeChange = (styleAttrsToSet) => {
+    const str = Object.keys(styleAttrsToSet)
+      .reduce((str, styleKey) => {
+        return styleAttrsToSet[styleKey] ? `${str}\n${styleKey}: ${styleAttrsToSet[styleKey]} !important;` : str;
+      }, '')
+      .trim();
+    setCodeChange(str);
+  };
+
   if (!adjustableStyleProps) {
-    return <div>Click any element on page to adjust styling.</div>;
+    return null;
   }
 
   return (
     <>
-      <CollapseHeader onClick={() => toggleOpenStates('designEdits')} isOpen={openCollapsibleStates.designEdits}>
-        Design Edits
+      <CollapseHeader
+        onClick={() => toggleOpenStates('designEdits')}
+        isOpen={openCollapsibleStates.designEdits}
+        className="d-flex align-items-center h-55"
+        classNameChildrenContent="d-inline-flex flex-grow-1 justify-content-between align-items-center"
+      >
+        <>
+          <span>Design Edits</span>
+          {hasDesignChanges && (
+            <Button color="falcon-danger fs--1 pl-2 pr-2" onClick={restoreChanges}>
+              Restore Changes
+            </Button>
+          )}
+        </>
       </CollapseHeader>
       <Collapse isOpen={openCollapsibleStates.designEdits}>
         <>
@@ -186,7 +253,7 @@ const CssEditor = () => {
                         <SketchPicker
                           onChange={(color) => setColorVal(key, color)}
                           color={adjustableStyleProps[key] || ''}
-                          width={170}
+                          width={225}
                           className="my-3"
                         />
                       );
@@ -229,6 +296,24 @@ const CssEditor = () => {
               </Collapse>
             </React.Fragment>
           ))}
+          <CollapseHeader
+            onClick={() => toggleOpenStates('viewCodeChange')}
+            isOpen={openCollapsibleStates['viewCodeChange']}
+            className="ml-2"
+            classNameChildrenContent="text-warning"
+          >
+            View Code Change
+          </CollapseHeader>
+          <Collapse isOpen={openCollapsibleStates['viewCodeChange']} className="px-2">
+            <div className="position-relative max-w-245">
+              <CodeHighlight code={codeChange} language="css" dark />
+              <CopyToClipboard text={codeChange} onCopy={onCopyToClipboard}>
+                <Button color="primary" className="position-absolute top-right">
+                  Copy Code
+                </Button>
+              </CopyToClipboard>
+            </div>
+          </Collapse>
         </>
       </Collapse>
     </>
