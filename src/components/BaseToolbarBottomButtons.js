@@ -1,77 +1,83 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { UncontrolledTooltip } from 'reactstrap';
 
 const BaseToolbarBottomButtons = () => {
   const dispatch = useDispatch();
-  const alignLeft = useSelector((state) => state.alignment.alignLeft);
-  const alignDown = useSelector((state) => state.alignment.alignDown);
-  const alignRight = useSelector((state) => state.alignment.alignRight);
+  const alignLeft = useSelector((state) => state.positioning.alignLeft);
+  const alignRight = useSelector((state) => state.positioning.alignRight);
+  const alignTop = useSelector((state) => state.positioning.alignTop);
+  const alignBottom = useSelector((state) => state.positioning.alignBottom);
+  const sizeFull = useSelector((state) => state.positioning.sizeFull);
+  const sizeHalf = useSelector((state) => state.positioning.sizeHalf);
+  const sizeQuarter = useSelector((state) => state.positioning.sizeQuarter);
+
+  const sizingConfig = useMemo(() => {
+    return [
+      { type: 'Full', rotation: 90, icon: ['fas', 'arrows-alt-h'], percent: '100%', show: !sizeFull },
+      { type: 'Half', rotation: 0, icon: ['fas', 'window-minimize'], percent: '50%', show: !sizeHalf },
+      { type: 'Quarter', rotation: 0, icon: ['far', 'window-minimize'], percent: '25%', show: !sizeQuarter },
+    ].filter((config) => config.show);
+  }, [sizeFull, sizeHalf, sizeQuarter]);
+
+  const alignmentConfig = useMemo(() => {
+    return [
+      { type: 'Left', rotation: 270, show: !alignLeft },
+      { type: 'Right', rotation: 90, show: !alignRight },
+      { type: 'Top', rotation: 0, show: !alignTop },
+      { type: 'Bottom', rotation: 180, show: !alignBottom },
+    ].filter((config) => config.show);
+  }, [alignLeft, alignRight, alignTop, alignBottom]);
 
   return (
     <div className="d-flex align-items-center flex-column">
       <div>
-        {!alignLeft && (
-          <>
+        {sizingConfig.map(({ type, icon, percent, rotation }, idx) => (
+          <React.Fragment key={type}>
             <FontAwesomeIcon
-              id="collab-move-toolbar-left"
-              className="clickable-icon"
-              icon={['far', 'window-maximize']}
-              rotation={270}
-              onClick={() => dispatch.alignment.align('Left')}
+              id={`collab-move-toolbar-${type}`}
+              className={`clickable-icon ${idx === 0 ? 'mr-1' : 'ml-1'}`}
+              icon={icon}
+              rotation={rotation}
+              onClick={() => dispatch.positioning.size(type)}
             />
             <UncontrolledTooltip
               placement="auto"
-              target="collab-move-toolbar-left"
+              target={`collab-move-toolbar-${type}`}
               innerClassName="collab-toolbar-tooltip"
             >
-              Move Toolbar Left
+              Toolbar {percent}
             </UncontrolledTooltip>
-          </>
-        )}
-        {!alignDown && false && (
-          <>
+          </React.Fragment>
+        ))}
+      </div>
+      <div>
+        {alignmentConfig.map(({ type, rotation }, idx) => (
+          <React.Fragment key={type}>
             <FontAwesomeIcon
-              id="collab-move-toolbar-down"
-              className="clickable-icon"
+              id={`collab-move-toolbar-${type}`}
+              className={`clickable-icon ${idx === 0 ? 'mr-1' : 'ml-1'}`}
               icon={['far', 'window-maximize']}
-              rotation={180}
-              onClick={() => dispatch.alignment.align('Down')}
+              rotation={rotation}
+              onClick={() => dispatch.positioning.align(type)}
             />
             <UncontrolledTooltip
               placement="auto"
-              target="collab-move-toolbar-down"
+              target={`collab-move-toolbar-${type}`}
               innerClassName="collab-toolbar-tooltip"
             >
-              Move Toolbar Down
+              Move Toolbar {type}
             </UncontrolledTooltip>
-          </>
-        )}
-        {!alignRight && (
-          <>
-            <FontAwesomeIcon
-              id="collab-move-toolbar-right"
-              className="clickable-icon"
-              icon={['far', 'window-maximize']}
-              rotation={90}
-              onClick={() => dispatch.alignment.align('Right')}
-            />
-            <UncontrolledTooltip
-              placement="auto"
-              target="collab-move-toolbar-right"
-              innerClassName="collab-toolbar-tooltip"
-            >
-              Move Toolbar Right
-            </UncontrolledTooltip>
-          </>
-        )}
+          </React.Fragment>
+        ))}
       </div>
       <div>
         <FontAwesomeIcon
           id="collab-close-toolbar"
           className="clickable-icon"
           icon="angle-right"
+          rotation={alignRight ? 0 : 180}
           onClick={() => dispatch.app.hideToolbar()}
         />
         <UncontrolledTooltip placement="auto" target="collab-close-toolbar" innerClassName="collab-toolbar-tooltip">

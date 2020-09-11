@@ -11,9 +11,8 @@ const App = () => {
   const [ready, setReady] = useState(false);
   const dispatch = useDispatch();
   const fullToolbarVisible = useSelector((state) => state.app.fullToolbarVisible);
-  const alignRight = useSelector((state) => state.alignment.alignRight);
-  const alignDown = useSelector((state) => state.alignment.alignDown);
-  const alignLeft = useSelector((state) => state.alignment.alignLeft);
+  const alignRight = useSelector((state) => state.positioning.alignRight);
+  const alignLeft = useSelector((state) => state.positioning.alignLeft);
 
   // Initialize the app - this should only be run once (on mount)
   useEffect(() => {
