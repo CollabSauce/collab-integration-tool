@@ -68,7 +68,7 @@ const LoginForm = ({ hasLabel }) => {
         </Col>
       </Row>
       <FormGroup>
-        <Button color="primary" block className="mt-3" disabled={isDisabled}>
+        <Button color="primary" block className="mt-3" disabled={isDisabled || loading}>
           {loading ? <Spinner color="light" /> : 'Log in'}
         </Button>
       </FormGroup>

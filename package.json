@@ -15,6 +15,7 @@
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.20.0",
     "bootstrap": "^4.5.2",
+    "bowser": "^2.10.0",
     "classnames": "^2.2.6",
     "core-js": "^3.6.5",
     "js-data": "3.0.8",

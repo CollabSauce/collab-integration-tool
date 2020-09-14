@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { SketchPicker } from 'react-color';
 import Select from 'react-select';
 import classNames from 'classnames';
@@ -24,6 +24,7 @@ const CollapseHeader = ({ children, onClick, isOpen, className, classNameChildre
 );
 
 const CssEditor = () => {
+  const dispatch = useDispatch();
   const [adjustableStyleProps, setAdjustableStyleProps] = useState(null);
   const [originalStyleAttributes, setOriginalStyleAttributes] = useState([]);
   const [currentTargetInfo, setCurrentTargetInfo] = useState({});
@@ -37,8 +38,8 @@ const CssEditor = () => {
   const targetCssText = useSelector((state) => state.app.targetCssText);
   const targetInElementStyling = useSelector((state) => state.app.targetInElementStyling);
   const targetId = useSelector((state) => state.app.targetId);
+  const cssCodeChanges = useSelector((state) => state.app.cssCodeChanges);
 
-  const [codeChange, setCodeChange] = useState('');
   const onCopyToClipboard = () => toast.info('Copied to clipboard!');
 
   const parsePx = (val) => {
@@ -187,6 +188,7 @@ const CssEditor = () => {
     window.parent.postMessage(JSON.stringify(message), parentOrigin);
     setAdjustableStyleProps(originalStyleData);
     setHasDesignChanges(false);
+    dispatch.app.setCssCodeChanges('');
   };
 
   const updateCodeChange = (styleAttrsToSet) => {
@@ -195,7 +197,7 @@ const CssEditor = () => {
         return styleAttrsToSet[styleKey] ? `${str}\n${styleKey}: ${styleAttrsToSet[styleKey]} !important;` : str;
       }, '')
       .trim();
-    setCodeChange(str);
+    dispatch.app.setCssCodeChanges(str);
   };
 
   if (!adjustableStyleProps) {
@@ -306,8 +308,8 @@ const CssEditor = () => {
           </CollapseHeader>
           <Collapse isOpen={openCollapsibleStates['viewCodeChange']} className="px-2">
             <div className="position-relative max-w-245">
-              <CodeHighlight code={codeChange} language="css" dark />
-              <CopyToClipboard text={codeChange} onCopy={onCopyToClipboard}>
+              <CodeHighlight code={cssCodeChanges} language="css" dark />
+              <CopyToClipboard text={cssCodeChanges} onCopy={onCopyToClipboard}>
                 <Button color="primary" className="position-absolute top-right">
                   Copy Code
                 </Button>

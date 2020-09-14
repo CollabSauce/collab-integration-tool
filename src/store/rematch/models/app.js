@@ -1,3 +1,5 @@
+import Bowser from 'bowser';
+
 import { jsdataStore } from 'src/store/jsdata';
 
 export const app = {
@@ -5,14 +7,17 @@ export const app = {
     // internal properties
     currentUserId: null,
     fullToolbarVisible: false,
+    cssCodeChanges: '',
+    newTaskTitle: '',
+    creatingTask: false,
 
     // properties set from outside info
-    parentOrigin: '',
-    targetStyle: {},
-    targetDomPath: '',
-    targetCssText: '',
-    targetInElementStyling: '',
-    targetId: '',
+    parentOrigin: '', // url origin of the parent window
+    targetStyle: {}, // styling of the target, from `getComputedStyle()`
+    targetDomPath: '', // dom path (i.e selector) of the target
+    targetCssText: '', // if the target has in-element styling, this is the text of that styling
+    targetInElementStyling: '', // if the target has in-element styling, this is the json-object form of that styling.
+    targetId: '', // id of the target, if applicable
     projectKey: '',
   },
   reducers: {
@@ -21,6 +26,15 @@ export const app = {
     },
     setFullToolbarVisible(state, fullToolbarVisible) {
       return { ...state, fullToolbarVisible };
+    },
+    setCssCodeChanges(state, cssCodeChanges) {
+      return { ...state, cssCodeChanges };
+    },
+    setNewTaskTitle(state, newTaskTitle) {
+      return { ...state, newTaskTitle };
+    },
+    setCreatingTask(state, creatingTask) {
+      return { ...state, creatingTask };
     },
     setParentOrigin(state, parentOrigin) {
       return { ...state, parentOrigin };
@@ -53,11 +67,18 @@ export const app = {
           dispatch.app.setParentOrigin(e.origin);
         } else if (message.type === 'newClickedTarget') {
           const { targetStyle, targetDomPath, targetCssText, targetInElementStyling, targetId } = message;
-          // debugger;
-          dispatch.app.setTargetData({ targetStyle, targetDomPath, targetCssText, targetInElementStyling, targetId });
+          dispatch.app.setTargetData({
+            targetStyle,
+            targetDomPath,
+            targetCssText,
+            targetInElementStyling,
+            targetId,
+          });
           dispatch.app.setFullToolbarVisible(true);
         } else if (message.type === 'projectKey') {
           dispatch.app.setProjectKey(message.projectKey);
+        } else if (message.type === 'createTaskWithInfo') {
+          dispatch.app.createTaskWithInfo(message);
         }
       } catch (err) {
         return;
@@ -92,6 +113,49 @@ export const app = {
       const message = { type: 'hideToolbar' };
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
       dispatch.app.setFullToolbarVisible(false);
+    },
+    getInfoFromCommunicatorToCreateTask(_, rootState) {
+      dispatch.app.setCreatingTask(true);
+      const parentOrigin = rootState.app.parentOrigin;
+      const message = { type: 'getInfoForCreateTask' };
+      window.parent.postMessage(JSON.stringify(message), parentOrigin);
+    },
+    async createTaskWithInfo({ html, width, height, url_origin }, rootState) {
+      try {
+        const { parsedResult } = Bowser.getParser(window.navigator.userAgent);
+        const { browser, os } = parsedResult;
+
+        const task_metadata = {
+          url_origin: url_origin,
+          os_name: os.name,
+          os_version: os.version,
+          os_version_name: os.versionName,
+          browser_name: browser.name,
+          browser_version: browser.version,
+          selector: rootState.app.targetDomPath,
+          screen_width: window.screen.width, // used to calculate screen resolution
+          screen_height: window.screen.height, // used to calculate screen resolution
+          device_pixel_ratio: window.devicePixelRatio, // used to calculate screen resolution
+          browser_window_width: width,
+          browser_window_height: height,
+          color_depth: window.screen.colorDepth,
+          pixel_depth: window.screen.pixelDepth,
+        };
+        const currentProject = jsdataStore.getAll('project').find((p) => p.key === rootState.app.projectKey);
+        const task = {
+          title: rootState.app.newTaskTitle,
+          target_dom_path: rootState.app.targetDomPath,
+          project: parseInt(currentProject.id),
+          design_edits: rootState.app.cssCodeChanges,
+        };
+
+        const response = await jsdataStore
+          .getMapper('task')
+          .createTaskFromWidget({ data: { task, task_metadata, html } });
+        debugger;
+      } finally {
+        dispatch.app.setCreatingTask(false);
+      }
     },
   }),
 };

@@ -1,8 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { FormGroup, Input, Button } from 'reactstrap';
+import React, { useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { FormGroup, Input, Button, Spinner } from 'reactstrap';
 
-import { jsdataStore } from 'src/store/jsdata';
 import { useStoreState } from 'src/hooks/useStoreState';
 import FullToolbarLayout from 'src/layouts/FullToolbarLayout';
 import CssEditor from 'src/components/CssEditor';
@@ -12,26 +11,19 @@ import FailedLogin from 'src/components/FailedLogin';
 import NoProjectAccess from 'src/components/NoProjectAccess';
 
 const ExpandedToolbar = () => {
+  const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.app.currentUserId);
+  const projectKey = useSelector((state) => state.app.projectKey);
+  const newTaskTitle = useSelector((state) => state.app.newTaskTitle);
+  const creatingTask = useSelector((state) => state.app.creatingTask);
+
   const showLogout = useSelector((state) => state.views.showLogout);
   const showFailedLogin = useSelector((state) => state.views.showFailedLogin);
-  const projectKey = useSelector((state) => state.app.projectKey);
-  const [commentText, setCommentText] = useState('');
 
+  // const [commentText, setCommentText] = useState('');
   const { result: projects } = useStoreState((store) => store.getAll('project'), [], 'project');
-  const hasAccessToProject = useMemo(() => projects.find((p) => p.key === projectKey), [projects, projectKey]);
-
-  const createTask = async () => {
-    const task = {
-      // title: commentText,
-      // target_dom_path: 'NONE',
-      // project: parseInt(projectId),
-      // task_column: parseInt(kanbanColumnItem.id),
-    };
-
-    const response = await jsdataStore.getMapper('task').createTask({ data: task });
-    // onTaskCreated(response.data.task);
-  };
+  const currentProject = useMemo(() => projects.find((p) => p.key === projectKey), [projects, projectKey]);
+  const hasAccessToProject = !!currentProject;
 
   let headerContent = null,
     bodyContent = null,
@@ -51,8 +43,8 @@ const ExpandedToolbar = () => {
             className="no-resize collab-comment-box"
             placeholder="Type a comment..."
             aria-label="task comment"
-            value={commentText}
-            onChange={({ target }) => setCommentText(target.value)}
+            value={newTaskTitle}
+            onChange={({ target }) => dispatch.app.setNewTaskTitle(target.value)}
             autoFocus
           />
         </FormGroup>
@@ -61,8 +53,14 @@ const ExpandedToolbar = () => {
       </>
     );
     footerContent = (
-      <Button color="primary" block onClick={createTask} className="mb-3" disabled>
-        Create Task
+      <Button
+        color="primary"
+        block
+        onClick={dispatch.app.getInfoFromCommunicatorToCreateTask}
+        className="mb-3"
+        disabled={creatingTask}
+      >
+        {creatingTask ? <Spinner color="light" /> : 'Create Task'}
       </Button>
     );
   } else if (showLogout) {

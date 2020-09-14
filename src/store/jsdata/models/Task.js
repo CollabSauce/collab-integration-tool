@@ -62,4 +62,9 @@ export const taskActions = {
     method: 'POST',
     addResponseToStore: true,
   },
+  createTaskFromWidget: {
+    pathname: 'create_task_from_widget',
+    method: 'POST',
+    addResponseToStore: true, // switch to false probably?
+  },
 };
