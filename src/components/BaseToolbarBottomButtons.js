@@ -1,10 +1,13 @@
 import React, { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { UncontrolledTooltip } from 'reactstrap';
+import { UncontrolledTooltip, Button } from 'reactstrap';
+
+import { setAuthToken } from 'src/utils/auth';
 
 const BaseToolbarBottomButtons = () => {
   const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state) => state.app.currentUserId);
   const alignLeft = useSelector((state) => state.positioning.alignLeft);
   const alignRight = useSelector((state) => state.positioning.alignRight);
   const alignTop = useSelector((state) => state.positioning.alignTop);
@@ -30,8 +33,20 @@ const BaseToolbarBottomButtons = () => {
     ].filter((config) => config.show);
   }, [alignLeft, alignRight, alignTop, alignBottom]);
 
+  const logout = () => {
+    dispatch.views.setShowLogout(true);
+    setAuthToken();
+    dispatch.app.setCurrentUserId();
+    dispatch.app.showFullToolbar();
+  };
+
   return (
     <div className="d-flex align-items-center flex-column">
+      {isAuthenticated && (
+        <Button onClick={logout} color="link" className="fs--1 pl-0 pr-0">
+          Logout
+        </Button>
+      )}
       <div>
         {sizingConfig.map(({ type, icon, percent, rotation }, idx) => (
           <React.Fragment key={type}>

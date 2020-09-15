@@ -18,6 +18,7 @@ const App = () => {
 
   // Initialize the app - this should only be run once (on mount)
   useEffect(() => {
+    dispatch.app.setupMessageListener();
     dispatch.app.initializeApp().finally(() => {
       setReady(true);
     });

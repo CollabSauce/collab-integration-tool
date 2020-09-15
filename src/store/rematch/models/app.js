@@ -1,4 +1,5 @@
 import Bowser from 'bowser';
+import { toast } from 'react-toastify';
 
 import { jsdataStore } from 'src/store/jsdata';
 
@@ -47,8 +48,10 @@ export const app = {
     },
   },
   effects: (dispatch) => ({
-    async initializeApp(_, rootState) {
+    setupMessageListener() {
       window.addEventListener('message', this.onWindowMessage);
+    },
+    async initializeApp(_, rootState) {
       try {
         const response = await jsdataStore.getMapper('user').fetchCurrentUser();
         dispatch.app.setCurrentUserId(response.data.user.id);
@@ -75,6 +78,7 @@ export const app = {
             targetId,
           });
           dispatch.app.setFullToolbarVisible(true);
+          dispatch.views.setShowTaskCreator(true);
         } else if (message.type === 'projectKey') {
           dispatch.app.setProjectKey(message.projectKey);
         } else if (message.type === 'createTaskWithInfo') {
@@ -92,9 +96,9 @@ export const app = {
     enterLoginMode() {
       dispatch.app.showFullToolbar();
     },
-    toggleFullToolbar(_, rootState) {
-      // REMOVE? NOT EVEN USED?
-      rootState.app.fullToolbarVisible ? dispatch.app.hideFullToolbar() : dispatch.app.showFullToolbar();
+    enterShowTasksSummaryMode() {
+      dispatch.app.showFullToolbar();
+      dispatch.views.setShowTasksSummary(true);
     },
     showFullToolbar(_, rootState) {
       const parentOrigin = rootState.app.parentOrigin;
@@ -149,10 +153,10 @@ export const app = {
           design_edits: rootState.app.cssCodeChanges,
         };
 
-        const response = await jsdataStore
-          .getMapper('task')
-          .createTaskFromWidget({ data: { task, task_metadata, html } });
-        debugger;
+        await jsdataStore.getMapper('task').createTaskFromWidget({ data: { task, task_metadata, html } });
+        toast.success('Task created.');
+      } catch (err) {
+        toast.error('Something went wrong. Please try again.');
       } finally {
         dispatch.app.setCreatingTask(false);
       }

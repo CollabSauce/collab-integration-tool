@@ -1,14 +1,24 @@
+const InitialState = {
+  showLogout: false,
+  showFailedLogin: false,
+  showTaskCreator: false,
+  showTasksSummary: false,
+};
+
 export const views = {
-  state: {
-    showLogout: false,
-    showFailedLogin: false,
-  },
+  state: { ...InitialState },
   reducers: {
-    setShowLogout(state, showLogout) {
-      return { ...state, showLogout };
+    setShowLogout(_, showLogout) {
+      return { ...InitialState, showLogout };
     },
-    setShowFailedLogin(state, showFailedLogin) {
-      return { ...state, showFailedLogin };
+    setShowFailedLogin(_, showFailedLogin) {
+      return { ...InitialState, showFailedLogin };
+    },
+    setShowTaskCreator(_, showTaskCreator) {
+      return { ...InitialState, showTaskCreator };
+    },
+    setShowTasksSummary(_, showTasksSummary) {
+      return { ...InitialState, showTasksSummary };
     },
   },
   effects: (dispatch) => ({}),

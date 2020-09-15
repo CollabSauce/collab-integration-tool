@@ -22,8 +22,9 @@ const LoginForm = ({ hasLabel }) => {
       const credentials = { email, password };
       const response = await jsdataStore.getMapper('user').loginUser({ data: credentials });
       setAuthToken(response.data.key);
-      setLoading(false);
       await dispatch.app.initializeApp();
+      setLoading(false);
+      dispatch.views.setShowTasksSummary(true);
     } catch (e) {
       setLoading(false);
       dispatch.views.setShowFailedLogin(true);
