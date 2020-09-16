@@ -2,26 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { SketchPicker } from 'react-color';
 import Select from 'react-select';
-import classNames from 'classnames';
 import { toast } from 'react-toastify';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import { Collapse, Button } from 'reactstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import CollapseHeader from 'src/components/CollapseHeader';
 import CodeHighlight from 'src/components/CodeHighlight';
 import Switch from 'src/components/Switch';
 import RangeSlider, { RangeInputBox } from 'src/components/RangeSlider';
 import { STYLE_ATTRIBUTE_CONFIG, STYLE_CONFIG, NESTED_STYLE_CONFIG, WIDGET_TYPES } from 'src/utils/cssEditorConfig';
-
-const CollapseHeader = ({ children, onClick, isOpen, className, classNameChildrenContent }) => (
-  <div onClick={onClick} className={classNames('py-2 cursor-pointer', className)}>
-    <FontAwesomeIcon icon="caret-right" transform={`rotate-${isOpen ? 90 : 0})`} />
-    <span className={classNames('font-weight-semi-bold text-sans-serif pl-3', classNameChildrenContent)}>
-      {children}
-    </span>
-  </div>
-);
 
 const CssEditor = () => {
   const dispatch = useDispatch();

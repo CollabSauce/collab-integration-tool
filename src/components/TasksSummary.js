@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
 
 import FullToolbarLayout from 'src/layouts/FullToolbarLayout';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
@@ -7,7 +8,8 @@ import { jsdataStore } from 'src/store/jsdata';
 import TaskCard from 'src/components/TaskCard';
 
 const TasksSummary = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const taskDomMap = useSelector((state) => state.app.taskDomMap);
   const project = useCurrentProject();
   const [tasks, setTasks] = useState([]);
 
@@ -32,11 +34,17 @@ const TasksSummary = () => {
     // eslint-disable-next-line
   }, [project]);
 
+  useEffect(() => {
+    if (tasks.length) {
+      dispatch.app.fetchTaskDomMap(tasks);
+    }
+  }, [tasks, dispatch.app]);
+
   const headerContent = <div className="text-sans-serif font-weight-bold">Tasks</div>;
   const bodyContent = (
-    <div className="kanban-items-container scrollbar pl-2 pr-2 max-height-inherit">
+    <div className="kanban-items-container scrollbar kanban-override">
       {tasks.map((task, idx) => (
-        <TaskCard taskCard={task} key={task.id} />
+        <TaskCard taskCard={task} key={task.id} taskDomMap={taskDomMap} />
       ))}
     </div>
   );

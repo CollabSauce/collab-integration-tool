@@ -75,6 +75,13 @@
   right: 0px;
 }
 
-.max-height-inherit {
+.kanban-override {
   max-height: inherit;
+  padding-left: 0px;
+  padding-right: 0px;
+  background-color: $gray-200;
+}
+
+.cursor-default {
+  cursor: default;
 }

@@ -20,6 +20,7 @@ export const app = {
     targetInElementStyling: '', // if the target has in-element styling, this is the json-object form of that styling.
     targetId: '', // id of the target, if applicable
     projectKey: '',
+    taskDomMap: {},
   },
   reducers: {
     setCurrentUserId(state, currentUserId) {
@@ -45,6 +46,9 @@ export const app = {
     },
     setProjectKey(state, projectKey) {
       return { ...state, projectKey };
+    },
+    setTaskDomMap(state, taskDomMap) {
+      return { ...state, taskDomMap };
     },
   },
   effects: (dispatch) => ({
@@ -83,6 +87,8 @@ export const app = {
           dispatch.app.setProjectKey(message.projectKey);
         } else if (message.type === 'createTaskWithInfo') {
           dispatch.app.createTaskWithInfo(message);
+        } else if (message.type === 'taskDomMap') {
+          dispatch.app.setTaskDomMap(message.taskDomMap);
         }
       } catch (err) {
         return;
@@ -170,6 +176,16 @@ export const app = {
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
       dispatch.styling.setCssCodeChanges('');
       dispatch.app.setNewTaskTitle('');
+    },
+    fetchTaskDomMap(tasks, rootState) {
+      const taskDomData = tasks.map((task) => ({
+        id: task.id,
+        targetId: task.targetId,
+        targetDomPath: task.targetDomPath,
+      }));
+      const parentOrigin = rootState.app.parentOrigin;
+      const message = { type: 'fetchTaskDomMap', taskDomData };
+      window.parent.postMessage(JSON.stringify(message), parentOrigin);
     },
   }),
 };
