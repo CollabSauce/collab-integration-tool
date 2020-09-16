@@ -8,7 +8,11 @@ import {
   faWindowMinimize,
   faArrowsAltH,
 } from '@fortawesome/free-solid-svg-icons';
-import { faWindowMaximize, faWindowMinimize as farFaWindowMinimize } from '@fortawesome/free-regular-svg-icons';
+import {
+  faWindowMaximize,
+  faWindowMinimize as farFaWindowMinimize,
+  faCommentAlt,
+} from '@fortawesome/free-regular-svg-icons';
 
 library.add(
   faPlus,
@@ -19,5 +23,6 @@ library.add(
   faWindowMaximize,
   faArrowsAltH,
   faWindowMinimize,
-  farFaWindowMinimize
+  farFaWindowMinimize,
+  faCommentAlt
 );

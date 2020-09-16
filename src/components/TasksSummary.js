@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// import { useSelector, useDispatch } from 'react-redux';
 import { Button } from 'reactstrap';
 
 import FullToolbarLayout from 'src/layouts/FullToolbarLayout';
@@ -21,6 +20,7 @@ const TasksSummary = () => {
       {
         'filter{project}': project.id,
         include: ['task_metadata.', 'task_comments.creator.', 'task_column.', 'creator.'],
+        sort: ['-task_number'],
       },
       { force: true }
     );
@@ -34,7 +34,7 @@ const TasksSummary = () => {
 
   const headerContent = <div className="text-sans-serif font-weight-bold">Tasks</div>;
   const bodyContent = (
-    <div className="kanban-items-container scrollbar">
+    <div className="kanban-items-container scrollbar pl-2 pr-2 max-height-inherit">
       {tasks.map((task, idx) => (
         <TaskCard taskCard={task} key={task.id} />
       ))}

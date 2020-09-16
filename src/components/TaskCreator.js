@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FormGroup, Input, Button, Spinner } from 'reactstrap';
 
@@ -9,7 +9,14 @@ const TaskCreator = () => {
   const dispatch = useDispatch();
   const newTaskTitle = useSelector((state) => state.app.newTaskTitle);
   const creatingTask = useSelector((state) => state.app.creatingTask);
-  const cssCodeChanges = useSelector((state) => state.app.cssCodeChanges);
+  const cssCodeChanges = useSelector((state) => state.styling.cssCodeChanges);
+
+  useEffect(() => {
+    // upon entering this component, reset the `taskSuccessfullyCreated` property
+    dispatch.app.setTaskSuccessfullyCreated(false);
+    return () => dispatch.app.onExitTaskCreator();
+    // eslint-disable-next-line
+  }, []);
 
   const headerContent = <div className="text-sans-serif font-weight-bold">Create a Task</div>;
   const bodyContent = (

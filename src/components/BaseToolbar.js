@@ -9,6 +9,7 @@ import tasksIcon from 'src/assets/tasks.svg';
 const BaseToolbar = () => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.app.currentUserId);
+  const showTaskCreator = useSelector((state) => state.views.showTaskCreator);
 
   const viewTasksClicked = () => {
     if (isAuthenticated) {
@@ -20,6 +21,11 @@ const BaseToolbar = () => {
 
   const plusButtonClicked = () => {
     if (isAuthenticated) {
+      if (showTaskCreator) {
+        // if we are on the task creator, we have to reset the state of it
+        dispatch.styling.restoreChanges();
+        dispatch.app.onExitTaskCreator();
+      }
       dispatch.app.enterSelectionMode();
     } else {
       dispatch.app.enterLoginMode();

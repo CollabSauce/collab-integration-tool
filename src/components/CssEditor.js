@@ -25,12 +25,7 @@ const CollapseHeader = ({ children, onClick, isOpen, className, classNameChildre
 
 const CssEditor = () => {
   const dispatch = useDispatch();
-  const [adjustableStyleProps, setAdjustableStyleProps] = useState(null);
-  const [originalStyleAttributes, setOriginalStyleAttributes] = useState([]);
-  const [currentTargetInfo, setCurrentTargetInfo] = useState({});
-
   const [openCollapsibleStates, setOpenCollapsibleStates] = useState({});
-  const [hasDesignChanges, setHasDesignChanges] = useState(false);
 
   const parentOrigin = useSelector((state) => state.app.parentOrigin);
   const targetStyle = useSelector((state) => state.app.targetStyle);
@@ -38,7 +33,11 @@ const CssEditor = () => {
   const targetCssText = useSelector((state) => state.app.targetCssText);
   const targetInElementStyling = useSelector((state) => state.app.targetInElementStyling);
   const targetId = useSelector((state) => state.app.targetId);
-  const cssCodeChanges = useSelector((state) => state.app.cssCodeChanges);
+  const taskSuccessfullyCreated = useSelector((state) => state.app.taskSuccessfullyCreated);
+
+  const adjustableStyleProps = useSelector((state) => state.styling.adjustableStyleProps);
+  const hasDesignChanges = useSelector((state) => state.styling.hasDesignChanges);
+  const cssCodeChanges = useSelector((state) => state.styling.cssCodeChanges);
 
   const onCopyToClipboard = () => toast.info('Copied to clipboard!');
 
@@ -74,34 +73,21 @@ const CssEditor = () => {
       return { ...currentResult, [key]: val };
     }, {});
 
-    const styleAttributeDataForElement = findStyleAttributeForElement(originalStyleAttributes, targetId, targetDomPath);
+    const styleAttributeDataForElement = dispatch.styling.findStyleAttributeForElement();
     if (!styleAttributeDataForElement) {
       // Save original data for comparison. If we already have the original data, no need to update it.
-      setOriginalStyleAttributes([
-        ...originalStyleAttributes,
-        {
-          id: targetId,
-          domPath: targetDomPath,
-          originalCssText: targetCssText,
-          originalInElementStyling: targetInElementStyling,
-          originalStyleData: styleData,
-          originalStylingTrackedByUs: calculateStyleAttributes(styleData),
-        },
-      ]);
+      dispatch.styling.addOriginalStyleAttribute({
+        id: targetId,
+        domPath: targetDomPath,
+        originalCssText: targetCssText,
+        originalInElementStyling: targetInElementStyling,
+        originalStyleData: styleData,
+        originalStylingTrackedByUs: calculateStyleAttributes(styleData),
+      });
     }
-    setCurrentTargetInfo({ targetId, targetDomPath });
-
-    // Now save the styleData the is used in our render function.
-    setAdjustableStyleProps(styleData);
-  }, [originalStyleAttributes, targetStyle, targetDomPath, targetCssText, targetInElementStyling, targetId]);
-
-  const findStyleAttributeForElement = (originalStyleAttributes, targetId, targetDomPath) => {
-    // First try to find it by the id of the element. If that doesn't exist find it by the DOM path.
-    let originalAttribute = targetId ? originalStyleAttributes.find((attrData) => attrData.id === targetId) : null;
-    return originalAttribute
-      ? originalAttribute
-      : originalStyleAttributes.find((attrData) => attrData.domPath === targetDomPath);
-  };
+    // Now save the styleData that is used in our render function.
+    dispatch.styling.setAdjustableStyleProps(styleData);
+  }, [targetStyle, targetDomPath, targetCssText, targetInElementStyling, targetId, dispatch.styling]);
 
   const calculateStyleAttributes = (styleData) => {
     return Object.entries(STYLE_ATTRIBUTE_CONFIG).reduce((currentObj, [property, fn]) => {
@@ -111,8 +97,7 @@ const CssEditor = () => {
 
   const notifyTargetOfNewStyle = (newStyleData) => {
     const styleAttributes = calculateStyleAttributes(newStyleData);
-    const { targetId, targetDomPath } = currentTargetInfo;
-    const styleAttributeDataForElement = findStyleAttributeForElement(originalStyleAttributes, targetId, targetDomPath);
+    const styleAttributeDataForElement = dispatch.styling.findStyleAttributeForElement();
     const originalStyleForElement = styleAttributeDataForElement.originalStylingTrackedByUs;
     const originalInElementStyling = styleAttributeDataForElement.originalInElementStyling;
     const originalInElementStylingHash = Object.keys(originalInElementStyling).reduce(
@@ -142,7 +127,7 @@ const CssEditor = () => {
     window.parent.postMessage(JSON.stringify(message), parentOrigin);
 
     // check to see if we made any changes - see if any element has a non-empty string.
-    setHasDesignChanges(!!Object.values(styleAttrsToSet).find((val) => val !== ''));
+    dispatch.styling.setHasDesignChanges(!!Object.values(styleAttrsToSet).find((val) => val !== ''));
     updateCodeChange(styleAttrsToSet);
   };
 
@@ -150,26 +135,26 @@ const CssEditor = () => {
     const additionalKeys = STYLE_CONFIG[key].additionalKeysToUpdate || [];
     const additionalKeyVals = additionalKeys.reduce((prev, additionalKey) => ({ ...prev, [additionalKey]: val }), {});
     const newStyleData = { ...adjustableStyleProps, [key]: val, ...additionalKeyVals };
-    setAdjustableStyleProps(newStyleData);
+    dispatch.styling.setAdjustableStyleProps(newStyleData);
     notifyTargetOfNewStyle(newStyleData);
   };
 
   const setColorVal = (key, color) => {
     const { r, g, b, a } = color.rgb;
     const newStyleData = { ...adjustableStyleProps, [key]: `rgba(${r}, ${g}, ${b}, ${a})` };
-    setAdjustableStyleProps(newStyleData);
+    dispatch.styling.setAdjustableStyleProps(newStyleData);
     notifyTargetOfNewStyle(newStyleData);
   };
 
   const setSelectVal = (key, option) => {
     const newStyleData = { ...adjustableStyleProps, [key]: option };
-    setAdjustableStyleProps(newStyleData);
+    dispatch.styling.setAdjustableStyleProps(newStyleData);
     notifyTargetOfNewStyle(newStyleData);
   };
 
   const setSwitchVal = (key, val) => {
     const newStyleData = { ...adjustableStyleProps, [key]: val };
-    setAdjustableStyleProps(newStyleData);
+    dispatch.styling.setAdjustableStyleProps(newStyleData);
     notifyTargetOfNewStyle(newStyleData);
   };
 
@@ -181,15 +166,15 @@ const CssEditor = () => {
     setOpenCollapsibleStates(newState);
   };
 
-  const restoreChanges = () => {
-    const styleAttributeDataForElement = findStyleAttributeForElement(originalStyleAttributes, targetId, targetDomPath);
-    const { originalCssText, originalStyleData } = styleAttributeDataForElement;
-    const message = { type: 'restoreChanges', originalCssText };
-    window.parent.postMessage(JSON.stringify(message), parentOrigin);
-    setAdjustableStyleProps(originalStyleData);
-    setHasDesignChanges(false);
-    dispatch.app.setCssCodeChanges('');
-  };
+  useEffect(() => {
+    return () => {
+      // when exiting this css editor, if we are exiting with unsaved changes, restore all.
+      if (!taskSuccessfullyCreated) {
+        dispatch.styling.restoreChanges();
+      }
+    };
+    // eslint-disable-next-line
+  }, []);
 
   const updateCodeChange = (styleAttrsToSet) => {
     const str = Object.keys(styleAttrsToSet)
@@ -197,7 +182,7 @@ const CssEditor = () => {
         return styleAttrsToSet[styleKey] ? `${str}\n${styleKey}: ${styleAttrsToSet[styleKey]} !important;` : str;
       }, '')
       .trim();
-    dispatch.app.setCssCodeChanges(str);
+    dispatch.styling.setCssCodeChanges(str);
   };
 
   if (!adjustableStyleProps) {
@@ -215,7 +200,7 @@ const CssEditor = () => {
         <>
           <span>Design Edits</span>
           {hasDesignChanges && (
-            <Button color="falcon-danger fs--1 pl-2 pr-2" onClick={restoreChanges}>
+            <Button color="falcon-danger fs--1 pl-2 pr-2" onClick={dispatch.styling.restoreChanges}>
               Restore Changes
             </Button>
           )}

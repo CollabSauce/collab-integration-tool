@@ -8,9 +8,9 @@ export const app = {
     // internal properties
     currentUserId: null,
     fullToolbarVisible: false,
-    cssCodeChanges: '',
     newTaskTitle: '',
     creatingTask: false,
+    taskSuccessfullyCreated: false, // used in css editor when determining whether to restore changes
 
     // properties set from outside info
     parentOrigin: '', // url origin of the parent window
@@ -28,14 +28,14 @@ export const app = {
     setFullToolbarVisible(state, fullToolbarVisible) {
       return { ...state, fullToolbarVisible };
     },
-    setCssCodeChanges(state, cssCodeChanges) {
-      return { ...state, cssCodeChanges };
-    },
     setNewTaskTitle(state, newTaskTitle) {
       return { ...state, newTaskTitle };
     },
     setCreatingTask(state, creatingTask) {
       return { ...state, creatingTask };
+    },
+    setTaskSuccessfullyCreated(state, taskSuccessfullyCreated) {
+      return { ...state, taskSuccessfullyCreated };
     },
     setParentOrigin(state, parentOrigin) {
       return { ...state, parentOrigin };
@@ -150,16 +150,26 @@ export const app = {
           title: rootState.app.newTaskTitle,
           target_dom_path: rootState.app.targetDomPath,
           project: parseInt(currentProject.id),
-          design_edits: rootState.app.cssCodeChanges,
+          design_edits: rootState.styling.cssCodeChanges,
         };
 
         await jsdataStore.getMapper('task').createTaskFromWidget({ data: { task, task_metadata, html } });
         toast.success('Task created.');
+        // Now, when the css exits, it won't try to restore changes. NOTE: this is pretty convoluted, clean this up later.
+        dispatch.app.setTaskSuccessfullyCreated(true);
+        dispatch.views.setShowTasksSummary(true);
       } catch (err) {
         toast.error('Something went wrong. Please try again.');
       } finally {
         dispatch.app.setCreatingTask(false);
       }
+    },
+    onExitTaskCreator(_, rootState) {
+      const parentOrigin = rootState.app.parentOrigin;
+      const message = { type: 'exitTaskCreationMode' };
+      window.parent.postMessage(JSON.stringify(message), parentOrigin);
+      dispatch.styling.setCssCodeChanges('');
+      dispatch.app.setNewTaskTitle('');
     },
   }),
 };
