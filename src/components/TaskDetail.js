@@ -88,7 +88,7 @@ const TaskDetail = () => {
   };
 
   const metadatas = useMemo(() => {
-    if (!task) {
+    if (!task || !task.taskMetadata) {
       return [];
     }
     const {
@@ -195,23 +195,27 @@ const TaskDetail = () => {
           </Collapse>
         </>
       )}
-      <CollapseHeader
-        onClick={() => toggleOpenStates('metadata')}
-        isOpen={openCollapsibleStates.metadata}
-        className="ml-1"
-      >
-        Metadata
-      </CollapseHeader>
-      <Collapse isOpen={openCollapsibleStates.metadata} className="ml-1">
-        <ListGroup flush>
-          {metadatas.map(({ key, value }) => (
-            <ListGroupItem key={key} className="text-sans-serif fs--1 p-2 background-color-inherit">
-              <p className="mb-1 font-weight-semi-bold">{key}</p>
-              <p className="mb-0">{value}</p>
-            </ListGroupItem>
-          ))}
-        </ListGroup>
-      </Collapse>
+      {metadatas.length ? (
+        <>
+          <CollapseHeader
+            onClick={() => toggleOpenStates('metadata')}
+            isOpen={openCollapsibleStates.metadata}
+            className="ml-1"
+          >
+            Metadata
+          </CollapseHeader>
+          <Collapse isOpen={openCollapsibleStates.metadata} className="ml-1">
+            <ListGroup flush>
+              {metadatas.map(({ key, value }) => (
+                <ListGroupItem key={key} className="text-sans-serif fs--1 p-2 background-color-inherit">
+                  <p className="mb-1 font-weight-semi-bold">{key}</p>
+                  <p className="mb-0">{value}</p>
+                </ListGroupItem>
+              ))}
+            </ListGroup>
+          </Collapse>
+        </>
+      ) : null}
       <CollapseHeader
         onClick={() => toggleOpenStates('taskComments')}
         isOpen={openCollapsibleStates.taskComments}

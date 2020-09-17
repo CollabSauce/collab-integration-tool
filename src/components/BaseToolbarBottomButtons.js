@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { UncontrolledTooltip, Button } from 'reactstrap';
 
 import { setAuthToken } from 'src/utils/auth';
+import { jsdataStore } from 'src/store/jsdata';
 
 const BaseToolbarBottomButtons = () => {
   const dispatch = useDispatch();
@@ -36,6 +37,7 @@ const BaseToolbarBottomButtons = () => {
   const logout = () => {
     dispatch.views.setShowLogout(true);
     setAuthToken();
+    jsdataStore.clear();
     dispatch.app.setCurrentUserId();
     dispatch.app.showFullToolbar();
   };
