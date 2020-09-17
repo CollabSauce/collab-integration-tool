@@ -9,6 +9,7 @@ export const taskSchema = new Schema({
     ...SchemaBase,
     id: { type: 'number' },
     title: { type: 'string' },
+    created: { type: 'string' },
     description: { type: 'string' },
     designEdits: { type: 'string' },
     windowScreenshotUrl: { type: 'string' },

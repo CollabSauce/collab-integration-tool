@@ -109,3 +109,10 @@
     color: inherit;
   }
 }
+
+.background-color-inherit {
+  background-color: inherit;
+  &:hover {
+    background-color: inherit;
+  }
+}

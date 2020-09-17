@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+import * as dayjs from 'dayjs';
 import { toast } from 'react-toastify';
-import { Button, Collapse, UncontrolledTooltip } from 'reactstrap';
+import { Button, Collapse, UncontrolledTooltip, ListGroup, ListGroupItem } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
@@ -25,7 +26,7 @@ const TaskDetail = () => {
     // we already have the task loaded, but fetch it again incase we eventually want more data.
     // Also, it's a fast way to kill time untill the screenshots are ready.
     const fetchedTask = await jsdataStore.find('task', currentTaskDetail.id, {
-      include: ['task_metadata.', 'task_comments.creator.', 'task_column.', 'creator.'],
+      params: { include: ['task_metadata.', 'task_comments.creator.', 'task_column.', 'creator.'] },
       force: true,
     });
     setTask(fetchedTask);
@@ -77,6 +78,52 @@ const TaskDetail = () => {
     };
     setOpenCollapsibleStates(newState);
   };
+
+  const metadatas = useMemo(() => {
+    if (!task) {
+      return [];
+    }
+    const {
+      created,
+      browserName,
+      browserVersion,
+      osName,
+      osVersion,
+      osVersionName,
+      screenWidth,
+      screenHeight,
+      devicePixelRatio,
+      browserWindowWidth,
+      browserWindowHeight,
+      colorDepth,
+    } = task.taskMetadata;
+    return [
+      {
+        key: 'Task Created At',
+        value: dayjs(created).format('dddd, MMMM D, YYYY h:mm A'),
+      },
+      {
+        key: 'Browser',
+        value: `${browserName} ${browserVersion}`,
+      },
+      {
+        key: 'Operating System',
+        value: `${osName} ${osVersion} ${osVersionName}`,
+      },
+      {
+        key: 'Screen Resolution',
+        value: `${screenWidth * devicePixelRatio} x ${screenHeight * devicePixelRatio} px`,
+      },
+      {
+        key: 'Browser Window',
+        value: `${browserWindowWidth} x ${browserWindowHeight} px`,
+      },
+      {
+        key: 'Color Depth',
+        value: `${colorDepth}`,
+      },
+    ];
+  }, [task]);
 
   if (!task) {
     return null;
@@ -140,6 +187,23 @@ const TaskDetail = () => {
           </Collapse>
         </>
       )}
+      <CollapseHeader
+        onClick={() => toggleOpenStates('metadata')}
+        isOpen={openCollapsibleStates.metadata}
+        className="ml-1"
+      >
+        Metadata
+      </CollapseHeader>
+      <Collapse isOpen={openCollapsibleStates.metadata} className="ml-1">
+        <ListGroup flush>
+          {metadatas.map(({ key, value }) => (
+            <ListGroupItem key={key} className="text-sans-serif fs--1 p-2 background-color-inherit">
+              <p className="mb-1 font-weight-semi-bold">{key}</p>
+              <p className="mb-0">{value}</p>
+            </ListGroupItem>
+          ))}
+        </ListGroup>
+      </Collapse>
     </>
   );
 
