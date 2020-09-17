@@ -5,12 +5,14 @@ import { Button, Collapse, UncontrolledTooltip, ListGroup, ListGroupItem } from 
 import { useDispatch, useSelector } from 'react-redux';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
+import { useStoreState } from 'src/hooks/useStoreState';
+import { jsdataStore } from 'src/store/jsdata';
 import CodeHighlight from 'src/components/CodeHighlight';
 import FullToolbarLayout from 'src/layouts/FullToolbarLayout';
-import { jsdataStore } from 'src/store/jsdata';
 import CollapseHeader from 'src/components/CollapseHeader';
 import TaskCard from 'src/components/TaskCard';
 import TaskDetailScreenshot from 'src/components/TaskDetailScreenshot';
+import TaskCommentsContent from 'src/components/TaskCommentsContent';
 
 const TaskDetail = () => {
   const dispatch = useDispatch();
@@ -19,6 +21,12 @@ const TaskDetail = () => {
   const taskDomMap = useSelector((state) => state.app.taskDomMap);
   const [task, setTask] = useState(null);
   const [openCollapsibleStates, setOpenCollapsibleStates] = useState({});
+
+  const { result: taskComments } = useStoreState(
+    (store) => store.getAll('taskComment').filter((tc) => (task ? tc.task.id === task.id : [])),
+    [task],
+    'taskComment'
+  );
 
   const onCopyToClipboard = () => toast.info('Copied to clipboard!');
 
@@ -203,6 +211,16 @@ const TaskDetail = () => {
             </ListGroupItem>
           ))}
         </ListGroup>
+      </Collapse>
+      <CollapseHeader
+        onClick={() => toggleOpenStates('taskComments')}
+        isOpen={openCollapsibleStates.taskComments}
+        className="ml-1"
+      >
+        Comments
+      </CollapseHeader>
+      <Collapse isOpen={openCollapsibleStates.taskComments} className="ml-1 bg-white p-2">
+        <TaskCommentsContent task={task} comments={taskComments} />
       </Collapse>
     </>
   );

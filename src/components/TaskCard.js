@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import uniq from 'lodash/uniq';
 import classNames from 'classnames';
 import { Button, Card, CardBody, Badge, UncontrolledTooltip, Collapse } from 'reactstrap';
@@ -35,8 +35,6 @@ const TaskCard = ({ taskCard, inDetailView }) => {
   const designChangeViewingTask = useSelector((state) => state.app.designChangeViewingTask);
 
   const badgeColor = TaskColumnColorMap[taskCard.taskColumn.name];
-  const members = taskCard.taskComments.map((comment) => comment.creator);
-  const uniqueMembers = uniq(members); // TODO: make this dynamic using useStoreState like TaskCommentsContent component.
   const taskFoundInDom = taskDomMap[taskCard.id];
   const viewingDesignChangeForCurrentTask = designChangeViewingTask && designChangeViewingTask.id === taskCard.id;
 
@@ -47,6 +45,10 @@ const TaskCard = ({ taskCard, inDetailView }) => {
     [taskCard],
     'taskComment'
   );
+  const uniqueMembers = useMemo(() => {
+    const members = taskComments.map((comment) => comment.creator);
+    return uniq(members);
+  }, [taskComments]);
 
   const onCopyToClipboard = () => toast.info('Copied to clipboard!');
 
