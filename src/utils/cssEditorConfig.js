@@ -202,7 +202,7 @@ export const STYLE_CONFIG = {
     category: TOP_LEVEL_CATEGORIES.MARGIN,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
-      min: 0,
+      min: -200,
       max: 200,
     },
   },
@@ -213,7 +213,7 @@ export const STYLE_CONFIG = {
     category: TOP_LEVEL_CATEGORIES.MARGIN,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
-      min: 0,
+      min: -200,
       max: 200,
     },
   },
@@ -224,7 +224,7 @@ export const STYLE_CONFIG = {
     category: TOP_LEVEL_CATEGORIES.MARGIN,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
-      min: 0,
+      min: -200,
       max: 200,
     },
   },
@@ -235,7 +235,7 @@ export const STYLE_CONFIG = {
     category: TOP_LEVEL_CATEGORIES.MARGIN,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
-      min: 0,
+      min: -200,
       max: 200,
     },
   },
@@ -246,7 +246,7 @@ export const STYLE_CONFIG = {
     category: TOP_LEVEL_CATEGORIES.MARGIN,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
-      min: 0,
+      min: -200,
       max: 200,
     },
   },
@@ -306,6 +306,7 @@ export const STYLE_CONFIG = {
       max: 200,
     },
   },
+  // box shadow min/max values taken from: https://www.cssmatic.com/box-shadow
   boxShadowHorizontalOffset: {
     default: 0,
     label: 'Horizontal Offset',
@@ -317,7 +318,7 @@ export const STYLE_CONFIG = {
     customParseFnKey: 'boxShadow',
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
-      min: 0,
+      min: -200,
       max: 200,
     },
   },
@@ -332,7 +333,7 @@ export const STYLE_CONFIG = {
     category: TOP_LEVEL_CATEGORIES.BOX_SHADOW,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
-      min: 0,
+      min: -200,
       max: 200,
     },
   },
@@ -362,7 +363,7 @@ export const STYLE_CONFIG = {
     category: TOP_LEVEL_CATEGORIES.BOX_SHADOW,
     widget: WIDGET_TYPES.SLIDER,
     widgetProps: {
-      min: 0,
+      min: -200,
       max: 200,
     },
   },
