@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'reactstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import FullToolbarLayout from 'src/layouts/FullToolbarLayout';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
@@ -9,9 +9,13 @@ import TaskCard from 'src/components/TaskCard';
 
 const TasksSummary = () => {
   const dispatch = useDispatch();
-  const taskDomMap = useSelector((state) => state.app.taskDomMap);
   const project = useCurrentProject();
   const [tasks, setTasks] = useState([]);
+
+  const createTask = () => {
+    dispatch.app.restoreDesignChange();
+    dispatch.app.enterSelectionMode();
+  };
 
   const fetchTasks = async () => {
     if (!project) {
@@ -40,16 +44,21 @@ const TasksSummary = () => {
     }
   }, [tasks, dispatch.app]);
 
+  useEffect(() => {
+    // on exit, restore all design changes (if applicable)
+    return () => dispatch.app.restoreDesignChangeIfApplicable();
+  }, [dispatch.app]);
+
   const headerContent = <div className="text-sans-serif font-weight-bold">Tasks</div>;
   const bodyContent = (
     <div className="kanban-items-container scrollbar kanban-override">
       {tasks.map((task, idx) => (
-        <TaskCard taskCard={task} key={task.id} taskDomMap={taskDomMap} />
+        <TaskCard taskCard={task} key={task.id} />
       ))}
     </div>
   );
   const footerContent = (
-    <Button color="primary" block onClick={() => {}} className="mb-3">
+    <Button color="primary" block onClick={createTask} className="mb-3">
       Create a Task
     </Button>
   );

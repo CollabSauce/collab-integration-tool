@@ -11,6 +11,8 @@ export const app = {
     newTaskTitle: '',
     creatingTask: false,
     taskSuccessfullyCreated: false, // used in css editor when determining whether to restore changes
+    designChangeViewingTask: null, // current task viewing changes in client dom
+    currentTaskDetail: null, // detail-view task
 
     // properties set from outside info
     parentOrigin: '', // url origin of the parent window
@@ -21,6 +23,7 @@ export const app = {
     targetId: '', // id of the target, if applicable
     projectKey: '',
     taskDomMap: {},
+    selectedTaskCssText: '',
   },
   reducers: {
     setCurrentUserId(state, currentUserId) {
@@ -49,6 +52,15 @@ export const app = {
     },
     setTaskDomMap(state, taskDomMap) {
       return { ...state, taskDomMap };
+    },
+    setSelectedTaskCssText(state, selectedTaskCssText) {
+      return { ...state, selectedTaskCssText };
+    },
+    setDesignChangeViewingTask(state, designChangeViewingTask) {
+      return { ...state, designChangeViewingTask };
+    },
+    setCurrentTaskDetail(state, currentTaskDetail) {
+      return { ...state, currentTaskDetail };
     },
   },
   effects: (dispatch) => ({
@@ -89,6 +101,8 @@ export const app = {
           dispatch.app.createTaskWithInfo(message);
         } else if (message.type === 'taskDomMap') {
           dispatch.app.setTaskDomMap(message.taskDomMap);
+        } else if (message.type === 'selectedDomItemCssText') {
+          dispatch.app.setSelectedTaskCssText(message.originalDomItemCssText);
         }
       } catch (err) {
         return;
@@ -186,6 +200,77 @@ export const app = {
       const parentOrigin = rootState.app.parentOrigin;
       const message = { type: 'fetchTaskDomMap', taskDomData };
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
+    },
+    viewDesignChange(task, rootState) {
+      // for restore any current applied design change, if applicable
+      dispatch.app.restoreDesignChange();
+
+      // now apply the new design change
+      const domItemData = {
+        targetId: task.targetId,
+        targetDomPath: task.targetDomPath,
+        designEdits: task.designEdits,
+      };
+      const parentOrigin = rootState.app.parentOrigin;
+      const message = { type: 'viewDesignChange', domItemData };
+      window.parent.postMessage(JSON.stringify(message), parentOrigin);
+      dispatch.app.setDesignChangeViewingTask(task);
+    },
+    restoreDesignChange(messageType = 'restoreDesignChange', rootState) {
+      const task = rootState.app.designChangeViewingTask;
+      if (!task) {
+        return;
+      }
+      const domItemData = {
+        targetId: task.targetId,
+        targetDomPath: task.targetDomPath,
+        originalCssText: rootState.app.selectedTaskCssText,
+      };
+      const parentOrigin = rootState.app.parentOrigin;
+      const message = { type: 'restoreDesignChange', domItemData };
+      window.parent.postMessage(JSON.stringify(message), parentOrigin);
+      dispatch.app.setDesignChangeViewingTask(null);
+      dispatch.app.setSelectedTaskCssText('');
+    },
+    restoreDesignChangeIfApplicable(_, rootState) {
+      // We don't want to restore the design change if an element has a design change applied,
+      // and then we are entering the detail view. If that's the case, leave everything the same.
+
+      // In all other cases, do restoreDesignChange()
+      const currentAppliedDesignChangeTask = rootState.app.designChangeViewingTask;
+      const taskDetail = rootState.app.currentTaskDetail;
+      if (!taskDetail) {
+        dispatch.app.restoreDesignChange();
+      } else if (currentAppliedDesignChangeTask && taskDetail && currentAppliedDesignChangeTask.id !== taskDetail.id) {
+        dispatch.app.restoreDesignChange();
+      }
+    },
+    selectTaskOnDom(task, rootState) {
+      // data to select in dom
+      const domItemData = {
+        targetId: task.targetId,
+        targetDomPath: task.targetDomPath,
+      };
+      const parentOrigin = rootState.app.parentOrigin;
+      const message = { type: 'selectTaskOnDom', domItemData };
+      window.parent.postMessage(JSON.stringify(message), parentOrigin);
+    },
+    unselectTaskOnDom(_, rootState) {
+      const { currentTaskDetail, taskDomMap } = rootState.app;
+      if (!currentTaskDetail || !taskDomMap[currentTaskDetail.id]) {
+        // if task doesn't exist on dom, nothing to deselect
+        return;
+      }
+      const domItemData = {
+        targetId: currentTaskDetail.targetId,
+        targetDomPath: currentTaskDetail.targetDomPath,
+      };
+      const parentOrigin = rootState.app.parentOrigin;
+      const message = { type: 'unselectTaskOnDom', domItemData };
+      window.parent.postMessage(JSON.stringify(message), parentOrigin);
+    },
+    restoreDesignChangeKeepSelected(task, rootState) {
+      dispatch.app.restoreDesignChange('restoreDesignChangeKeepSelected');
     },
   }),
 };

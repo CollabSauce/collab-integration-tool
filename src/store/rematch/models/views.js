@@ -3,6 +3,7 @@ const InitialState = {
   showFailedLogin: false,
   showTaskCreator: false,
   showTasksSummary: false,
+  showTaskDetail: false,
 };
 
 export const views = {
@@ -19,6 +20,9 @@ export const views = {
     },
     setShowTasksSummary(_, showTasksSummary) {
       return { ...InitialState, showTasksSummary };
+    },
+    setShowTaskDetail(_, showTaskDetail) {
+      return { ...InitialState, showTaskDetail };
     },
   },
   effects: (dispatch) => ({}),

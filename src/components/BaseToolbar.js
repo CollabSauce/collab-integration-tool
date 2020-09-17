@@ -26,7 +26,11 @@ const BaseToolbar = () => {
         dispatch.styling.restoreChanges();
         dispatch.app.onExitTaskCreator();
       }
+      dispatch.app.restoreDesignChange();
+      dispatch.app.unselectTaskOnDom();
+      dispatch.app.setCurrentTaskDetail(null);
       dispatch.app.enterSelectionMode();
+      dispatch.views.setShowTasksSummary(true); // fallback to this view
     } else {
       dispatch.app.enterLoginMode();
     }

@@ -8,6 +8,7 @@ import FailedLogin from 'src/components/FailedLogin';
 import NoProjectAccess from 'src/components/NoProjectAccess';
 import TaskCreator from 'src/components/TaskCreator';
 import TasksSummary from 'src/components/TasksSummary';
+import TaskDetail from 'src/components/TaskDetail';
 
 const ExpandedToolbar = () => {
   const isAuthenticated = useSelector((state) => state.app.currentUserId);
@@ -15,6 +16,7 @@ const ExpandedToolbar = () => {
   const showLogout = useSelector((state) => state.views.showLogout);
   const showFailedLogin = useSelector((state) => state.views.showFailedLogin);
   const showTasksSummary = useSelector((state) => state.views.showTasksSummary);
+  const showTaskDetail = useSelector((state) => state.views.showTaskDetail);
   const showTaskCreator = useSelector((state) => state.views.showTaskCreator);
 
   const currentProject = useCurrentProject();
@@ -24,6 +26,8 @@ const ExpandedToolbar = () => {
     return <NoProjectAccess />;
   } else if (isAuthenticated && showTasksSummary) {
     return <TasksSummary />;
+  } else if (isAuthenticated && showTaskDetail) {
+    return <TaskDetail />;
   } else if (isAuthenticated && showTaskCreator) {
     return <TaskCreator />;
   } else if (showLogout) {

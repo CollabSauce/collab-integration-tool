@@ -5,6 +5,7 @@ import { Button, Card, CardBody, Badge, UncontrolledTooltip, Collapse } from 're
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { toast } from 'react-toastify';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useStoreState } from 'src/hooks/useStoreState';
 import TaskCommentsContent from 'src/components/TaskCommentsContent';
@@ -20,11 +21,24 @@ const TaskColumnColorMap = {
   Released: 'dark',
 };
 
-const TaskCard = ({ taskCard, taskDomMap }) => {
+const isParent = (obj, parentObj) => {
+  while (obj !== undefined && obj !== null && obj.tagName.toUpperCase() !== 'BODY') {
+    if (obj === parentObj) return true;
+    obj = obj.parentNode;
+  }
+  return false;
+};
+
+const TaskCard = ({ taskCard, inDetailView }) => {
+  const dispatch = useDispatch();
+  const taskDomMap = useSelector((state) => state.app.taskDomMap);
+  const designChangeViewingTask = useSelector((state) => state.app.designChangeViewingTask);
+
   const badgeColor = TaskColumnColorMap[taskCard.taskColumn.name];
   const members = taskCard.taskComments.map((comment) => comment.creator);
-  const uniqueMembers = uniq(members);
+  const uniqueMembers = uniq(members); // TODO: make this dynamic using useStoreState like TaskCommentsContent component.
   const taskFoundInDom = taskDomMap[taskCard.id];
+  const viewingDesignChangeForCurrentTask = designChangeViewingTask && designChangeViewingTask.id === taskCard.id;
 
   const [collapseOpen, setCollapseOpen] = useState(false);
 
@@ -40,17 +54,37 @@ const TaskCard = ({ taskCard, taskDomMap }) => {
     if (!taskFoundInDom) {
       return;
     }
-    console.log('ehl');
+    dispatch.app.viewDesignChange(taskCard);
+  };
+
+  const restoreDesignChange = () => {
+    dispatch.app.restoreDesignChange();
+  };
+
+  const onCardClicked = (e) => {
+    const clickedElement = e.target;
+    const designSection = document.getElementById(`taskcard-design-section-${taskCard.id}`);
+    const commentsSection = document.getElementById(`taskcard-comments-section-${taskCard.id}`);
+    if (inDetailView || isParent(clickedElement, designSection) || isParent(clickedElement, commentsSection)) {
+      return;
+    }
+
+    dispatch.app.setCurrentTaskDetail(taskCard);
+    dispatch.views.setShowTaskDetail(true);
   };
 
   return (
     <div className="kanban-item">
       <Card
         className="kanban-item-card hover-actions-trigger "
-        style={{ cursor: 'pointer', transition: 'all 0.3s ease-out' }}
-        onClick={() => {}}
+        style={{ cursor: inDetailView ? 'default' : 'pointer', transition: 'all 0.3s ease-out' }}
+        onClick={onCardClicked}
       >
-        <CardBody className={classNames('pr-0 pl-0', { 'pb-0': taskCard.designEdits || taskComments.length })}>
+        <CardBody
+          className={classNames('pr-0 pl-0', {
+            'pb-0': !inDetailView && (taskCard.designEdits || taskComments.length),
+          })}
+        >
           <div className="ml-2 mr-2 mb-2 d-flex justify-content-between">
             <div>
               <Badge className={`badge-soft-${badgeColor} d-inline-block py-1 mr-1 mb-0`}>
@@ -73,30 +107,41 @@ const TaskCard = ({ taskCard, taskDomMap }) => {
             dangerouslySetInnerHTML={{ __html: taskCard.title }}
           />
           <div className="ml-2 mr-2 mt-1 mb-1 kanban-item-footer">
-            <div className="text-500">
-              {taskComments.length > 0 && (
-                <span id={`comments-${taskCard.id}`} className="mr-2">
-                  <FontAwesomeIcon icon={['far', 'comment-alt']} className="mr-1" />
-                  <span>{taskComments.length}</span>
-                  <UncontrolledTooltip target={`comments-${taskCard.id}`}>
-                    {taskComments.length} Comments
-                  </UncontrolledTooltip>
-                </span>
-              )}
-            </div>
-            <div>
-              {uniqueMembers.map((member, index) => (
-                <div className={index > 0 ? 'ml-n1 p-0' : 'p-0'} key={index} id={`member-${member.id}-${taskCard.id}`}>
-                  <Avatar name={`${member.firstName} ${member.lastName}`} size="l" />
-                  <UncontrolledTooltip target={`member-${member.id}-${taskCard.id}`}>
-                    {`${member.firstName} ${member.lastName}`}
-                  </UncontrolledTooltip>
+            {!inDetailView && (
+              <>
+                <div className="text-500">
+                  {taskComments.length > 0 && (
+                    <span id={`comments-${taskCard.id}`} className="mr-2">
+                      <FontAwesomeIcon icon={['far', 'comment-alt']} className="mr-1" />
+                      <span>{taskComments.length}</span>
+                      <UncontrolledTooltip target={`comments-${taskCard.id}`}>
+                        {taskComments.length} Comments
+                      </UncontrolledTooltip>
+                    </span>
+                  )}
                 </div>
-              ))}
-            </div>
+                <div>
+                  {uniqueMembers.map((member, index) => (
+                    <div
+                      className={index > 0 ? 'ml-n1 p-0' : 'p-0'}
+                      key={index}
+                      id={`member-${member.id}-${taskCard.id}`}
+                    >
+                      <Avatar name={`${member.firstName} ${member.lastName}`} size="l" />
+                      <UncontrolledTooltip target={`member-${member.id}-${taskCard.id}`}>
+                        {`${member.firstName} ${member.lastName}`}
+                      </UncontrolledTooltip>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
-          {taskCard.designEdits && (
-            <div className="bg-100 p-2 d-flex justify-content-between cursor-default">
+          {taskCard.designEdits && !inDetailView && (
+            <div
+              className="bg-100 p-2 d-flex justify-content-between cursor-default"
+              id={`taskcard-design-section-${taskCard.id}`}
+            >
               <CopyToClipboard text={taskCard.designEdits} onCopy={onCopyToClipboard}>
                 <Button color="link" className="fs--2 pl-0 pr-0">
                   Copy Code
@@ -105,11 +150,11 @@ const TaskCard = ({ taskCard, taskDomMap }) => {
               <Button
                 id={`view-design-change-${taskCard.id}`}
                 className="fs--2"
-                color="falcon-default"
+                color={`falcon-${viewingDesignChangeForCurrentTask ? 'danger' : 'default'}`}
                 size="sm"
-                onClick={viewDesignChange}
+                onClick={viewingDesignChangeForCurrentTask ? restoreDesignChange : viewDesignChange}
               >
-                View Design Edits
+                {viewingDesignChangeForCurrentTask ? 'Dismiss Changes' : 'View Design Edits'}
               </Button>
               {!taskFoundInDom && (
                 <UncontrolledTooltip target={`view-design-change-${taskCard.id}`}>
@@ -118,8 +163,8 @@ const TaskCard = ({ taskCard, taskDomMap }) => {
               )}
             </div>
           )}
-          {taskComments.length > 0 && (
-            <>
+          {taskComments.length > 0 && !inDetailView && (
+            <div id={`taskcard-comments-section-${taskCard.id}`}>
               <CollapseHeader
                 onClick={() => setCollapseOpen(!collapseOpen)}
                 isOpen={collapseOpen}
@@ -129,10 +174,10 @@ const TaskCard = ({ taskCard, taskDomMap }) => {
               >
                 View Comments
               </CollapseHeader>
-              <Collapse isOpen={collapseOpen} className="p-2">
+              <Collapse isOpen={collapseOpen} className="p-2 cursor-default">
                 <TaskCommentsContent task={taskCard} comments={taskComments} />
               </Collapse>
-            </>
+            </div>
           )}
         </CardBody>
       </Card>

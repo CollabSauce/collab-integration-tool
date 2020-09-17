@@ -16,6 +16,10 @@
   max-width: 245px;
 }
 
+.max-w-260 {
+  max-width: 260px;
+}
+
 .w-40 {
   width: 40px;
 }
@@ -84,4 +88,24 @@
 
 .cursor-default {
   cursor: default;
+}
+
+.screenshot-img-overlay {
+  background-color: $gray-400;
+  opacity: 0.4;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.color-inherit {
+  color: inherit;
+  &:hover {
+    color: inherit;
+  }
 }

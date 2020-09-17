@@ -7,6 +7,7 @@ import {
   faChevronLeft,
   faWindowMinimize,
   faArrowsAltH,
+  faExternalLinkAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faWindowMaximize,
@@ -24,5 +25,6 @@ library.add(
   faArrowsAltH,
   faWindowMinimize,
   farFaWindowMinimize,
-  faCommentAlt
+  faCommentAlt,
+  faExternalLinkAlt
 );
