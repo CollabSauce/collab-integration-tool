@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { FormGroup, Input, Button, Spinner } from 'reactstrap';
+import { FormGroup, Button, Spinner } from 'reactstrap';
 
 import FullToolbarLayout from 'src/layouts/FullToolbarLayout';
 import CssEditor from 'src/components/CssEditor';
+import CollabMentionInput from 'src/components/CollabMentionInput';
 
 const TaskCreator = () => {
   const dispatch = useDispatch();
@@ -22,11 +23,9 @@ const TaskCreator = () => {
   const bodyContent = (
     <>
       <FormGroup className="mt-3">
-        <Input
-          type="textarea"
-          rows={3}
-          className="no-resize collab-comment-box"
+        <CollabMentionInput
           placeholder="Type a comment..."
+          className="collab-comment-box"
           aria-label="task comment"
           value={newTaskTitle}
           onChange={({ target }) => dispatch.app.setNewTaskTitle(target.value)}

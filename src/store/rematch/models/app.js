@@ -71,6 +71,9 @@ export const app = {
       try {
         const response = await jsdataStore.getMapper('user').fetchCurrentUser();
         dispatch.app.setCurrentUserId(response.data.user.id);
+
+        // also, load all memberships that user has access to
+        jsdataStore.findAll('membership', { include: ['user.'] }, { force: true });
       } catch (e) {
         console.log(e);
         return;

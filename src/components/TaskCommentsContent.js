@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Media, Form, Input, Button } from 'reactstrap';
+import { Media, Form, Button } from 'reactstrap';
 import Avatar from 'src/components/Avatar';
 
 import { jsdataStore } from 'src/store/jsdata';
 import { useCurrentUser } from 'src/hooks/useCurrentUser';
 import Flex from 'src/components/Flex';
+import CollabCommentRenderer from 'src/components/CollabCommentRenderer';
+import CollabMentionInput from 'src/components/CollabMentionInput';
 
 const TaskCommentsContent = ({ task, comments }) => {
   const [commentText, setCommentText] = useState('');
@@ -28,7 +30,7 @@ const TaskCommentsContent = ({ task, comments }) => {
           <Media body className="ml-2 fs--1">
             <div className="mb-1 bg-200 rounded-soft p-2">
               <div className="font-weight-semi-bold">{`${comment.creator.firstName} ${comment.creator.lastName}`}</div>{' '}
-              {comment.text}
+              <CollabCommentRenderer content={comment.text} />
             </div>
           </Media>
         </Media>
@@ -38,13 +40,11 @@ const TaskCommentsContent = ({ task, comments }) => {
         <Media body className="fs--1">
           <div className="position-relative border rounded">
             <Form onSubmit={handleCreateTaskComment}>
-              <Input
-                type="textarea"
-                className="border-0 rounded-bottom-0 resize-none fs--1"
-                placeholder="Reply..."
-                rows={3}
+              <CollabMentionInput
                 value={commentText}
                 onChange={({ target }) => setCommentText(target.value)}
+                className="border-0 rounded-bottom-0 fs--1"
+                placeholder="Reply..."
               />
               <Flex justify="between" align="center" className="bg-light rounded-bottom p-2 mt-1">
                 <Button size="sm" color="primary" type="submit" disabled={!commentText}>

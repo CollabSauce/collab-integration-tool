@@ -11,6 +11,7 @@ import { useStoreState } from 'src/hooks/useStoreState';
 import TaskCommentsContent from 'src/components/TaskCommentsContent';
 import CollapseHeader from 'src/components/CollapseHeader';
 import Avatar from 'src/components/Avatar';
+import CollabCommentRenderer from 'src/components/CollabCommentRenderer';
 
 const TaskColumnColorMap = {
   'Raw Task': 'secondary',
@@ -104,9 +105,9 @@ const TaskCard = ({ taskCard, inDetailView }) => {
               {taskCard.creator.firstName} {taskCard.creator.lastName}
             </p>
           </div>
-          <p
+          <CollabCommentRenderer
             className="ml-2 mr-2 mb-0 font-weight-medium text-sans-serif"
-            dangerouslySetInnerHTML={{ __html: taskCard.title }}
+            content={taskCard.title}
           />
           <div className="ml-2 mr-2 mt-1 mb-1 kanban-item-footer">
             {!inDetailView && (
@@ -122,7 +123,7 @@ const TaskCard = ({ taskCard, inDetailView }) => {
                     </span>
                   )}
                 </div>
-                <div>
+                <div className="d-flex">
                   {uniqueMembers.map((member, index) => (
                     <div
                       className={index > 0 ? 'ml-n1 p-0' : 'p-0'}
