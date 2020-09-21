@@ -37,10 +37,10 @@ export const deserialize = (response, store, mappers) => {
       // deserialize each individual item
       if (Array.isArray(data)) {
         data.forEach((item) => {
-          deserializeIndividualItem(item, resourceMapper, schemaProps);
+          deserializeIndividualItem(item, resourceMapper, schemaProps, store);
         });
       } else {
-        deserializeIndividualItem(data, resourceMapper, schemaProps);
+        deserializeIndividualItem(data, resourceMapper, schemaProps, store);
       }
 
       // now manually push that data into the store.
@@ -49,17 +49,22 @@ export const deserialize = (response, store, mappers) => {
   });
 };
 
-const deserializeIndividualItem = (item, mapper, schemaProps) => {
+const deserializeIndividualItem = (item, mapper, schemaProps, store) => {
   // change __isLoaded to true
   item.__isLoaded = true;
 
   // custom deserialization for relationships
   mapper.relationList.forEach((relation) => {
     if (item[relation.localField]) {
+      const relationName = relation.relation;
       if (relation.type === 'hasMany') {
-        item[relation.localField] = item[relation.localField].map((id: string | number) => ({ id }));
+        item[relation.localField] = item[relation.localField].map((id) => {
+          const record = store.get(relationName, id);
+          return record || { id };
+        });
       } else {
-        item[relation.localField] = { id: item[relation.localField] };
+        const id = item[relation.localField];
+        item[relation.localField] = store.get(relationName, id) || { id };
       }
     }
   });
