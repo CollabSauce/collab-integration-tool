@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import uniq from 'lodash/uniq';
+import uniqBy from 'lodash/uniqBy';
 import classNames from 'classnames';
 import { Button, Card, CardBody, Badge, UncontrolledTooltip, Collapse } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -46,9 +46,11 @@ const TaskCard = ({ taskCard, inDetailView }) => {
     [taskCard],
     'taskComment'
   );
-  const uniqueMembers = useMemo(() => {
-    const members = taskComments.map((comment) => comment.creator);
-    return uniq(members);
+  const uniqueCommentCreators = useMemo(() => {
+    return uniqBy(taskComments, 'creatorId').map((comment) => ({
+      fullName: comment.creatorFullName,
+      id: comment.creatorId,
+    }));
   }, [taskComments]);
 
   const onCopyToClipboard = () => toast.info('Copied to clipboard!');
@@ -100,10 +102,8 @@ const TaskCard = ({ taskCard, inDetailView }) => {
             <Badge color="soft-dark">#{taskCard.taskNumber}</Badge>
           </div>
           <div className="ml-2 mr-2 d-flex align-items-center mb-2">
-            <Avatar name={`${taskCard.creator.firstName} ${taskCard.creator.lastName}`} size="l" className="mr-2" />
-            <p className="mb-0 font-weight-bold">
-              {taskCard.creator.firstName} {taskCard.creator.lastName}
-            </p>
+            <Avatar name={`${taskCard.creatorFullName}`} size="l" className="mr-2" />
+            <p className="mb-0 font-weight-bold">{taskCard.creatorFullName}</p>
           </div>
           <CollabCommentRenderer
             className="ml-2 mr-2 mb-0 font-weight-medium text-sans-serif"
@@ -124,15 +124,15 @@ const TaskCard = ({ taskCard, inDetailView }) => {
                   )}
                 </div>
                 <div className="d-flex">
-                  {uniqueMembers.map((member, index) => (
+                  {uniqueCommentCreators.map((creator, index) => (
                     <div
                       className={index > 0 ? 'ml-n1 p-0' : 'p-0'}
                       key={index}
-                      id={`member-${member.id}-${taskCard.id}`}
+                      id={`creator-${creator.id}-${taskCard.id}`}
                     >
-                      <Avatar name={`${member.firstName} ${member.lastName}`} size="l" />
-                      <UncontrolledTooltip target={`member-${member.id}-${taskCard.id}`}>
-                        {`${member.firstName} ${member.lastName}`}
+                      <Avatar name={creator.fullName} size="l" />
+                      <UncontrolledTooltip target={`creator-${creator.id}-${taskCard.id}`}>
+                        {creator.fullName}
                       </UncontrolledTooltip>
                     </div>
                   ))}

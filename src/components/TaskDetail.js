@@ -34,7 +34,15 @@ const TaskDetail = () => {
     // we already have the task loaded, but fetch it again incase we eventually want more data.
     // Also, it's a fast way to kill time untill the screenshots are ready.
     const fetchedTask = await jsdataStore.find('task', currentTaskDetail.id, {
-      params: { include: ['task_metadata.', 'task_comments.creator.', 'task_column.', 'creator.'] },
+      params: {
+        include: [
+          'task_metadata.',
+          'task_comments.creator_full_name.',
+          'task_comments.creator',
+          'task_column.',
+          'creator_full_name',
+        ],
+      },
       force: true,
     });
     setTask(fetchedTask);

@@ -9,6 +9,7 @@ export const taskCommentSchema = new Schema({
     ...SchemaBase,
     id: { type: 'number' },
     text: { type: 'string' },
+    creatorFullName: { type: 'string' },
   },
 });
 

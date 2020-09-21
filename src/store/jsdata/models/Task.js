@@ -19,6 +19,7 @@ export const taskSchema = new Schema({
     targetId: { type: 'string' },
     targetDomPath: { type: 'string' },
     order: { type: 'number' },
+    creatorFullName: { type: 'string' },
   },
 });
 

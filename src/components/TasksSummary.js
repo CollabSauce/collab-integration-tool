@@ -25,7 +25,13 @@ const TasksSummary = () => {
       'task',
       {
         'filter{project}': project.id,
-        include: ['task_metadata.', 'task_comments.creator.', 'task_column.', 'creator.'],
+        include: [
+          'task_metadata.',
+          'task_comments.creator_full_name.',
+          'task_comments.creator',
+          'task_column.',
+          'creator_full_name',
+        ],
         sort: ['-task_number'],
       },
       { force: true }

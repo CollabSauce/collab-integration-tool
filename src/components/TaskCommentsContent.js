@@ -26,10 +26,10 @@ const TaskCommentsContent = ({ task, comments }) => {
     <>
       {comments.map((comment) => (
         <Media className="mb-3" key={comment.id}>
-          <Avatar name={`${comment.creator.firstName} ${comment.creator.lastName}`} size="l" />
+          <Avatar name={`${comment.creatorFullName}`} size="l" />
           <Media body className="ml-2 fs--1">
             <div className="mb-1 bg-200 rounded-soft p-2">
-              <div className="font-weight-semi-bold">{`${comment.creator.firstName} ${comment.creator.lastName}`}</div>{' '}
+              <div className="font-weight-semi-bold">{`${comment.creatorFullName}`}</div>{' '}
               <CollabCommentRenderer content={comment.text} />
             </div>
           </Media>

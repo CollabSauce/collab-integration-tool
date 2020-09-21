@@ -67,7 +67,6 @@ const MentionStyle = {
       padding: 9,
       outline: 'none',
       borderColor: 'transparent',
-      backgroundColor: 'inherit',
     },
   },
 
