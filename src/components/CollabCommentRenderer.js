@@ -8,6 +8,7 @@ const CollabCommentRenderer = ({ content, id, className, ...rest }) => {
   // change @@@__7^^^__Some Name@@@^^^ into <span>Some Name</span>
   const text = content ? content.trim() : '';
   const html = text
+    .replace(/\n\r?/g, '<br />')
     .split('@@@__')
     .join('<span class="bg-300" id="')
     .split('^^^__')

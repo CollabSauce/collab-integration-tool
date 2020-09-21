@@ -13,7 +13,7 @@ const CollabMentionInput = ({ value, onChange, className, ...rest }) => {
         .getAll('membership')
         .filter((m) => m.user.id !== currentUser.id)
         .map((m) => ({
-          id: m.id,
+          id: m.user.id,
           display: `${m.user.firstName} ${m.user.lastName}`,
         }));
     },
