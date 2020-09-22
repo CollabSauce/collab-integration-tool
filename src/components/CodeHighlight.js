@@ -4,25 +4,9 @@ import Highlight, { defaultProps } from 'prism-react-renderer';
 import lightTheme from 'prism-react-renderer/themes/duotoneLight';
 import darkTheme from 'prism-react-renderer/themes/dracula';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import prettier from 'prettier/standalone';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import parserHtml from 'prettier/parser-html';
-
-const getFormattedCode = (code, language) =>
-  prettier.format(code, {
-    parser: language,
-    plugins: [parserHtml],
-  });
-
 const CodeHighlight = ({ code, language, dark }) => {
   return (
-    <Highlight
-      {...defaultProps}
-      code={language === 'html' ? getFormattedCode(code, language) : code}
-      language={language}
-      theme={dark ? darkTheme : lightTheme}
-    >
+    <Highlight {...defaultProps} code={code} language={language} theme={dark ? darkTheme : lightTheme}>
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
         <pre
           className={`${className}`}
