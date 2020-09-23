@@ -60,7 +60,7 @@ const LoginForm = ({ hasLabel }) => {
         <Col xs="auto">
           <a
             className="fs--1"
-            href={`https://app.collabsauce.com/forgot-password`}
+            href={`https://staging-collab-dashboard.netlify.app/forgot-password`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -75,7 +75,7 @@ const LoginForm = ({ hasLabel }) => {
       </FormGroup>
       <p className="fs--1 text-600 text-center">
         or{' '}
-        <a href="https://app.collabsauce.com/signup" target="_blank" rel="noopener noreferrer">
+        <a href="https://staging-collab-dashboard.netlify.app/signup" target="_blank" rel="noopener noreferrer">
           create an account
         </a>
       </p>

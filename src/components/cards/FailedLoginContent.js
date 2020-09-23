@@ -19,7 +19,7 @@ const FailedLoginContent = () => {
           👇
         </span>
       </p>
-      <a href="https://app.collabsauce.com/signup" target="_blank" rel="noopener noreferrer">
+      <a href="https://staging-collab-dashboard.netlify.app/signup" target="_blank" rel="noopener noreferrer">
         <Button color="primary" block className="mt-3">
           Create an Account
         </Button>
