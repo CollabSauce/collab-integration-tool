@@ -25,6 +25,7 @@
     "lodash": "^4.17.20",
     "prism-react-renderer": "^1.1.1",
     "prism-themes": "^1.4.0",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-app-polyfill": "^1.0.6",
     "react-bootstrap-range-slider": "^1.2.1",
@@ -41,11 +42,13 @@
     "redux": "^4.0.5"
   },
   "scripts": {
-    "start": "PORT=3001 react-scripts start",
-    "build": "react-scripts build",
+    "start": "PORT=3001 REACT_APP_ENV=development react-scripts start",
+    "build-production": "REACT_APP_ENV=production react-scripts build",
+    "build-staging": "REACT_APP_ENV=staging react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "netlify deploy --prod"
+    "deploy-production": "netlify TBD THIS SHOULD BREAK RIGHT NOW deploy --prod",
+    "deploy-staging": "netlify deploy --prod --site cdfa5ea8-a2f1-4d79-a34b-59134bddb7f1"
   },
   "eslintConfig": {
     "extends": "react-app"
