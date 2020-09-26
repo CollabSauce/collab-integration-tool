@@ -23,6 +23,7 @@ export const app = {
     targetId: '', // id of the target, if applicable
     projectKey: '',
     taskDomMap: {},
+    fetchDomMapIntervalId: null,
     selectedTaskCssText: '',
   },
   reducers: {
@@ -52,6 +53,9 @@ export const app = {
     },
     setTaskDomMap(state, taskDomMap) {
       return { ...state, taskDomMap };
+    },
+    setFetchDomMapIntervalId(state, fetchDomMapIntervalId) {
+      return { ...state, fetchDomMapIntervalId };
     },
     setSelectedTaskCssText(state, selectedTaskCssText) {
       return { ...state, selectedTaskCssText };
@@ -106,6 +110,9 @@ export const app = {
           dispatch.app.setTaskDomMap(message.taskDomMap);
         } else if (message.type === 'selectedDomItemCssText') {
           dispatch.app.setSelectedTaskCssText(message.originalDomItemCssText);
+        } else if (message.type === 'createTaskFailNoElement') {
+          dispatch.app.setCreatingTask(false);
+          toast.error('Element no longer found on the page - cannot create task.');
         }
       } catch (err) {
         return;
@@ -195,14 +202,34 @@ export const app = {
       dispatch.app.setNewTaskTitle('');
     },
     fetchTaskDomMap(tasks, rootState) {
-      const taskDomData = tasks.map((task) => ({
-        id: task.id,
-        targetId: task.targetId,
-        targetDomPath: task.targetDomPath,
-      }));
-      const parentOrigin = rootState.app.parentOrigin;
-      const message = { type: 'fetchTaskDomMap', taskDomData };
-      window.parent.postMessage(JSON.stringify(message), parentOrigin);
+      // periodically fetch the dom-map. We do this periodically to account
+      // for any dynamic webpages  - urls changing in spas, elements being added/remove, etc.
+      const fetchTasksFromDom = () => {
+        const taskDomData = tasks.map((task) => ({
+          id: task.id,
+          targetId: task.targetId,
+          targetDomPath: task.targetDomPath,
+        }));
+        const parentOrigin = rootState.app.parentOrigin;
+        const message = { type: 'fetchTaskDomMap', taskDomData };
+        window.parent.postMessage(JSON.stringify(message), parentOrigin);
+      };
+
+      // clear any previous setIntervals for this function
+      dispatch.app.clearFetchDomMapInterval();
+
+      // immediate call the function. And then call it again later during the setInterval
+      fetchTasksFromDom();
+      const intervalId = setInterval(fetchTasksFromDom, 5000);
+
+      // save the intervalId for later - when we want to clear the interval
+      dispatch.app.setFetchDomMapIntervalId(intervalId);
+    },
+    clearFetchDomMapInterval(_, rootState) {
+      if (rootState.app.fetchDomMapIntervalId) {
+        clearInterval(rootState.app.fetchDomMapIntervalId);
+      }
+      dispatch.app.setFetchDomMapIntervalId(null);
     },
     viewDesignChange(task, rootState) {
       // for restore any current applied design change, if applicable

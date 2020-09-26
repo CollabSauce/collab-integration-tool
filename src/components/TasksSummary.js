@@ -48,6 +48,7 @@ const TasksSummary = () => {
     if (tasks.length) {
       dispatch.app.fetchTaskDomMap(tasks);
     }
+    return () => dispatch.app.clearFetchDomMapInterval();
   }, [tasks, dispatch.app]);
 
   useEffect(() => {

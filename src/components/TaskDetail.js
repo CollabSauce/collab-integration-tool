@@ -66,6 +66,14 @@ const TaskDetail = () => {
     // eslint-disable-next-line
   }, [task, dispatch.app]);
 
+  useEffect(() => {
+    // fetch the taskDomMap again - this will periodically query the dom for the elements
+    if (task) {
+      dispatch.app.fetchTaskDomMap([task]);
+    }
+    return () => dispatch.app.clearFetchDomMapInterval();
+  }, [task, dispatch.app]);
+
   const viewDesignChange = () => {
     if (!taskDomMap[task.id]) {
       return;
