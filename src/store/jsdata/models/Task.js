@@ -31,10 +31,16 @@ export const taskRelations = {
     },
   },
   belongsTo: {
-    user: {
-      foreignKey: 'creatorId',
-      localField: 'creator',
-    },
+    user: [
+      {
+        foreignKey: 'creatorId',
+        localField: 'creator',
+      },
+      {
+        foreignKey: 'assignedToId',
+        localField: 'assignedTo',
+      },
+    ],
     project: {
       foreignKey: 'projectId',
       localField: 'project',
@@ -68,5 +74,10 @@ export const taskActions = {
     pathname: 'create_task_from_widget',
     method: 'POST',
     addResponseToStore: true, // switch to false probably?
+  },
+  updateAssignee: {
+    pathname: 'update_assignee',
+    method: 'POST',
+    addResponseToStore: true,
   },
 };

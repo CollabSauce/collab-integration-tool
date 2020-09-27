@@ -13,6 +13,7 @@ export const app = {
     taskSuccessfullyCreated: false, // used in css editor when determining whether to restore changes
     designChangeViewingTask: null, // current task viewing changes in client dom
     currentTaskDetail: null, // detail-view task
+    createTaskAssigneeValue: null,
 
     // properties set from outside info
     parentOrigin: '', // url origin of the parent window
@@ -65,6 +66,9 @@ export const app = {
     },
     setCurrentTaskDetail(state, currentTaskDetail) {
       return { ...state, currentTaskDetail };
+    },
+    setCreateTaskAssigneeValue(state, createTaskAssigneeValue) {
+      return { ...state, createTaskAssigneeValue };
     },
   },
   effects: (dispatch) => ({
@@ -181,6 +185,7 @@ export const app = {
           target_dom_path: rootState.app.targetDomPath,
           project: parseInt(currentProject.id),
           design_edits: rootState.styling.cssCodeChanges,
+          assigned_to: rootState.app.createTaskAssigneeValue.value,
         };
 
         await jsdataStore.getMapper('task').createTaskFromWidget({ data: { task, task_metadata, html } });

@@ -33,10 +33,16 @@ export const userRelations = {
       foreignKey: 'userId', // this needs to match the foreignKey field on the membership model (ie membership.inviterId)
       localField: 'memberships',
     },
-    task: {
-      foreignKey: 'creatorId', // this needs to match the foreignKey field on the task model (ie task.creatorId)
-      localField: 'createdTasks',
-    },
+    task: [
+      {
+        foreignKey: 'creatorId', // this needs to match the foreignKey field on the task model (ie task.creatorId)
+        localField: 'createdTasks',
+      },
+      {
+        foreignKey: 'assignedToId', // this needs to match the foreignKey field on the task model (ie task.assignedToId)
+        localField: 'assignedTasks',
+      },
+    ],
     taskComment: {
       foreignKey: 'creatorId', // this needs to match the foreignKey field on the taskComment model (ie taskComment.creatorId)
       localField: 'createdTaskComments',

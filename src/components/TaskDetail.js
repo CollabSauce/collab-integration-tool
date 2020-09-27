@@ -13,6 +13,7 @@ import CollapseHeader from 'src/components/CollapseHeader';
 import TaskCard from 'src/components/TaskCard';
 import TaskDetailScreenshot from 'src/components/TaskDetailScreenshot';
 import TaskCommentsContent from 'src/components/TaskCommentsContent';
+import AssignSelect from 'src/components/AssignSelect';
 
 const TaskDetail = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ const TaskDetail = () => {
   const designChangeViewingTask = useSelector((state) => state.app.designChangeViewingTask);
   const taskDomMap = useSelector((state) => state.app.taskDomMap);
   const [task, setTask] = useState(null);
+  const [rerender, setRerender] = useState(false);
   const [openCollapsibleStates, setOpenCollapsibleStates] = useState({});
 
   const { result: taskComments } = useStoreState(
@@ -41,6 +43,8 @@ const TaskDetail = () => {
           'task_comments.creator',
           'task_column.',
           'creator_full_name',
+          'assigned_to.', // include the user too
+          'assigned_to_full_name',
         ],
       },
       force: true,
@@ -149,6 +153,25 @@ const TaskDetail = () => {
     ];
   }, [task]);
 
+  const onAssigneeChange = async (option) => {
+    let userId = null;
+    if (option) {
+      userId = option.value;
+    }
+    try {
+      // const user = userId ? jsdataStore.get('user', userId) : null;
+      const data = { assigned_to_id: userId, task_id: task.id };
+      await jsdataStore.getMapper('task').updateAssignee({ data });
+      const message = userId ? `Task assigned to ${option.label}` : 'Task successfully unassigned';
+      toast.success(message);
+      setRerender(!rerender); // HACKY but useStoreState isn't working correctly for individual items.
+      // TODO: look into the above fix of useStoreState to get rid of above hack.
+    } catch (e) {
+      console.log(e);
+      toast.error('Changing of assignee failed');
+    }
+  };
+
   if (!task) {
     return null;
   }
@@ -157,6 +180,11 @@ const TaskDetail = () => {
   const bodyContent = (
     <>
       <TaskCard taskCard={task} inDetailView={true} />
+      <AssignSelect
+        value={task.assignedToId ? { value: task.assignedToId, label: task.assignedToFullName } : null}
+        onChange={onAssigneeChange}
+        className="mt-2"
+      />
       {task.designEdits && (
         <>
           <CollapseHeader

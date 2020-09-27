@@ -11,6 +11,7 @@ import CollapseHeader from 'src/components/CollapseHeader';
 import CodeHighlight from 'src/components/CodeHighlight';
 import Switch from 'src/components/Switch';
 import RangeSlider, { RangeInputBox } from 'src/components/RangeSlider';
+import cursorPointerSelectStyles from 'src/utils/cursorPointerSelectStyles';
 import { STYLE_ATTRIBUTE_CONFIG, STYLE_CONFIG, NESTED_STYLE_CONFIG, WIDGET_TYPES } from 'src/utils/cssEditorConfig';
 
 const CssEditor = () => {
@@ -240,6 +241,7 @@ const CssEditor = () => {
                           value={adjustableStyleProps[key] || null}
                           onChange={(option) => setSelectVal(key, option)}
                           options={item.selectOptions}
+                          styles={cursorPointerSelectStyles}
                           className="my-3"
                         />
                       );

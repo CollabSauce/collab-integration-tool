@@ -101,10 +101,12 @@ const TaskCard = ({ taskCard, inDetailView }) => {
             </div>
             <Badge color="soft-dark">#{taskCard.taskNumber}</Badge>
           </div>
-          <div className="ml-2 mr-2 d-flex align-items-center mb-2">
-            <Avatar name={`${taskCard.creatorFullName}`} size="l" className="mr-2" />
-            <p className="mb-0 font-weight-bold">{taskCard.creatorFullName}</p>
-          </div>
+          {taskCard.assignedToFullName && (
+            <div className="ml-2 mr-2 d-flex align-items-center mb-2">
+              <Avatar name={`${taskCard.assignedToFullName}`} size="l" className="mr-2" />
+              <p className="mb-0 font-weight-bold">{taskCard.assignedToFullName}</p>
+            </div>
+          )}
           <CollabCommentRenderer
             className="ml-2 mr-2 mb-0 font-weight-medium text-sans-serif"
             content={taskCard.title}
@@ -139,6 +141,9 @@ const TaskCard = ({ taskCard, inDetailView }) => {
                 </div>
               </>
             )}
+          </div>
+          <div className="ml-2 mr-2 mt-1 mb-1">
+            Created by <i>{`${taskCard.creatorFullName}`}</i>
           </div>
           {taskCard.designEdits && !inDetailView && (
             <div

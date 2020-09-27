@@ -5,12 +5,14 @@ import { FormGroup, Button, Spinner } from 'reactstrap';
 import FullToolbarLayout from 'src/layouts/FullToolbarLayout';
 import CssEditor from 'src/components/CssEditor';
 import CollabMentionInput from 'src/components/CollabMentionInput';
+import AssignSelect from 'src/components/AssignSelect';
 
 const TaskCreator = () => {
   const dispatch = useDispatch();
   const newTaskTitle = useSelector((state) => state.app.newTaskTitle);
   const creatingTask = useSelector((state) => state.app.creatingTask);
   const cssCodeChanges = useSelector((state) => state.styling.cssCodeChanges);
+  const createTaskAssigneeValue = useSelector((state) => state.app.createTaskAssigneeValue);
 
   useEffect(() => {
     // upon entering this component, reset the `taskSuccessfullyCreated` property
@@ -18,6 +20,10 @@ const TaskCreator = () => {
     return () => dispatch.app.onExitTaskCreator();
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    dispatch.app.setCreateTaskAssigneeValue(null);
+  }, [dispatch.app]);
 
   const headerContent = <div className="text-sans-serif font-weight-bold">Create a Task</div>;
   const bodyContent = (
@@ -32,6 +38,11 @@ const TaskCreator = () => {
           autoFocus
         />
       </FormGroup>
+
+      <AssignSelect
+        value={createTaskAssigneeValue}
+        onChange={(option) => dispatch.app.setCreateTaskAssigneeValue(option)}
+      />
 
       <CssEditor />
     </>

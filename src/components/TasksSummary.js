@@ -31,6 +31,7 @@ const TasksSummary = () => {
           'task_comments.creator',
           'task_column.',
           'creator_full_name',
+          'assigned_to_full_name',
         ],
         sort: ['-task_number'],
       },
