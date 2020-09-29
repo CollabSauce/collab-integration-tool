@@ -8,6 +8,7 @@ import {
   faWindowMinimize,
   faArrowsAltH,
   faExternalLinkAlt,
+  faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faWindowMaximize,
@@ -26,5 +27,6 @@ library.add(
   faWindowMinimize,
   farFaWindowMinimize,
   faCommentAlt,
-  faExternalLinkAlt
+  faExternalLinkAlt,
+  faArrowLeft
 );

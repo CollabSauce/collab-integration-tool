@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { Button, Collapse, UncontrolledTooltip, ListGroup, ListGroupItem } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useStoreState } from 'src/hooks/useStoreState';
 import { jsdataStore } from 'src/store/jsdata';
@@ -182,7 +183,16 @@ const TaskDetail = () => {
     return null;
   }
 
-  const headerContent = <div className="text-sans-serif font-weight-bold">Task # {task.taskNumber}</div>;
+  const headerContent = (
+    <div className="d-flex align-items-center">
+      <FontAwesomeIcon
+        className="clickable-icon mr-3"
+        icon="arrow-left"
+        onClick={() => dispatch.views.setShowTaskDetail(false)}
+      />
+      <div className="text-sans-serif font-weight-bold">Task # {task.taskNumber}</div>
+    </div>
+  );
   const bodyContent = (
     <>
       <TaskCard taskCard={task} inDetailView={true} />

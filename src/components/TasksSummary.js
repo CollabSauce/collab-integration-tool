@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'reactstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import FullToolbarLayout from 'src/layouts/FullToolbarLayout';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import { jsdataStore } from 'src/store/jsdata';
 import TaskCard from 'src/components/TaskCard';
+import TaskDetail from 'src/components/TaskDetail';
 
 const TasksSummary = () => {
   const dispatch = useDispatch();
   const project = useCurrentProject();
+  const showTaskDetail = useSelector((state) => state.views.showTaskDetail);
   const [tasks, setTasks] = useState([]);
 
   const createTask = () => {
@@ -72,9 +74,12 @@ const TasksSummary = () => {
   );
 
   return (
-    <FullToolbarLayout headerContent={headerContent} footerContent={footerContent}>
-      {bodyContent}
-    </FullToolbarLayout>
+    <>
+      <FullToolbarLayout headerContent={headerContent} footerContent={footerContent} hidden={showTaskDetail}>
+        {bodyContent}
+      </FullToolbarLayout>
+      {showTaskDetail && <TaskDetail />}
+    </>
   );
 };
 
