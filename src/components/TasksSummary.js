@@ -68,7 +68,7 @@ const TasksSummary = () => {
     </div>
   );
   const footerContent = (
-    <Button color="primary" block onClick={createTask} className="mb-3">
+    <Button color="primary" block onClick={createTask} className="mb-3 min-h-36">
       Create a Task
     </Button>
   );

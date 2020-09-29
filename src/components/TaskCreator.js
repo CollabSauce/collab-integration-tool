@@ -42,6 +42,7 @@ const TaskCreator = () => {
       <AssignSelect
         value={createTaskAssigneeValue}
         onChange={(option) => dispatch.app.setCreateTaskAssigneeValue(option)}
+        className="mb-3"
       />
 
       <CssEditor />
@@ -52,7 +53,7 @@ const TaskCreator = () => {
       color="primary"
       block
       onClick={dispatch.app.getInfoFromCommunicatorToCreateTask}
-      className="mb-3"
+      className="mb-3 min-h-36"
       disabled={creatingTask || (!newTaskTitle && !cssCodeChanges)}
     >
       {creatingTask ? <Spinner color="light" /> : 'Submit'}
