@@ -185,8 +185,8 @@ const CssEditor = () => {
       <CollapseHeader
         onClick={() => toggleOpenStates('designEdits')}
         isOpen={openCollapsibleStates.designEdits}
-        className="d-flex align-items-center h-55"
-        classNameChildrenContent="d-inline-flex flex-grow-1 justify-content-between align-items-center mb-2"
+        className="d-flex align-items-center mb-2 min-h-30 max-h-30"
+        classNameChildrenContent="d-inline-flex flex-grow-1 justify-content-between align-items-center"
       >
         <>
           <span>Design Edits</span>

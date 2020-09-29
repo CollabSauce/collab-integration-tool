@@ -13,12 +13,20 @@
   min-height: 25px;
 }
 
+.min-h-30 {
+  min-height: 30px;
+}
+
 .min-h-36 {
   min-height: 36px;
 }
 
 .min-w-60 {
   min-width: 60px;
+}
+
+.max-h-30 {
+  max-height: 30px;
 }
 
 .max-w-245 {
@@ -31,10 +39,6 @@
 
 .w-40 {
   width: 40px;
-}
-
-.h-55 {
-  height: 55px;
 }
 
 .mt--25 {
