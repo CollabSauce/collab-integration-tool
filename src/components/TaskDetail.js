@@ -15,6 +15,7 @@ import TaskCard from 'src/components/TaskCard';
 import TaskDetailScreenshot from 'src/components/TaskDetailScreenshot';
 import TaskCommentsContent from 'src/components/TaskCommentsContent';
 import AssignSelect from 'src/components/AssignSelect';
+import { INVITE_MEMBERS_VALUE_SELECT } from 'src/constants';
 
 const TaskDetail = () => {
   const dispatch = useDispatch();
@@ -161,6 +162,9 @@ const TaskDetail = () => {
   }, [task]);
 
   const onAssigneeChange = async (option) => {
+    if (option.value === INVITE_MEMBERS_VALUE_SELECT) {
+      return;
+    }
     let userId = null;
     if (option) {
       userId = option.value;
