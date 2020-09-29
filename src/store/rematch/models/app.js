@@ -185,7 +185,7 @@ export const app = {
           target_dom_path: rootState.app.targetDomPath,
           project: parseInt(currentProject.id),
           design_edits: rootState.styling.cssCodeChanges,
-          assigned_to: rootState.app.createTaskAssigneeValue.value,
+          assigned_to: rootState.app.createTaskAssigneeValue ? rootState.app.createTaskAssigneeValue.value : null,
         };
 
         await jsdataStore.getMapper('task').createTaskFromWidget({ data: { task, task_metadata, html } });
@@ -194,6 +194,7 @@ export const app = {
         dispatch.app.setTaskSuccessfullyCreated(true);
         dispatch.views.setShowTasksSummary(true);
       } catch (err) {
+        console.log(err);
         toast.error('Something went wrong. Please try again.');
       } finally {
         dispatch.app.setCreatingTask(false);
