@@ -22,6 +22,7 @@
     "dompurify": "^2.0.17",
     "js-data": "3.0.8",
     "js-data-http": "3.0.1",
+    "linkifyjs": "^2.1.9",
     "lodash": "^4.17.20",
     "prism-react-renderer": "^1.1.1",
     "prism-themes": "^1.4.0",

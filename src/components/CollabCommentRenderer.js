@@ -1,5 +1,6 @@
 import React from 'react';
 import dompurify from 'dompurify';
+import linkifyHtml from 'linkifyjs/html';
 import classNames from 'classnames';
 
 const sanitizer = dompurify.sanitize;
@@ -16,10 +17,18 @@ const CollabCommentRenderer = ({ content, id, className, ...rest }) => {
     .split('@@@^^^')
     .join('</span>');
 
+  const htmlWithATags = linkifyHtml(html, {
+    attributes: {
+      rel: 'noopener noreferrer',
+    },
+  });
+
+  const sanitizedHtml = sanitizer(htmlWithATags, { ADD_ATTR: ['target'] });
+
   return (
     <div
       className={classNames(className, 'text-break')}
-      dangerouslySetInnerHTML={{ __html: sanitizer(html) }}
+      dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
       {...rest}
     />
   );
