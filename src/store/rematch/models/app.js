@@ -188,7 +188,15 @@ export const app = {
           assigned_to: rootState.app.createTaskAssigneeValue ? rootState.app.createTaskAssigneeValue.value : null,
         };
 
-        await jsdataStore.getMapper('task').createTaskFromWidget({ data: { task, task_metadata, html } });
+        // in safari and firefox (and possible ie) (but not chrome), all the quotes get escaped like this \"
+        // This screws up rendering html on the backend. So change double quotes to single quote.
+        // NOTE: do this for all browsers because this doesn't hurt doing it for chrome, so it's simpler to do
+        // it for all browsers.
+        const unescapedHtml = html.replace(/"/g, "'");
+
+        await jsdataStore
+          .getMapper('task')
+          .createTaskFromWidget({ data: { task, task_metadata, html: unescapedHtml } });
         toast.success('Task created.');
         // Now, when the css exits, it won't try to restore changes. NOTE: this is pretty convoluted, clean this up later.
         dispatch.app.setTaskSuccessfullyCreated(true);
