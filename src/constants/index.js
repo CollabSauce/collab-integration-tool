@@ -8,7 +8,7 @@ if (process.env.REACT_APP_ENV === 'development') {
   basePath = 'http://localhost:8000';
   dashboardUrl = 'http://localhost:3000';
 } else if (process.env.REACT_APP_ENV === 'staging') {
-  basePath = 'https://pacific-earth-58699.herokuapp.com';
+  basePath = 'https://api.staging.collabsauce.com';
   dashboardUrl = 'https://app.staging.collabsauce.com';
 } else if (process.env.REACT_APP_ENV === 'production') {
   basePath = 'https://api.collabsauce.com';
