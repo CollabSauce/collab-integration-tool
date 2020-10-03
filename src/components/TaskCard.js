@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useStoreState } from 'src/hooks/useStoreState';
 import TaskCommentsContent from 'src/components/TaskCommentsContent';
 import CollapseHeader from 'src/components/CollapseHeader';
 import Avatar from 'src/components/Avatar';
@@ -41,11 +40,13 @@ const TaskCard = ({ taskCard, inDetailView }) => {
 
   const [collapseOpen, setCollapseOpen] = useState(false);
 
-  const { result: taskComments } = useStoreState(
-    (store) => store.getAll('taskComment').filter((tc) => tc.task.id === taskCard.id),
-    [taskCard],
-    'taskComment'
-  );
+  // NOTE NOTE NOTE: This was a bug in collab-dashboard, but just incase I'm addressing it here as well.
+  // I Was using `useStoreState` for task comments, but for some reason, using
+  // that for taskComments was causing infinite rerender loops. As a bandaid, I'm just using
+  // the below line of code. It turns out that we dont even need `useStoreState` in this scenario anyways.
+  // I.e, when adding a comment in the moda, the task card updates automatically anyways (probably because)
+  // we are rerendering for some reason because the route changed.
+  const taskComments = taskCard.taskComments;
   const uniqueCommentCreators = useMemo(() => {
     return uniqBy(taskComments, 'creatorId').map((comment) => ({
       fullName: comment.creatorFullName,
