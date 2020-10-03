@@ -73,7 +73,12 @@ export const taskActions = {
   createTaskFromWidget: {
     pathname: 'create_task_from_widget',
     method: 'POST',
-    addResponseToStore: true, // switch to false probably?
+    addResponseToStore: true,
+  },
+  changeColumnFromWidget: {
+    pathname: 'change_column_from_widget',
+    method: 'POST',
+    addResponseToStore: true,
   },
   updateAssignee: {
     pathname: 'update_assignee',

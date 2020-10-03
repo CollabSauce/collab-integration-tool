@@ -5,7 +5,9 @@ import { Button, Collapse, UncontrolledTooltip, ListGroup, ListGroupItem } from 
 import { useDispatch, useSelector } from 'react-redux';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Select from 'react-select';
 
+import cursorPointerSelectStyles from 'src/utils/cursorPointerSelectStyles';
 import { useStoreState } from 'src/hooks/useStoreState';
 import { jsdataStore } from 'src/store/jsdata';
 import CodeHighlight from 'src/components/CodeHighlight';
@@ -17,7 +19,7 @@ import TaskCommentsContent from 'src/components/TaskCommentsContent';
 import AssignSelect from 'src/components/AssignSelect';
 import { INVITE_MEMBERS_VALUE_SELECT } from 'src/constants';
 
-const TaskDetail = () => {
+const TaskDetail = ({ taskColumns, rerenderOnTaskMove }) => {
   const dispatch = useDispatch();
   const currentTaskDetail = useSelector((state) => state.app.currentTaskDetail);
   const designChangeViewingTask = useSelector((state) => state.app.designChangeViewingTask);
@@ -183,6 +185,39 @@ const TaskDetail = () => {
     }
   };
 
+  const taskColumnOptions = useMemo(() => {
+    return taskColumns.map((tc) => ({
+      value: tc.id,
+      label: tc.name,
+    }));
+  }, [taskColumns]);
+
+  const selectedTaskColumn = useMemo(() => {
+    if (!task) {
+      return null;
+    }
+    return taskColumnOptions.find((tco) => tco.value === task.taskColumnId);
+    // eslint-disable-next-line
+  }, [taskColumnOptions, task, rerender]);
+
+  const changeTaskColumn = async (option) => {
+    try {
+      if (option.value === task.taskColumnId) {
+        return;
+      } // column didn't change
+      // const user = userId ? jsdataStore.get('user', userId) : null;
+      const data = { task_column_id: option.value, task_id: task.id };
+      await jsdataStore.getMapper('task').changeColumnFromWidget({ data });
+      toast.success(`Task successfully moved to '${option.label}'`);
+      setRerender(!rerender); // HACKY but useStoreState isn't working correctly for individual items.
+      rerenderOnTaskMove();
+      // TODO: look into the above fix of useStoreState to get rid of above hack.
+    } catch (e) {
+      console.log(e);
+      toast.error(`Moving of task to '${option.label}'' failed`);
+    }
+  };
+
   if (!task) {
     return null;
   }
@@ -205,6 +240,15 @@ const TaskDetail = () => {
         onChange={onAssigneeChange}
         className="mt-2"
       />
+      <div className="mt-2">
+        <p className="mb-1 text-sans-serif font-weight-semi-bold">Move To:</p>
+        <Select
+          value={selectedTaskColumn}
+          onChange={changeTaskColumn}
+          options={taskColumnOptions}
+          styles={cursorPointerSelectStyles}
+        />
+      </div>
       {task.designEdits && (
         <>
           <CollapseHeader
