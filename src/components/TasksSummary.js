@@ -145,7 +145,7 @@ const TasksSummary = () => {
       <FullToolbarLayout headerContent={headerContent} footerContent={footerContent} hidden={showTaskDetail}>
         {bodyContent}
       </FullToolbarLayout>
-      {showTaskDetail && <TaskDetail taskColumns={taskColumns} rerenderOnTaskMove={rerenderOnTaskMove} />}
+      {showTaskDetail && <TaskDetail taskColumns={sortedTaskColumns} rerenderOnTaskMove={rerenderOnTaskMove} />}
     </>
   );
 };
