@@ -9,6 +9,7 @@ export const taskColumnSchema = new Schema({
     ...SchemaBase,
     id: { type: 'number' },
     name: { type: 'string' },
+    order: { type: 'number' },
   },
 });
 

@@ -83,14 +83,18 @@ const TasksSummary = () => {
     return () => dispatch.app.restoreDesignChangeIfApplicable();
   }, [dispatch.app]);
 
+  const sortedTaskColumns = useMemo(() => {
+    return taskColumns.sort((a, b) => a.order - b.order);
+  }, [taskColumns]);
+
   const taskColumnOptions = useMemo(() => {
-    const cols = taskColumns.map((tc) => ({
+    const cols = sortedTaskColumns.map((tc) => ({
       value: tc.id,
       label: tc.name,
     }));
     // Add "all tasks" option at beginning. make it the default.
     return [DEFAULT_TASK_COLUMN, ...cols];
-  }, [taskColumns]);
+  }, [sortedTaskColumns]);
 
   const filterOnTaskColumn = (option) => {
     setSelectedTaskColumn(option);
