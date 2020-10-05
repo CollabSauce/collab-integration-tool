@@ -32,7 +32,6 @@ const TaskCreator = () => {
 
   useEffect(() => {
     dispatch.app.setCreateTaskAssigneeValue(null);
-    dispatch.app.setCreateTaskEmailValue(''); // TODO: save email in rematch store?
   }, [dispatch.app]);
 
   const headerContent = <div className="text-sans-serif font-weight-bold">Create a Task</div>;
