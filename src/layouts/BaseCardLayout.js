@@ -9,7 +9,7 @@ const BaseCardLayout = ({ children, noLogo }) => (
     <Col sm={11} md={10} lg={8} xl={6} className="col-xxl-5">
       <Card>
         <CardBody className="fs--1 font-weight-normal py-5">
-          <Logo width={15} />
+          <Logo width={45} />
           {children}
         </CardBody>
       </Card>
