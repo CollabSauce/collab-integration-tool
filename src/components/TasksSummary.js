@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Button } from 'reactstrap';
+import { Button, Spinner } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 
@@ -17,6 +17,7 @@ const TasksSummary = () => {
   const dispatch = useDispatch();
   const project = useCurrentProject();
   const showTaskDetail = useSelector((state) => state.views.showTaskDetail);
+  const [tasksLoaded, setTasksLoaded] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [rerender, setRerender] = useState(false);
   const [taskColumns, setTaskColumns] = useState([]);
@@ -48,6 +49,7 @@ const TasksSummary = () => {
       { force: true }
     );
     setTasks(fetchedTasks);
+    setTasksLoaded(true);
   };
 
   const fetchTaskColumns = async () => {
@@ -128,10 +130,14 @@ const TasksSummary = () => {
     </>
   );
   const bodyContent = (
-    <div className="kanban-items-container scrollbar kanban-override">
-      {filteredTasks.map((task, idx) => (
-        <TaskCard taskCard={task} key={task.id} />
-      ))}
+    <div className="kanban-items-container scrollbar kanban-override flex-grow-1 mt-2">
+      {tasksLoaded ? (
+        filteredTasks.map((task, idx) => <TaskCard taskCard={task} key={task.id} />)
+      ) : (
+        <div className="h-100 d-flex justify-content-center align-items-center">
+          <Spinner color="primary" />
+        </div>
+      )}
     </div>
   );
   const footerContent = (

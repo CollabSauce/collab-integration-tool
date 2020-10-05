@@ -2,6 +2,7 @@ import Bowser from 'bowser';
 import { toast } from 'react-toastify';
 
 import { jsdataStore } from 'src/store/jsdata';
+import { handleNetworkError } from 'src/utils/error';
 
 export const app = {
   state: {
@@ -13,7 +14,11 @@ export const app = {
     taskSuccessfullyCreated: false, // used in css editor when determining whether to restore changes
     designChangeViewingTask: null, // current task viewing changes in client dom
     currentTaskDetail: null, // detail-view task
+    anonymousEmail: '', // if a user is not part of the org, or is not logged in, allow them to provide feedback with just their email.
+
+    // used for task-creator
     createTaskAssigneeValue: null,
+    createTaskEmailValue: '',
 
     // properties set from outside info
     parentOrigin: '', // url origin of the parent window
@@ -70,6 +75,9 @@ export const app = {
     setCreateTaskAssigneeValue(state, createTaskAssigneeValue) {
       return { ...state, createTaskAssigneeValue };
     },
+    setCreateTaskEmailValue(state, createTaskEmailValue) {
+      return { ...state, createTaskEmailValue };
+    },
   },
   effects: (dispatch) => ({
     setupMessageListener() {
@@ -104,8 +112,8 @@ export const app = {
             targetInElementStyling,
             targetId,
           });
-          dispatch.app.setFullToolbarVisible(true);
           dispatch.views.setShowTaskCreator(true);
+          dispatch.app.setFullToolbarVisible(true);
         } else if (message.type === 'projectKey') {
           dispatch.app.setProjectKey(message.projectKey);
         } else if (message.type === 'createTaskWithInfo') {
@@ -129,10 +137,15 @@ export const app = {
     },
     enterLoginMode() {
       dispatch.app.showFullToolbar();
+      dispatch.views.setShowLogin(true);
     },
     enterShowTasksSummaryMode() {
       dispatch.app.showFullToolbar();
       dispatch.views.setShowTasksSummary(true);
+    },
+    enterNoProjectAccessMode() {
+      dispatch.app.showFullToolbar();
+      dispatch.views.setShowNoProjectAccess(true);
     },
     showFullToolbar(_, rootState) {
       const parentOrigin = rootState.app.parentOrigin;
@@ -183,19 +196,36 @@ export const app = {
         const task = {
           title: rootState.app.newTaskTitle,
           target_dom_path: rootState.app.targetDomPath,
-          project: parseInt(currentProject.id),
+          project: currentProject ? parseInt(currentProject.id) : null,
+          project_key: currentProject ? null : rootState.app.projectKey,
           design_edits: rootState.styling.cssCodeChanges,
           assigned_to: rootState.app.createTaskAssigneeValue ? rootState.app.createTaskAssigneeValue.value : null,
+          one_off_email_set_by: rootState.app.createTaskEmailValue,
         };
 
-        await jsdataStore.getMapper('task').createTaskFromWidget({ data: { task, task_metadata, html } });
-        toast.success('Task created.');
+        const isAuthenticated = rootState.app.currentUserId;
+        const hasAccessToProject = !!currentProject;
+        const actionMethod =
+          isAuthenticated && hasAccessToProject ? 'createTaskFromWidget' : 'createTaskFromWidgetAnonymous';
+        await jsdataStore.getMapper('task')[actionMethod]({ data: { task, task_metadata, html } });
+        let toastMessage = '',
+          toastOptions = {};
+        if (isAuthenticated && hasAccessToProject) {
+          toastMessage = 'Task created.';
+        } else {
+          toastMessage = 'Sent!';
+          toastOptions = { closeButton: false };
+        }
+        toast.success(toastMessage, toastOptions);
         // Now, when the css exits, it won't try to restore changes. NOTE: this is pretty convoluted, clean this up later.
         dispatch.app.setTaskSuccessfullyCreated(true);
-        dispatch.views.setShowTasksSummary(true);
+        if (isAuthenticated && hasAccessToProject) {
+          dispatch.views.setShowTasksSummary(true);
+        } else {
+          dispatch.app.hideFullToolbar();
+        }
       } catch (err) {
-        console.log(err);
-        toast.error('Something went wrong. Please try again.');
+        toast.error(handleNetworkError(err));
       } finally {
         dispatch.app.setCreatingTask(false);
       }
@@ -269,8 +299,9 @@ export const app = {
       dispatch.app.setSelectedTaskCssText('');
     },
     restoreDesignChangeIfApplicable(_, rootState) {
-      // We don't want to restore the design change if an element has a design change applied,
-      // and then we are entering the detail view. If that's the case, leave everything the same.
+      // We don't want to restore the design change if
+      //   1) an element has a design change applied, and
+      //   2) we are entering the task-detail view. If that's the case, leave everything the same.
 
       // In all other cases, do restoreDesignChange()
       const currentAppliedDesignChangeTask = rootState.app.designChangeViewingTask;

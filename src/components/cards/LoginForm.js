@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form, Row, Col, FormGroup, Input, Label, Spinner } from 'reactstrap';
 
 import { jsdataStore } from 'src/store/jsdata';
@@ -12,6 +12,8 @@ const LoginForm = ({ hasLabel }) => {
   const [loading, setLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
 
+  const plusButtonClicked = useSelector((state) => state.baseToolbar.plusButtonClicked);
+  const projectKey = useSelector((state) => state.app.projectKey);
   const dispatch = useDispatch();
 
   // Handler
@@ -24,7 +26,13 @@ const LoginForm = ({ hasLabel }) => {
       setAuthToken(response.data.key);
       await dispatch.app.initializeApp();
       setLoading(false);
-      dispatch.views.setShowTasksSummary(true);
+      const currentProject = jsdataStore.getAll('project').find((p) => p.key === projectKey);
+      const hasAccessToProject = !!currentProject;
+      if (hasAccessToProject) {
+        dispatch.views.setShowTasksSummary(true);
+      } else {
+        dispatch.views.setShowNoProjectAccess(true);
+      }
     } catch (e) {
       setLoading(false);
       dispatch.views.setShowFailedLogin(true);
@@ -79,6 +87,11 @@ const LoginForm = ({ hasLabel }) => {
           create an account
         </a>
       </p>
+      {plusButtonClicked && (
+        <Button outline color="info" block className="mt-3 px-2" onClick={() => dispatch.app.enterSelectionMode()}>
+          Continue with feedback
+        </Button>
+      )}
     </Form>
   );
 };

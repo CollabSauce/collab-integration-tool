@@ -1,9 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { MentionsInput, Mention } from 'react-mentions';
 import classNames from 'classnames';
 
 import { useStoreState } from 'src/hooks/useStoreState';
 import { useCurrentUser } from 'src/hooks/useCurrentUser';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 
 const CollabMentionInput = ({ value, onChange, className, ...rest }) => {
   const { result: currentUser } = useCurrentUser();
@@ -20,6 +22,10 @@ const CollabMentionInput = ({ value, onChange, className, ...rest }) => {
     [currentUser],
     'membership'
   );
+  const isAuthenticated = useSelector((state) => state.app.currentUserId);
+
+  const currentProject = useCurrentProject();
+  const hasAccessToProject = !!currentProject;
 
   return (
     <>
@@ -32,7 +38,7 @@ const CollabMentionInput = ({ value, onChange, className, ...rest }) => {
         {...rest}
       >
         <Mention
-          trigger="@"
+          trigger={isAuthenticated && hasAccessToProject ? '@' : ''}
           markup="@@@____id__^^^____display__@@@^^^"
           data={memberships}
           displayTransform={(id, display) => `@${display}`}

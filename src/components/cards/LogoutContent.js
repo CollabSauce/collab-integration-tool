@@ -17,7 +17,7 @@ const LogoutContent = ({ titleTag: TitleTag }) => {
         Thanks for using Collab Sauce. You are <br className="d-none d-sm-block" />
         now successfully signed out.
       </p>
-      <Button onClick={() => dispatch.views.setShowLogout(false)} color="primary" size="sm" className="mt-3">
+      <Button onClick={() => dispatch.views.setShowLogin(true)} color="primary" size="sm" className="mt-3">
         <FontAwesomeIcon icon="chevron-left" transform="shrink-4 down-1" className="mr-1" />
         Return to Login
       </Button>

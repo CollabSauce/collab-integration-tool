@@ -24,7 +24,7 @@ const FailedLoginContent = () => {
           Create an Account
         </Button>
       </a>
-      <Button onClick={() => dispatch.views.setShowFailedLogin(false)} color="link" className="mt-4 fs--1">
+      <Button onClick={() => dispatch.views.setShowLogin(true)} color="link" className="mt-4 fs--1">
         Try logging in again
       </Button>
     </>

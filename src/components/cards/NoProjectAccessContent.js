@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button } from 'reactstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const FailedLoginContent = () => {
   const dispatch = useDispatch();
+  const plusButtonClicked = useSelector((state) => state.baseToolbar.plusButtonClicked);
 
   return (
     <>
@@ -13,12 +14,17 @@ const FailedLoginContent = () => {
         </span>
       </p>
       <p>
-        Your login worked! Unfortunately, it looks like you’re not part of this organizaiton. Please ask the
+        Your login worked! Unfortunately, it looks like you’re not part of this organization. Please ask the
         administrator to add you in the dashboard.
       </p>
       <Button color="primary" block className="mt-3" onClick={() => dispatch.app.hideFullToolbar()}>
         Ok, got it
       </Button>
+      {plusButtonClicked && (
+        <Button outline color="info" block className="mt-3 px-2" onClick={() => dispatch.app.enterSelectionMode()}>
+          Continue with feedback
+        </Button>
+      )}
     </>
   );
 };

@@ -4,35 +4,37 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, UncontrolledTooltip } from 'reactstrap';
 
 import BaseToolbarBottomButtons from 'src/components/BaseToolbarBottomButtons';
+import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import tasksIcon from 'src/assets/tasks.svg';
 
 const BaseToolbar = () => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.app.currentUserId);
-  const showTaskCreator = useSelector((state) => state.views.showTaskCreator);
+
+  const currentProject = useCurrentProject();
+  const hasAccessToProject = !!currentProject;
 
   const viewTasksClicked = () => {
-    if (isAuthenticated) {
+    dispatch.baseToolbar.setViewTasksClicked(true);
+    if (isAuthenticated && hasAccessToProject) {
       dispatch.app.enterShowTasksSummaryMode();
-    } else {
+    } else if (!isAuthenticated) {
       dispatch.app.enterLoginMode();
+    } else {
+      dispatch.app.enterNoProjectAccessMode();
     }
   };
 
   const plusButtonClicked = () => {
-    if (isAuthenticated) {
-      if (showTaskCreator) {
-        // if we are on the task creator, we have to reset the state of it
-        dispatch.styling.restoreChanges();
-        dispatch.app.onExitTaskCreator();
-      }
-      dispatch.app.restoreDesignChange();
-      dispatch.app.unselectTaskOnDom();
-      dispatch.app.setCurrentTaskDetail(null);
+    dispatch.baseToolbar.setPlusButtonClicked(true);
+    if (isAuthenticated && hasAccessToProject) {
+      // In case the user is already in css-editor mode, exit out of this mode so design the css-editor view is reset
+      dispatch.views.setShowCssEditor(false);
       dispatch.app.enterSelectionMode();
-      dispatch.views.setShowTasksSummary(true); // fallback to this view
-    } else {
+    } else if (!isAuthenticated) {
       dispatch.app.enterLoginMode();
+    } else if (!hasAccessToProject) {
+      dispatch.app.enterNoProjectAccessMode();
     }
   };
 

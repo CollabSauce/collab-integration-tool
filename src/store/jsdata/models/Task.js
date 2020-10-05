@@ -75,6 +75,11 @@ export const taskActions = {
     method: 'POST',
     addResponseToStore: true,
   },
+  createTaskFromWidgetAnonymous: {
+    pathname: 'create_task_from_widget_anonymous',
+    method: 'POST',
+    addResponseToStore: false,
+  },
   changeColumnFromWidget: {
     pathname: 'change_column_from_widget',
     method: 'POST',
