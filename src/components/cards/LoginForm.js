@@ -89,7 +89,7 @@ const LoginForm = ({ hasLabel }) => {
       </p>
       {plusButtonClicked && (
         <Button outline color="info" block className="mt-3 px-2" onClick={() => dispatch.app.enterSelectionMode()}>
-          Continue with feedback
+          Continue Without Login
         </Button>
       )}
     </Form>

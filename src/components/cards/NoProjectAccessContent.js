@@ -17,12 +17,18 @@ const FailedLoginContent = () => {
         Your login worked! Unfortunately, it looks like you’re not part of this organization. Please ask the
         administrator to add you in the dashboard.
       </p>
-      <Button color="primary" block className="mt-3" onClick={() => dispatch.app.hideFullToolbar()}>
+      <Button color="primary" block className="mt-3 fs--1" onClick={() => dispatch.app.hideFullToolbar()}>
         Ok, got it
       </Button>
       {plusButtonClicked && (
-        <Button outline color="info" block className="mt-3 px-2" onClick={() => dispatch.app.enterSelectionMode()}>
-          Continue with feedback
+        <Button
+          outline
+          color="info"
+          block
+          className="mt-3 px-2 fs--1"
+          onClick={() => dispatch.app.enterSelectionMode()}
+        >
+          Continue Without Org Access
         </Button>
       )}
     </>
