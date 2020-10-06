@@ -48,8 +48,8 @@
     "build-staging": "REACT_APP_ENV=staging react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy-production": "netlify TBD THIS SHOULD BREAK RIGHT NOW deploy --prod",
-    "deploy-staging": "netlify deploy --prod --site cdfa5ea8-a2f1-4d79-a34b-59134bddb7f1"
+    "deploy-production": "netlify deploy --prod --site f06f9be4-72e5-4ef6-a958-dd80f797d470",
+    "deploy-staging": "netlify deploy --prod --site fe7dc2a6-c4cb-4203-bc09-8c5fe67e007a"
   },
   "eslintConfig": {
     "extends": "react-app"
