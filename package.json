@@ -44,8 +44,8 @@
   },
   "scripts": {
     "start": "PORT=3001 REACT_APP_ENV=development react-scripts start",
-    "build-production": "REACT_APP_ENV=production react-scripts build",
-    "build-staging": "REACT_APP_ENV=staging react-scripts build",
+    "build-production": "GENERATE_SOURCEMAP=false REACT_APP_ENV=production react-scripts build",
+    "build-staging": "GENERATE_SOURCEMAP=false REACT_APP_ENV=staging react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy-production": "netlify deploy --prod --site f06f9be4-72e5-4ef6-a958-dd80f797d470",
