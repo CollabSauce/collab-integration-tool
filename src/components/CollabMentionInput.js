@@ -45,6 +45,7 @@ const CollabMentionInput = ({ value, onChange, className, ...rest }) => {
           style={{
             backgroundColor: '#dadada',
           }}
+          appendSpaceOnAdd
         />
       </MentionsInput>
     </>
