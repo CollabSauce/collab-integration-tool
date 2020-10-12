@@ -1,5 +1,6 @@
 import Bowser from 'bowser';
 import { toast } from 'react-toastify';
+import * as Sentry from '@sentry/react';
 
 import { jsdataStore } from 'src/store/jsdata';
 import { handleNetworkError } from 'src/utils/error';
@@ -90,8 +91,9 @@ export const app = {
 
         // also, load all memberships that user has access to
         jsdataStore.findAll('membership', { include: ['user.'] }, { force: true });
-      } catch (e) {
-        console.log(e);
+      } catch (err) {
+        Sentry.captureException(err);
+        console.log(err);
         return;
       }
     },
@@ -127,6 +129,7 @@ export const app = {
           toast.error('Element no longer found on the page - cannot create task.');
         }
       } catch (err) {
+        Sentry.captureException(err);
         return;
       }
     },
@@ -225,6 +228,7 @@ export const app = {
           dispatch.app.hideFullToolbar();
         }
       } catch (err) {
+        Sentry.captureException(err);
         toast.error(handleNetworkError(err));
       } finally {
         dispatch.app.setCreatingTask(false);

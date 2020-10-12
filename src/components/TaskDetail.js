@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
+import * as Sentry from '@sentry/react';
 
 import cursorPointerSelectStyles from 'src/utils/cursorPointerSelectStyles';
 import { useStoreState } from 'src/hooks/useStoreState';
@@ -179,8 +180,9 @@ const TaskDetail = ({ taskColumns, rerenderOnTaskMove }) => {
       toast.success(message);
       setRerender(!rerender); // HACKY but useStoreState isn't working correctly for individual items.
       // TODO: look into the above fix of useStoreState to get rid of above hack.
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      Sentry.captureException(err);
+      console.log(err);
       toast.error('Changing of assignee failed');
     }
   };
@@ -212,8 +214,9 @@ const TaskDetail = ({ taskColumns, rerenderOnTaskMove }) => {
       setRerender(!rerender); // HACKY but useStoreState isn't working correctly for individual items.
       rerenderOnTaskMove();
       // TODO: look into the above fix of useStoreState to get rid of above hack.
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      Sentry.captureException(err);
+      console.log(err);
       toast.error(`Moving of task to '${option.label}'' failed`);
     }
   };

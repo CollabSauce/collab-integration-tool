@@ -1,5 +1,6 @@
 import { DataStore, utils } from 'js-data';
 import { HttpAdapter, addAction } from 'js-data-http';
+import * as Sentry from '@sentry/react';
 // If we want sourcemaps to working properly while debugging, change above line to import from 'js-data-http/src/index';
 // If you do that, in that file you need to change line to do: import axios from 'axios'
 
@@ -56,6 +57,7 @@ const adapter = new HttpAdapter({
   },
   responseError(err, config, opts) {
     // generic response error handling collab-sauce
+    Sentry.captureException(err);
     responseError(err);
 
     // Now do the default behavior.
@@ -151,6 +153,7 @@ const deserializeResponse = (response) => {
 };
 
 const actionResponseError = (err) => {
+  Sentry.captureException(err);
   return utils.reject(err);
 };
 

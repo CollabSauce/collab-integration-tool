@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form, Row, Col, FormGroup, Input, Label, Spinner } from 'reactstrap';
+import * as Sentry from '@sentry/react';
 
 import { jsdataStore } from 'src/store/jsdata';
 import { setAuthToken } from 'src/utils/auth';
@@ -33,7 +34,8 @@ const LoginForm = ({ hasLabel }) => {
       } else {
         dispatch.views.setShowNoProjectAccess(true);
       }
-    } catch (e) {
+    } catch (err) {
+      Sentry.captureException(err);
       setLoading(false);
       dispatch.views.setShowFailedLogin(true);
     }
