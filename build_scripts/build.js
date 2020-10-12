@@ -80,6 +80,9 @@ function removeSourceMaps() {
   const cssFilesToFind = [/build\/static\/css\/main\.(.*)\.chunk\.css$/, /build\/static\/css\/2\.(.*)\.chunk\.css$/];
   removeSourceMapsForDirectory(jsDirectory, jsFilesToFind);
   removeSourceMapsForDirectory(cssDirectory, cssFilesToFind);
+
+  const deployCommand = chalk.green.bold.underline(`yarn deploy-${process.env.REACT_APP_ENV}`);
+  console.log(chalk.green(`${process.env.REACT_APP_ENV} succesfully built. Ready for deploy with ${deployCommand}`));
 }
 
 runBuildCommand();
