@@ -57,7 +57,7 @@ async function uploadBuildToSentry() {
     console.log(chalk.cyan('Uploading source maps'));
     await cli.releases.uploadSourceMaps(RELEASE, {
       include: ['build/static/js'],
-      urlPrefix: '~/static/js',
+      // urlPrefix: '~/static/js',
       rewrite: false,
     });
     console.log(chalk.green('Finalizing release'));
