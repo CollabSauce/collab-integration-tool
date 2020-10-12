@@ -45,6 +45,7 @@ function runBuildCommand() {
   console.log(chalk.cyan('Running  build command:'));
   console.log(chalk.cyan(BASE_BUILD_COMMAND));
   shell.exec(BASE_BUILD_COMMAND);
+  uploadBuildToSentry();
 }
 
 async function uploadBuildToSentry() {
@@ -64,6 +65,7 @@ async function uploadBuildToSentry() {
   } catch (e) {
     console.error(chalk.red('Source maps uploading failed:', e));
   }
+  removeSourceMaps();
 }
 
 function removeSourceMaps() {
@@ -81,5 +83,3 @@ function removeSourceMaps() {
 }
 
 runBuildCommand();
-uploadBuildToSentry();
-removeSourceMaps();
