@@ -74,11 +74,12 @@ const TasksSummary = () => {
   }, [project]);
 
   useEffect(() => {
-    if (tasks.length) {
+    // if the tasks change, or we are no longer on the task detail, refetch taskdommap
+    if (tasks.length || !showTaskDetail) {
       dispatch.app.fetchTaskDomMap(tasks);
     }
     return () => dispatch.app.clearFetchDomMapInterval();
-  }, [tasks, dispatch.app]);
+  }, [tasks, showTaskDetail, dispatch.app]);
 
   useEffect(() => {
     // on exit, restore all design changes (if applicable)
