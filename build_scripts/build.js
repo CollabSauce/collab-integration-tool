@@ -30,8 +30,7 @@ function removeSourceMapsForDirectory(startPath, filters) {
       console.log(chalk.red(`BUILD IS WRONG. DO NOT DEPLOY`));
     }
 
-    // Remove the last lines from the file so it doesn't point to any source maps, and remove the sourcemap files too
-    shell.exec(`sed -i '' -e '$ d' ${matchedFilenames[0]}`);
+    // Remove the sourcemap file so it's not accessible in the browser
     shell.rm(`${matchedFilenames[0]}.map`);
   }
 }
@@ -57,7 +56,7 @@ async function uploadBuildToSentry() {
     console.log(chalk.cyan('Uploading source maps'));
     await cli.releases.uploadSourceMaps(RELEASE, {
       include: ['build/static/js'],
-      // urlPrefix: '~/static/js',
+      urlPrefix: '~/static/js',
       rewrite: false,
     });
     console.log(chalk.green('Finalizing release'));
