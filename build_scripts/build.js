@@ -7,31 +7,31 @@ const SentryCli = require('@sentry/cli');
 const RELEASE = shell.exec('git rev-parse --short HEAD').replace(/(\r\n|\n|\r)/gm, ''); // Strip away the \n of the `release`.
 const BASE_BUILD_COMMAND = `REACT_APP_SENTRY_RELEASE=${RELEASE} REACT_APP_ENV=${process.env.REACT_APP_ENV} react-scripts build`;
 
-function removeSourceMapsForDirectory(startPath, filters) {
-  for (let i = 0; i < filters.length; i++) {
-    const filter = filters[i];
-    if (!fs.existsSync(startPath)) {
-      console.log(chalk.red(`no dir ${startPath}`));
-      return;
-    }
+function removeSourceMapsForDirectory(startPath, filter, expectedMatches) {
+  if (!fs.existsSync(startPath)) {
+    console.log(chalk.red(`no dir ${startPath}`));
+    return;
+  }
 
-    const files = fs.readdirSync(startPath);
-    let matchedFilenames = [];
-    for (let i = 0; i < files.length; i++) {
-      const filename = path.join(startPath, files[i]);
-      const stat = fs.lstatSync(filename);
-      if (filter.test(filename)) {
-        matchedFilenames.push(filename);
-      }
+  const files = fs.readdirSync(startPath);
+  let matchedFilenames = [];
+  for (let i = 0; i < files.length; i++) {
+    const filename = path.join(startPath, files[i]);
+    if (filter.test(filename)) {
+      matchedFilenames.push(filename);
     }
+  }
 
-    if (matchedFilenames.length !== 1) {
-      console.log(chalk.red(`ERROR: expected exactly 1 filename for ${filter} but got ${matchedFilenames.length}`));
-      console.log(chalk.red(`BUILD IS WRONG. DO NOT DEPLOY`));
-    }
+  if (matchedFilenames.length !== expectedMatches) {
+    console.log(
+      chalk.red(`ERROR: expected exactly ${expectedMatches} filenames for ${filter} but got ${matchedFilenames.length}`)
+    );
+    console.log(chalk.red(`BUILD IS WRONG. DO NOT DEPLOY`));
+  }
 
-    // Remove the sourcemap file so it's not accessible in the browser
-    shell.rm(`${matchedFilenames[0]}.map`);
+  // Remove all the `.map` the sourcemaps file so it's not accessible in the browser
+  for (let i = 0; i < matchedFilenames.length; i++) {
+    shell.rm(matchedFilenames[i]);
   }
 }
 
@@ -70,15 +70,12 @@ async function uploadBuildToSentry() {
 function removeSourceMaps() {
   console.log(chalk.cyan('removing sourcemaps'));
   const jsDirectory = 'build/static/js';
-  const jsFilesToFind = [
-    /build\/static\/js\/main\.(.*)\.chunk\.js$/,
-    /build\/static\/js\/2\.(.*)\.chunk\.js$/,
-    /build\/static\/js\/runtime-main\.(.*)\.js$/,
-  ];
+  const jsMapFilesRegex = /build\/static\/js\/.*\.js.map$/;
   const cssDirectory = 'build/static/css';
-  const cssFilesToFind = [/build\/static\/css\/main\.(.*)\.chunk\.css$/, /build\/static\/css\/2\.(.*)\.chunk\.css$/];
-  removeSourceMapsForDirectory(jsDirectory, jsFilesToFind);
-  removeSourceMapsForDirectory(cssDirectory, cssFilesToFind);
+  const cssMapFilesRegex = /build\/static\/css\/.*\.css.map$/;
+
+  removeSourceMapsForDirectory(jsDirectory, jsMapFilesRegex, 3);
+  removeSourceMapsForDirectory(cssDirectory, cssMapFilesRegex, 2);
 
   const deployCommand = chalk.green.bold.underline(`yarn deploy-${process.env.REACT_APP_ENV}`);
   console.log(chalk.green(`${process.env.REACT_APP_ENV} succesfully built. Ready for deploy with ${deployCommand}`));
