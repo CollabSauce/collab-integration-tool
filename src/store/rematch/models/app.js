@@ -15,7 +15,7 @@ export const app = {
     taskSuccessfullyCreated: false, // used in css editor when determining whether to restore changes
     designChangeViewingTask: null, // current task viewing changes in client dom
     currentTaskDetail: null, // detail-view task
-    anonymousEmail: '', // if a user is not part of the org, or is not logged in, allow them to provide feedback with just their email.
+    gridlinesVisible: false, // whether gridlines are visible on the page
 
     // used for task-creator
     createTaskAssigneeValue: null,
@@ -72,6 +72,9 @@ export const app = {
     },
     setCurrentTaskDetail(state, currentTaskDetail) {
       return { ...state, currentTaskDetail };
+    },
+    setGridlinesVisible(state, gridlinesVisible) {
+      return { ...state, gridlinesVisible };
     },
     setCreateTaskAssigneeValue(state, createTaskAssigneeValue) {
       return { ...state, createTaskAssigneeValue };
@@ -342,6 +345,16 @@ export const app = {
     },
     restoreDesignChangeKeepSelected(task, rootState) {
       dispatch.app.restoreDesignChange('restoreDesignChangeKeepSelected');
+    },
+    toggleGridlines(_, rootState) {
+      // set internal state
+      const showGridlines = !rootState.app.gridlinesVisible;
+      dispatch.app.setGridlinesVisible(showGridlines);
+
+      // send info to widget
+      const parentOrigin = rootState.app.parentOrigin;
+      const message = { type: 'toggleGridlines', showGridlines };
+      window.parent.postMessage(JSON.stringify(message), parentOrigin);
     },
   }),
 };
