@@ -9,6 +9,7 @@ import {
   faArrowsAltH,
   faExternalLinkAlt,
   faArrowLeft,
+  faBorderAll,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faWindowMaximize,
@@ -28,5 +29,6 @@ library.add(
   farFaWindowMinimize,
   faCommentAlt,
   faExternalLinkAlt,
-  faArrowLeft
+  faArrowLeft,
+  faBorderAll
 );

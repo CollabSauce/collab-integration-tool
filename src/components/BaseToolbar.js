@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, UncontrolledTooltip, Input, Label } from 'reactstrap';
+import { Button, UncontrolledTooltip } from 'reactstrap';
 
 import BaseToolbarBottomButtons from 'src/components/BaseToolbarBottomButtons';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
@@ -59,19 +59,14 @@ const BaseToolbar = () => {
           Select Element
         </UncontrolledTooltip>
         <hr className="mt-5 mh-0 w-40" />
-        <div id="collab-toggle-gridlines" className="d-flex flex-column align-items-center mt-30">
-          <Label for="gridlines-checkbox" check>
-            Gridlines
-          </Label>
-          <Input
-            type="checkbox"
-            name="check"
-            id="gridlines-checkbox"
-            className="input-inherit mt-1"
-            value={gridlinesVisible}
-            onChange={dispatch.app.toggleGridlines}
-          />
-        </div>
+        <Button
+          onClick={dispatch.app.toggleGridlines}
+          color="warning"
+          id="collab-toggle-gridlines"
+          outline={gridlinesVisible}
+        >
+          <FontAwesomeIcon icon="border-all" />
+        </Button>
         <UncontrolledTooltip placement="auto" target="collab-toggle-gridlines" innerClassName="collab-toolbar-tooltip">
           Toggle Gridlines
         </UncontrolledTooltip>
