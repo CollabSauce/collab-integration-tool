@@ -187,7 +187,7 @@ export const app = {
           url_origin: url_origin,
           os_name: os.name,
           os_version: os.version,
-          os_version_name: os.versionName,
+          os_version_name: os.versionName || '',
           browser_name: browser.name,
           browser_version: browser.version,
           selector: rootState.app.targetDomPath,
