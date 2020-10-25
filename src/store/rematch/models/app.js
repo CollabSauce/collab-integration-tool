@@ -208,7 +208,7 @@ export const app = {
           design_edits: rootState.styling.cssCodeChanges,
           assigned_to:
             rootState.app.createTaskAssigneeValue &&
-            rootState.app.createTaskAssigneeValue !== INVITE_MEMBERS_VALUE_SELECT
+            rootState.app.createTaskAssigneeValue.value !== INVITE_MEMBERS_VALUE_SELECT
               ? rootState.app.createTaskAssigneeValue.value
               : null,
           one_off_email_set_by: rootState.app.createTaskEmailValue,
