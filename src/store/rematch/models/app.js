@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/react';
 
 import { jsdataStore } from 'src/store/jsdata';
 import { handleNetworkError } from 'src/utils/error';
+import { INVITE_MEMBERS_VALUE_SELECT } from 'src/constants';
 
 export const app = {
   state: {
@@ -205,7 +206,11 @@ export const app = {
           project: currentProject ? parseInt(currentProject.id) : null,
           project_key: currentProject ? null : rootState.app.projectKey,
           design_edits: rootState.styling.cssCodeChanges,
-          assigned_to: rootState.app.createTaskAssigneeValue ? rootState.app.createTaskAssigneeValue.value : null,
+          assigned_to:
+            rootState.app.createTaskAssigneeValue &&
+            rootState.app.createTaskAssigneeValue !== INVITE_MEMBERS_VALUE_SELECT
+              ? rootState.app.createTaskAssigneeValue.value
+              : null,
           one_off_email_set_by: rootState.app.createTaskEmailValue,
         };
 
