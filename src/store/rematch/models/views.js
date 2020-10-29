@@ -3,7 +3,7 @@ const InitialState = {
   showLogout: false,
   showFailedLogin: false,
   showTaskCreator: false,
-  showCssEditor: false,
+  showTaskCreatorEditors: false,
   showTasksSummary: false,
   showTaskDetail: false,
   showNoProjectAccess: false,
@@ -22,12 +22,13 @@ export const views = {
       return { ...InitialState, showFailedLogin };
     },
     setShowTaskCreator(_, showTaskCreator) {
-      // whenever we show/hide the task creator, we show also show/hide the css-editor
-      return { ...InitialState, showTaskCreator, showCssEditor: showTaskCreator };
+      // whenever we show/hide the task creator, we show also show/hide the
+      // task-creator-editors (i.e css-editor and text-copy-editor)
+      return { ...InitialState, showTaskCreator, showTaskCreatorEditors: showTaskCreator };
     },
-    setShowCssEditor(state, showCssEditor) {
+    setShowTaskCreatorEditors(state, showTaskCreatorEditors) {
       // Don't return initial state, as we still want `showTaskCreator` to be true
-      return { ...state, showCssEditor };
+      return { ...state, showTaskCreatorEditors };
     },
     setShowTasksSummary(_, showTasksSummary) {
       return { ...InitialState, showTasksSummary };

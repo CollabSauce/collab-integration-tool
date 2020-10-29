@@ -36,7 +36,7 @@ const AssignSelect = ({ value, onChange, className }) => {
 
   return (
     <div className={className}>
-      <p className="mb-1 text-sans-serif font-weight-semi-bold">Assign To (optional):</p>
+      <p className="mb-2 text-sans-serif font-weight-semi-bold">Assign To (optional):</p>
       <Select value={value} onChange={onChange} options={options} styles={cursorPointerSelectStyles} isClearable />
     </div>
   );

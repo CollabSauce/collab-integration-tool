@@ -11,15 +11,15 @@ import TaskCommentsContent from 'src/components/TaskCommentsContent';
 import CollapseHeader from 'src/components/CollapseHeader';
 import Avatar from 'src/components/Avatar';
 import CollabCommentRenderer from 'src/components/CollabCommentRenderer';
-
-const TaskColumnColorMap = {
-  'Raw Task': 'secondary',
-  'To-Do': 'primary',
-  'In Progress': 'light',
-  'In Review': 'info',
-  Done: 'warning',
-  Released: 'dark',
-};
+//
+// const TaskColumnColorMap = {
+//   'Raw Task': 'secondary',
+//   'To-Do': 'primary',
+//   'In Progress': 'light',
+//   'In Review': 'info',
+//   Done: 'warning',
+//   Released: 'dark',
+// };
 
 const isParent = (obj, parentObj) => {
   while (obj !== undefined && obj !== null && obj.tagName.toUpperCase() !== 'BODY') {
@@ -32,10 +32,12 @@ const isParent = (obj, parentObj) => {
 const TaskCard = ({ taskCard, inDetailView }) => {
   const dispatch = useDispatch();
   const taskDomMap = useSelector((state) => state.app.taskDomMap);
+  const textCopyChangeViewingTask = useSelector((state) => state.app.textCopyChangeViewingTask);
   const designChangeViewingTask = useSelector((state) => state.app.designChangeViewingTask);
 
-  const badgeColor = TaskColumnColorMap[taskCard.taskColumn.name];
+  // const badgeColor = TaskColumnColorMap[taskCard.taskColumn.name];
   const taskFoundInDom = taskDomMap[taskCard.id];
+  const viewingTextCopyChangeForCurrentTask = textCopyChangeViewingTask && textCopyChangeViewingTask.id === taskCard.id;
   const viewingDesignChangeForCurrentTask = designChangeViewingTask && designChangeViewingTask.id === taskCard.id;
 
   const [collapseOpen, setCollapseOpen] = useState(false);
@@ -56,6 +58,17 @@ const TaskCard = ({ taskCard, inDetailView }) => {
 
   const onCopyToClipboard = () => toast.info('Copied to clipboard!');
 
+  const viewTextCopyChange = () => {
+    if (!taskFoundInDom) {
+      return;
+    }
+    dispatch.app.viewTextCopyChange(taskCard);
+  };
+
+  const restoreTextCopyChange = () => {
+    dispatch.app.restoreTextCopyChange();
+  };
+
   const viewDesignChange = () => {
     if (!taskFoundInDom) {
       return;
@@ -69,9 +82,15 @@ const TaskCard = ({ taskCard, inDetailView }) => {
 
   const onCardClicked = (e) => {
     const clickedElement = e.target;
+    const textCopySection = document.getElementById(`taskcard-text-copy-section-${taskCard.id}`);
     const designSection = document.getElementById(`taskcard-design-section-${taskCard.id}`);
     const commentsSection = document.getElementById(`taskcard-comments-section-${taskCard.id}`);
-    if (inDetailView || isParent(clickedElement, designSection) || isParent(clickedElement, commentsSection)) {
+    if (
+      inDetailView ||
+      isParent(clickedElement, textCopySection) ||
+      isParent(clickedElement, designSection) ||
+      isParent(clickedElement, commentsSection)
+    ) {
       return;
     }
 
@@ -88,19 +107,20 @@ const TaskCard = ({ taskCard, inDetailView }) => {
       >
         <CardBody
           className={classNames('pr-0 pl-0', {
-            'pb-0': !inDetailView && (taskCard.designEdits || taskComments.length),
+            'pb-0': !inDetailView && (taskCard.hasTextCopyChanges || taskCard.designEdits || taskComments.length),
           })}
         >
-          <div className="ml-2 mr-2 mb-2 d-flex justify-content-between">
+          <div className="ml-2 mr-2 mb-2 d-flex justify-content-between align-items-start">
             <div>
-              <Badge className={`badge-soft-${badgeColor} d-inline-block py-1 mr-1 mb-0`}>
-                {taskCard.taskColumn.name}
-              </Badge>
+              <Badge className={`badge-soft-primary d-inline-block py-1 mr-1 mb-0`}>{taskCard.taskColumn.name}</Badge>
               {taskCard.designEdits && (
                 <Badge className={`badge-soft-success d-inline-block py-1 mr-1 mb-0`}>Design Change</Badge>
               )}
+              {taskCard.hasTextCopyChanges && (
+                <Badge className={`badge-soft-info d-inline-block py-1 mr-1 mb-0`}>Text Change</Badge>
+              )}
             </div>
-            <Badge color="soft-dark">#{taskCard.taskNumber}</Badge>
+            <Badge color="soft-dark h-20">#{taskCard.taskNumber}</Badge>
           </div>
           {taskCard.assignedToFullName && (
             <div className="ml-2 mr-2 d-flex align-items-center mb-2">
@@ -146,6 +166,32 @@ const TaskCard = ({ taskCard, inDetailView }) => {
           <div className="ml-2 mr-2 mt-1 mb-1">
             Created by <i>{`${taskCard.creatorFullName}`}</i>
           </div>
+          {taskCard.hasTextCopyChanges && !inDetailView && (
+            <div
+              className="bg-100 p-2 d-flex justify-content-between cursor-default"
+              id={`taskcard-text-copy-section-${taskCard.id}`}
+            >
+              <CopyToClipboard text={taskCard.textCopyChanges} onCopy={onCopyToClipboard}>
+                <Button color="link" className="fs--2 pl-0 pr-0">
+                  Copy Text
+                </Button>
+              </CopyToClipboard>
+              <Button
+                id={`view-text-copy-change-${taskCard.id}`}
+                className="fs--2 w-135"
+                color={`falcon-${viewingTextCopyChangeForCurrentTask ? 'danger' : 'default'}`}
+                size="sm"
+                onClick={viewingTextCopyChangeForCurrentTask ? restoreTextCopyChange : viewTextCopyChange}
+              >
+                {viewingTextCopyChangeForCurrentTask ? 'Dismiss Changes' : 'View Text Changes'}
+              </Button>
+              {!taskFoundInDom && (
+                <UncontrolledTooltip target={`view-text-copy-change-${taskCard.id}`}>
+                  Task could not be found on the page.
+                </UncontrolledTooltip>
+              )}
+            </div>
+          )}
           {taskCard.designEdits && !inDetailView && (
             <div
               className="bg-100 p-2 d-flex justify-content-between cursor-default"
@@ -158,7 +204,7 @@ const TaskCard = ({ taskCard, inDetailView }) => {
               </CopyToClipboard>
               <Button
                 id={`view-design-change-${taskCard.id}`}
-                className="fs--2"
+                className="fs--2 w-135"
                 color={`falcon-${viewingDesignChangeForCurrentTask ? 'danger' : 'default'}`}
                 size="sm"
                 onClick={viewingDesignChangeForCurrentTask ? restoreDesignChange : viewDesignChange}

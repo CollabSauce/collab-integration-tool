@@ -14,6 +14,7 @@ export const app = {
     newTaskTitle: '',
     creatingTask: false,
     taskSuccessfullyCreated: false, // used in css editor when determining whether to restore changes
+    textCopyChangeViewingTask: null, // current task viewing changes in client dom
     designChangeViewingTask: null, // current task viewing changes in client dom
     currentTaskDetail: null, // detail-view task
     gridlinesVisible: false, // whether gridlines are visible on the page
@@ -29,10 +30,16 @@ export const app = {
     targetCssText: '', // if the target has in-element styling, this is the text of that styling
     targetInElementStyling: '', // if the target has in-element styling, this is the json-object form of that styling.
     targetId: '', // id of the target, if applicable
+    targetInnerHTML: '', // the original innerHTML of the target
+    targetInnerText: '', // the original innerText of the target
+    targetInnerTextUpdated: '', // the updated innerText of the target
     projectKey: '',
     taskDomMap: {},
     fetchDomMapIntervalId: null,
+    // when in viewing mode, the user clicks "view design change",this is the css before design changes are applied
     selectedTaskCssText: '',
+    // when in viewing mode, the user clicks "view text-copy change",this is the inner-html before text changes are applied
+    selectedTaskInnerHtml: '',
   },
   reducers: {
     setCurrentUserId(state, currentUserId) {
@@ -56,6 +63,9 @@ export const app = {
     setTargetData(state, targetState) {
       return { ...state, ...targetState };
     },
+    setTargetInnerTextUpdated(state, targetInnerTextUpdated) {
+      return { ...state, targetInnerTextUpdated };
+    },
     setProjectKey(state, projectKey) {
       return { ...state, projectKey };
     },
@@ -68,8 +78,14 @@ export const app = {
     setSelectedTaskCssText(state, selectedTaskCssText) {
       return { ...state, selectedTaskCssText };
     },
+    setSelectedTaskInnerHtml(state, selectedTaskInnerHtml) {
+      return { ...state, selectedTaskInnerHtml };
+    },
     setDesignChangeViewingTask(state, designChangeViewingTask) {
       return { ...state, designChangeViewingTask };
+    },
+    setTextCopyChangeViewingTask(state, textCopyChangeViewingTask) {
+      return { ...state, textCopyChangeViewingTask };
     },
     setCurrentTaskDetail(state, currentTaskDetail) {
       return { ...state, currentTaskDetail };
@@ -110,13 +126,24 @@ export const app = {
         if (message.type === 'setParentOrigin') {
           dispatch.app.setParentOrigin(e.origin);
         } else if (message.type === 'newClickedTarget') {
-          const { targetStyle, targetDomPath, targetCssText, targetInElementStyling, targetId } = message;
+          const {
+            targetStyle,
+            targetDomPath,
+            targetCssText,
+            targetInElementStyling,
+            targetId,
+            targetInnerHTML,
+            targetInnerText,
+          } = message;
           dispatch.app.setTargetData({
             targetStyle,
             targetDomPath,
             targetCssText,
             targetInElementStyling,
             targetId,
+            targetInnerHTML,
+            targetInnerText,
+            targetInnerTextUpdated: targetInnerText,
           });
           dispatch.views.setShowTaskCreator(true);
           dispatch.app.setFullToolbarVisible(true);
@@ -128,6 +155,8 @@ export const app = {
           dispatch.app.setTaskDomMap(message.taskDomMap);
         } else if (message.type === 'selectedDomItemCssText') {
           dispatch.app.setSelectedTaskCssText(message.originalDomItemCssText);
+        } else if (message.type === 'selectedDomItemInnerHtml') {
+          dispatch.app.setSelectedTaskInnerHtml(message.originalDomItemInnerHtml);
         } else if (message.type === 'createTaskFailNoElement') {
           dispatch.app.setCreatingTask(false);
           toast.error('Element no longer found on the page - cannot create task.');
@@ -183,6 +212,8 @@ export const app = {
         const { parsedResult } = Bowser.getParser(window.navigator.userAgent);
         const { browser, os } = parsedResult;
 
+        const hasTextCopyChanges = rootState.app.targetInnerText !== rootState.app.targetInnerTextUpdated;
+
         const task_metadata = {
           url_origin: url_origin,
           os_name: os.name,
@@ -206,6 +237,8 @@ export const app = {
           project: currentProject ? parseInt(currentProject.id) : null,
           project_key: currentProject ? null : rootState.app.projectKey,
           design_edits: rootState.styling.cssCodeChanges,
+          text_copy_changes: hasTextCopyChanges ? rootState.app.targetInnerTextUpdated : '',
+          has_text_copy_changes: hasTextCopyChanges,
           assigned_to:
             rootState.app.createTaskAssigneeValue &&
             rootState.app.createTaskAssigneeValue.value !== INVITE_MEMBERS_VALUE_SELECT
@@ -303,9 +336,10 @@ export const app = {
         targetId: task.targetId,
         targetDomPath: task.targetDomPath,
         originalCssText: rootState.app.selectedTaskCssText,
+        textCopyChangesStillApplied: !!rootState.app.textCopyChangeViewingTask,
       };
       const parentOrigin = rootState.app.parentOrigin;
-      const message = { type: 'restoreDesignChange', domItemData };
+      const message = { type: messageType, domItemData };
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
       dispatch.app.setDesignChangeViewingTask(null);
       dispatch.app.setSelectedTaskCssText('');
@@ -348,7 +382,7 @@ export const app = {
       const message = { type: 'unselectTaskOnDom', domItemData };
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
     },
-    restoreDesignChangeKeepSelected(task, rootState) {
+    restoreDesignChangeKeepSelected(_, rootState) {
       dispatch.app.restoreDesignChange('restoreDesignChangeKeepSelected');
     },
     toggleGridlines(_, rootState) {
@@ -360,6 +394,64 @@ export const app = {
       const parentOrigin = rootState.app.parentOrigin;
       const message = { type: 'toggleGridlines', showGridlines };
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
+    },
+    restoreTextCopyChangesFromEditor(_, rootState) {
+      const message = { type: 'restoreTextCopyEditChanges', originalTextHtml: rootState.app.targetInnerHTML };
+      window.parent.postMessage(JSON.stringify(message), rootState.app.parentOrigin);
+      dispatch.app.setTargetInnerTextUpdated(rootState.app.targetInnerText);
+    },
+    viewTextCopyChange(task, rootState) {
+      // for restore any current applied text-copy change, if applicable
+      dispatch.app.restoreTextCopyChange();
+
+      // now apply the new design change
+      const domItemData = {
+        targetId: task.targetId,
+        targetDomPath: task.targetDomPath,
+        textCopyChanges: task.textCopyChanges,
+      };
+      const parentOrigin = rootState.app.parentOrigin;
+      const message = { type: 'viewTextCopyChange', domItemData };
+      window.parent.postMessage(JSON.stringify(message), parentOrigin);
+      dispatch.app.setTextCopyChangeViewingTask(task);
+    },
+    restoreTextCopyChange(messageType = 'restoreTextCopyChange', rootState) {
+      const task = rootState.app.textCopyChangeViewingTask;
+      if (!task) {
+        return;
+      }
+      const domItemData = {
+        targetId: task.targetId,
+        targetDomPath: task.targetDomPath,
+        originalInnerHtml: rootState.app.selectedTaskInnerHtml,
+        designChangesStillApplied: !!rootState.app.designChangeViewingTask,
+      };
+      const parentOrigin = rootState.app.parentOrigin;
+      const message = { type: messageType, domItemData };
+      window.parent.postMessage(JSON.stringify(message), parentOrigin);
+      dispatch.app.setTextCopyChangeViewingTask(null);
+      dispatch.app.setSelectedTaskInnerHtml('');
+    },
+    restoreTextCopyChangeKeepSelected(_, rootState) {
+      dispatch.app.restoreTextCopyChange('restoreTextCopyChangeKeepSelected');
+    },
+    restoreTextCopyChangeIfApplicable(_, rootState) {
+      // We don't want to restore the text change if
+      //   1) an element has a text change applied, and
+      //   2) we are entering the task-detail view. If that's the case, leave everything the same.
+
+      // In all other cases, do restoreTextChange()
+      const currentAppliedTextCopyChangeTask = rootState.app.textCopyChangeViewingTask;
+      const taskDetail = rootState.app.currentTaskDetail;
+      if (!taskDetail) {
+        dispatch.app.restoreTextCopyChange();
+      } else if (
+        currentAppliedTextCopyChangeTask &&
+        taskDetail &&
+        currentAppliedTextCopyChangeTask.id !== taskDetail.id
+      ) {
+        dispatch.app.restoreTextCopyChange();
+      }
     },
   }),
 };

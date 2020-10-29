@@ -82,8 +82,11 @@ const TasksSummary = () => {
   }, [tasks, showTaskDetail, dispatch.app]);
 
   useEffect(() => {
-    // on exit, restore all design changes (if applicable)
-    return () => dispatch.app.restoreDesignChangeIfApplicable();
+    return () => {
+      // on exit, restore all design & text changes (if applicable)
+      dispatch.app.restoreDesignChangeIfApplicable();
+      dispatch.app.restoreTextCopyChangeIfApplicable();
+    };
   }, [dispatch.app]);
 
   const sortedTaskColumns = useMemo(() => {

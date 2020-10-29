@@ -37,8 +37,16 @@
   max-width: 260px;
 }
 
+.h-20 {
+  height: 20px;
+}
+
 .w-40 {
   width: 40px;
+}
+
+.w-135 {
+  width: 135px;
 }
 
 .mt--25 {
@@ -137,4 +145,9 @@
   position: initial;
   margin-top: initial;
   margin-left: initial;
+}
+
+.p-height-31 {
+  height: 31px;
+  line-height: 31px;
 }

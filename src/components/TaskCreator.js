@@ -5,19 +5,23 @@ import { FormGroup, Button, Spinner, Input } from 'reactstrap';
 import { useCurrentProject } from 'src/hooks/useCurrentProject';
 import FullToolbarLayout from 'src/layouts/FullToolbarLayout';
 import CssEditor from 'src/components/CssEditor';
+import TextCopyEditor from 'src/components/TextCopyEditor';
 import CollabMentionInput from 'src/components/CollabMentionInput';
 import AssignSelect from 'src/components/AssignSelect';
 
 const TaskCreator = () => {
   const dispatch = useDispatch();
-  const showCssEditor = useSelector((state) => state.views.showCssEditor);
+  const showTaskCreatorEditors = useSelector((state) => state.views.showTaskCreatorEditors);
   const newTaskTitle = useSelector((state) => state.app.newTaskTitle);
   const creatingTask = useSelector((state) => state.app.creatingTask);
   const cssCodeChanges = useSelector((state) => state.styling.cssCodeChanges);
   const createTaskAssigneeValue = useSelector((state) => state.app.createTaskAssigneeValue);
   const createTaskEmailValue = useSelector((state) => state.app.createTaskEmailValue);
+  const targetInnerText = useSelector((state) => state.app.targetInnerText);
+  const targetInnerTextUpdated = useSelector((state) => state.app.targetInnerTextUpdated);
   const isAuthenticated = useSelector((state) => state.app.currentUserId);
   const currentProject = useCurrentProject();
+  const textCopyChanges = targetInnerText !== targetInnerTextUpdated;
   const hasAccessToProject = !!currentProject;
   const canShowAssignSelect = isAuthenticated && hasAccessToProject;
   const emailRequired = !canShowAssignSelect;
@@ -67,15 +71,21 @@ const TaskCreator = () => {
         </div>
       )}
 
-      {showCssEditor && <CssEditor />}
+      {showTaskCreatorEditors && (
+        <>
+          <TextCopyEditor />
+          <CssEditor />
+        </>
+      )}
     </>
   );
   // disable the create-task button if either the following are true:
   //   1) the task is currently in the middle of saving
-  //   2) either the task-title or design changes need to be filled out,
-  //       so if they are both null values, then we should disable the button
+  //   2) either the task-title or design changes or text-copy changes need to be filled out,
+  //       so if they are all null values, then we should disable the button
   //   3) email is required and it is not valid
-  const isDisabled = creatingTask || (!newTaskTitle && !cssCodeChanges) || (emailRequired ? !emailValid : false);
+  const isDisabled =
+    creatingTask || (!newTaskTitle && !cssCodeChanges && !textCopyChanges) || (emailRequired ? !emailValid : false);
   const footerContent = (
     <Button
       color="primary"

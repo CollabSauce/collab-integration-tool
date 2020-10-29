@@ -23,6 +23,7 @@ import { INVITE_MEMBERS_VALUE_SELECT } from 'src/constants';
 const TaskDetail = ({ taskColumns, rerenderOnTaskMove }) => {
   const dispatch = useDispatch();
   const currentTaskDetail = useSelector((state) => state.app.currentTaskDetail);
+  const textCopyChangeViewingTask = useSelector((state) => state.app.textCopyChangeViewingTask);
   const designChangeViewingTask = useSelector((state) => state.app.designChangeViewingTask);
   const taskDomMap = useSelector((state) => state.app.taskDomMap);
   const [task, setTask] = useState(null);
@@ -82,6 +83,17 @@ const TaskDetail = ({ taskColumns, rerenderOnTaskMove }) => {
     }
     return () => dispatch.app.clearFetchDomMapInterval();
   }, [task, dispatch.app]);
+
+  const viewTextCopyChange = () => {
+    if (!taskDomMap[task.id]) {
+      return;
+    }
+    dispatch.app.viewTextCopyChange(task);
+  };
+
+  const restoreTextCopyChange = () => {
+    dispatch.app.restoreTextCopyChangeKeepSelected();
+  };
 
   const viewDesignChange = () => {
     if (!taskDomMap[task.id]) {
@@ -252,6 +264,43 @@ const TaskDetail = ({ taskColumns, rerenderOnTaskMove }) => {
           styles={cursorPointerSelectStyles}
         />
       </div>
+      {task.hasTextCopyChanges && (
+        <>
+          <CollapseHeader
+            onClick={() => toggleOpenStates('textCopyChanges')}
+            isOpen={openCollapsibleStates.textCopyChanges}
+            className="ml-1"
+          >
+            Text Changes
+          </CollapseHeader>
+          <Collapse isOpen={openCollapsibleStates.textCopyChanges} className="ml-1">
+            <>
+              <Button
+                id={`view-text-copy-change-${task.id}`}
+                className="fs--1 mb-2"
+                block
+                color={textCopyChangeViewingTask ? 'danger' : 'success'}
+                onClick={textCopyChangeViewingTask ? restoreTextCopyChange : viewTextCopyChange}
+              >
+                {textCopyChangeViewingTask ? 'Dismiss Text Changes' : 'View Text Changes'}
+              </Button>
+              {!taskDomMap[task.id] && (
+                <UncontrolledTooltip target={`view-design-change-${task.id}`}>
+                  Task could not be found on the page.
+                </UncontrolledTooltip>
+              )}
+              <div className="position-relative max-w-260">
+                <CodeHighlight code={task.textCopyChanges} language="html" dark />
+                <CopyToClipboard text={task.textCopyChanges} onCopy={onCopyToClipboard}>
+                  <Button color="primary" className="position-absolute top-right fs--1">
+                    Copy Text
+                  </Button>
+                </CopyToClipboard>
+              </div>
+            </>
+          </Collapse>
+        </>
+      )}
       {task.designEdits && (
         <>
           <CollapseHeader

@@ -29,8 +29,9 @@ const BaseToolbar = () => {
   const plusButtonClicked = () => {
     dispatch.baseToolbar.setPlusButtonClicked(true);
     if (isAuthenticated && hasAccessToProject) {
-      // In case the user is already in css-editor mode, exit out of this mode so design the css-editor view is reset
-      dispatch.views.setShowCssEditor(false);
+      // In case the user is already in css-editor or text-copy-editor mode,
+      // exit out of those modes so the editor views are reset.
+      dispatch.views.setShowTaskCreatorEditors(false);
       dispatch.app.enterSelectionMode();
     } else if (!isAuthenticated) {
       dispatch.app.enterLoginMode();
