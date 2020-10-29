@@ -109,8 +109,9 @@ const TaskDetail = ({ taskColumns, rerenderOnTaskMove }) => {
   useEffect(() => {
     return () => {
       // on exit, setTaskDetail to null as user is no longer on detail view.
-      // on exit, restore all design changes (if applicable).
+      // on exit, restore all design & text-copy changes (if applicable).
       dispatch.app.restoreDesignChange();
+      dispatch.app.restoreTextCopyChange();
       dispatch.app.unselectTaskOnDom();
       dispatch.app.setCurrentTaskDetail(null);
     };
