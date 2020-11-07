@@ -11,6 +11,9 @@ const BaseToolbar = () => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.app.currentUserId);
   const gridlinesVisible = useSelector((state) => state.app.gridlinesVisible);
+  const webPaintVisible = useSelector((state) => state.app.webPaintVisible);
+  const fullToolbarVisible = useSelector((state) => state.app.fullToolbarVisible);
+  const inTaskCreationMode = useSelector((state) => state.views.showTaskCreator);
 
   const currentProject = useCurrentProject();
   const hasAccessToProject = !!currentProject;
@@ -71,6 +74,26 @@ const BaseToolbar = () => {
         <UncontrolledTooltip placement="auto" target="collab-toggle-gridlines" innerClassName="collab-toolbar-tooltip">
           Toggle Gridlines
         </UncontrolledTooltip>
+        {fullToolbarVisible && inTaskCreationMode && (
+          <>
+            <Button
+              onClick={dispatch.app.toggleWebPaint}
+              color="dark"
+              id="collab-toggle-web-paint"
+              outline={webPaintVisible}
+              className="mt-15"
+            >
+              <FontAwesomeIcon icon="paint-brush" />
+            </Button>
+            <UncontrolledTooltip
+              placement="auto"
+              target="collab-toggle-web-paint"
+              innerClassName="collab-toolbar-tooltip"
+            >
+              Toggle Paint
+            </UncontrolledTooltip>
+          </>
+        )}
       </div>
       <BaseToolbarBottomButtons />
     </div>

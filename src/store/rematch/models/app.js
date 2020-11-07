@@ -18,6 +18,7 @@ export const app = {
     designChangeViewingTask: null, // current task viewing changes in client dom
     currentTaskDetail: null, // detail-view task
     gridlinesVisible: false, // whether gridlines are visible on the page
+    webPaintVisible: false, // whether the web-painter is visible on the page
 
     // used for task-creator
     createTaskAssigneeValue: null,
@@ -92,6 +93,9 @@ export const app = {
     },
     setGridlinesVisible(state, gridlinesVisible) {
       return { ...state, gridlinesVisible };
+    },
+    setWebPaintVisible(state, webPaintVisible) {
+      return { ...state, webPaintVisible };
     },
     setCreateTaskAssigneeValue(state, createTaskAssigneeValue) {
       return { ...state, createTaskAssigneeValue };
@@ -190,12 +194,24 @@ export const app = {
       dispatch.app.setFullToolbarVisible(true);
     },
     hideFullToolbar(_, rootState) {
+      if (rootState.app.webPaintVisible) {
+        dispatch.app.toggleWebPaint(); // turn webpaint off if applicable
+      }
+
       const parentOrigin = rootState.app.parentOrigin;
       const message = { type: 'hideFullToolbar' };
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
       dispatch.app.setFullToolbarVisible(false);
     },
     hideToolbar(_, rootState) {
+      if (rootState.app.webPaintVisible) {
+        dispatch.app.toggleWebPaint(); // turn webpaint off if applicable
+      }
+
+      if (rootState.app.gridlinesVisible) {
+        dispatch.app.toggleGridlines(); // turn gridilens off if applicable
+      }
+
       const parentOrigin = rootState.app.parentOrigin;
       const message = { type: 'hideToolbar' };
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
@@ -276,6 +292,10 @@ export const app = {
       }
     },
     onExitTaskCreator(_, rootState) {
+      if (rootState.app.webPaintVisible) {
+        dispatch.app.toggleWebPaint(); // turn webpaint off when leaving selection mode
+      }
+
       const parentOrigin = rootState.app.parentOrigin;
       const message = { type: 'exitTaskCreationMode' };
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
@@ -393,6 +413,16 @@ export const app = {
       // send info to widget
       const parentOrigin = rootState.app.parentOrigin;
       const message = { type: 'toggleGridlines', showGridlines };
+      window.parent.postMessage(JSON.stringify(message), parentOrigin);
+    },
+    toggleWebPaint(_, rootState) {
+      // set internal state
+      const showWebPaint = !rootState.app.webPaintVisible;
+      dispatch.app.setWebPaintVisible(showWebPaint);
+
+      // send info to widget
+      const parentOrigin = rootState.app.parentOrigin;
+      const message = { type: 'toggleWebPaint', showWebPaint };
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
     },
     restoreTextCopyChangesFromEditor(_, rootState) {

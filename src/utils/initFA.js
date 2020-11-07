@@ -10,6 +10,7 @@ import {
   faExternalLinkAlt,
   faArrowLeft,
   faBorderAll,
+  faPaintBrush,
 } from '@fortawesome/free-solid-svg-icons';
 import {
   faWindowMaximize,
@@ -30,5 +31,6 @@ library.add(
   faCommentAlt,
   faExternalLinkAlt,
   faArrowLeft,
-  faBorderAll
+  faBorderAll,
+  faPaintBrush
 );
