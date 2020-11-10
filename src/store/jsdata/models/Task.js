@@ -20,6 +20,7 @@ export const taskSchema = new Schema({
     isResolved: { type: 'boolean' },
     targetId: { type: 'string' },
     targetDomPath: { type: 'string' },
+    hasTarget: { type: 'boolean' },
     order: { type: 'number' },
     creatorFullName: { type: 'string' },
   },

@@ -67,7 +67,7 @@ const TaskDetail = ({ taskColumns, rerenderOnTaskMove }) => {
     if (task) {
       if (taskDomMap[task.id]) {
         dispatch.app.selectTaskOnDom(task);
-      } else {
+      } else if (task.hasTarget) {
         toast.warning(
           'This task could not be found on the page. Either the element was removed, or the task was created on a different url.'
         );

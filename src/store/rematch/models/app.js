@@ -220,7 +220,10 @@ export const app = {
     getInfoFromCommunicatorToCreateTask(_, rootState) {
       dispatch.app.setCreatingTask(true);
       const parentOrigin = rootState.app.parentOrigin;
-      const message = { type: 'getInfoForCreateTask' };
+      // `showTaskCreatorEditors` will be false if we are in paint mode with no click target. So if `showTaskCreatorEditors`
+      // is true, then there should be a click target. If that's the case, tell the parent window that click-target is required.
+      const clickTargetRequired = rootState.views.showTaskCreatorEditors;
+      const message = { type: 'getInfoForCreateTask', clickTargetRequired };
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
     },
     async createTaskWithInfo({ html, width, height, url_origin }, rootState) {
@@ -250,6 +253,8 @@ export const app = {
         const task = {
           title: rootState.app.newTaskTitle,
           target_dom_path: rootState.app.targetDomPath,
+          target_id: rootState.app.targetId,
+          has_target: rootState.views.showTaskCreatorEditors, // if this is false, then we are in "paint only" mode, and there is no "target"
           project: currentProject ? parseInt(currentProject.id) : null,
           project_key: currentProject ? null : rootState.app.projectKey,
           design_edits: rootState.styling.cssCodeChanges,
@@ -416,7 +421,7 @@ export const app = {
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
     },
     toggleWebPaint(_, rootState) {
-      // set internal state
+      // set internal state for webpainter
       const showWebPaint = !rootState.app.webPaintVisible;
       dispatch.app.setWebPaintVisible(showWebPaint);
 
@@ -424,6 +429,17 @@ export const app = {
       const parentOrigin = rootState.app.parentOrigin;
       const message = { type: 'toggleWebPaint', showWebPaint };
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
+
+      // If we are turning on paint, and if showTaskCreator is false,
+      // then the paint-button was just clicked from a non task-creator view.
+      // Therefore we should show the task creator.
+      if (showWebPaint && !rootState.views.showTaskCreator) {
+        dispatch.app.showFullToolbar();
+        // We specifically DO NOT want to show the task creators (text-editor or design-editor),
+        // as when toggling paint in this mode, no element is selected.
+        dispatch.views.setShowTaskCreator(true);
+        dispatch.views.setShowTaskCreatorEditors(false);
+      }
     },
     restoreTextCopyChangesFromEditor(_, rootState) {
       const message = { type: 'restoreTextCopyEditChanges', originalTextHtml: rootState.app.targetInnerHTML };
