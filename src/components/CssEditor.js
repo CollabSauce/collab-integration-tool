@@ -191,7 +191,7 @@ const CssEditor = () => {
         <>
           <span>Design Edits</span>
           {hasDesignChanges && (
-            <Button color="falcon-danger fs--1 pl-2 pr-2" onClick={dispatch.styling.restoreChanges}>
+            <Button color="falcon-danger fs--2 pl-2 pr-2" onClick={dispatch.styling.restoreChanges}>
               Restore Changes
             </Button>
           )}

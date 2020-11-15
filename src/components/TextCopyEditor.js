@@ -36,7 +36,7 @@ const TextCopyEditor = () => {
       <div className="mb-2 d-inline-flex flex-grow-1 justify-content-between align-items-center w-100">
         <p className="mb-0 text-sans-serif font-weight-semi-bold p-height-31">Text Copy</p>
         {hasTextCopyChanges && (
-          <Button color="falcon-danger fs--1 pl-2 pr-2" onClick={dispatch.app.restoreTextCopyChangesFromEditor}>
+          <Button color="falcon-danger fs--2 pl-2 pr-2" onClick={dispatch.app.restoreTextCopyChangesFromEditor}>
             Restore Changes
           </Button>
         )}
