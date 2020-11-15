@@ -231,7 +231,7 @@ const CssEditor = () => {
                         <SketchPicker
                           onChange={(color) => setColorVal(key, color)}
                           color={adjustableStyleProps[key] || ''}
-                          width={225}
+                          width={210}
                           className="my-3"
                         />
                       );
