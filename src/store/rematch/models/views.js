@@ -40,6 +40,9 @@ export const views = {
     setShowNoProjectAccess(state, showNoProjectAccess) {
       return { ...InitialState, showNoProjectAccess };
     },
+    hideTaskCreator(state) {
+      return { ...state, showTaskCreator: false };
+    },
   },
   effects: (dispatch) => ({}),
 };

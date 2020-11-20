@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/react';
 
 import { jsdataStore } from 'src/store/jsdata';
 import { setAuthToken } from 'src/utils/auth';
+import { DASHBOARD_URL } from 'src/constants';
 
 const LoginForm = ({ hasLabel }) => {
   const [email, setEmail] = useState('');
@@ -14,6 +15,7 @@ const LoginForm = ({ hasLabel }) => {
   const [isDisabled, setIsDisabled] = useState(true);
 
   const plusButtonClicked = useSelector((state) => state.baseToolbar.plusButtonClicked);
+  const webPaintButtonClicked = useSelector((state) => state.baseToolbar.webPaintButtonClicked);
   const projectKey = useSelector((state) => state.app.projectKey);
   const dispatch = useDispatch();
 
@@ -68,12 +70,7 @@ const LoginForm = ({ hasLabel }) => {
       <Row className="justify-content-between align-items-center">
         <Col xs="auto"></Col>
         <Col xs="auto">
-          <a
-            className="fs--1"
-            href={`https://staging-collab-dashboard.netlify.app/forgot-password`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a className="fs--1" href={`${DASHBOARD_URL}/forgot-password`} target="_blank" rel="noopener noreferrer">
             Forgot Password?
           </a>
         </Col>
@@ -85,12 +82,18 @@ const LoginForm = ({ hasLabel }) => {
       </FormGroup>
       <p className="fs--1 text-600 text-center">
         or{' '}
-        <a href="https://staging-collab-dashboard.netlify.app/signup" target="_blank" rel="noopener noreferrer">
+        <a href={`${DASHBOARD_URL}/signup`} target="_blank" rel="noopener noreferrer">
           create an account
         </a>
       </p>
-      {plusButtonClicked && (
-        <Button outline color="info" block className="mt-3 px-2" onClick={() => dispatch.app.enterSelectionMode()}>
+      {(plusButtonClicked || webPaintButtonClicked) && (
+        <Button
+          outline
+          color="info"
+          block
+          className="mt-3 px-2"
+          onClick={() => (plusButtonClicked ? dispatch.app.enterSelectionMode() : dispatch.app.toggleWebPaint())}
+        >
           Continue Without Login
         </Button>
       )}

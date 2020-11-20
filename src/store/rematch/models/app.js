@@ -203,6 +203,9 @@ export const app = {
       if (rootState.app.webPaintVisible) {
         dispatch.app.toggleWebPaint(); // turn webpaint off if applicable
       }
+      if (rootState.views.showTaskCreator) {
+        dispatch.views.hideTaskCreator(); // hide task creator if applicable
+      }
 
       const parentOrigin = rootState.app.parentOrigin;
       const message = { type: 'hideFullToolbar' };
@@ -446,8 +449,8 @@ export const app = {
       // Therefore we should show the task creator.
       if (showWebPaint && !rootState.views.showTaskCreator) {
         dispatch.app.showFullToolbar();
-        // We specifically DO NOT want to show the task creators (text-editor or design-editor),
-        // as when toggling paint in this mode, no element is selected.
+        // We specifically DO NOT want to show the task creators (text-editor or design-editor).
+        // This is because when toggling paint in this mode, no element is selected.
         dispatch.views.setShowTaskCreator(true);
         dispatch.views.setShowTaskCreatorEditors(false);
       }

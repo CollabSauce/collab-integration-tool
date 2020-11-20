@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const FailedLoginContent = () => {
   const dispatch = useDispatch();
   const plusButtonClicked = useSelector((state) => state.baseToolbar.plusButtonClicked);
+  const webPaintButtonClicked = useSelector((state) => state.baseToolbar.webPaintButtonClicked);
 
   return (
     <>
@@ -20,13 +21,13 @@ const FailedLoginContent = () => {
       <Button color="primary" block className="mt-3 fs--1" onClick={() => dispatch.app.hideFullToolbar()}>
         Ok, got it
       </Button>
-      {plusButtonClicked && (
+      {(plusButtonClicked || webPaintButtonClicked) && (
         <Button
           outline
           color="info"
           block
           className="mt-3 px-2 fs--1"
-          onClick={() => dispatch.app.enterSelectionMode()}
+          onClick={() => (plusButtonClicked ? dispatch.app.enterSelectionMode() : dispatch.app.toggleWebPaint())}
         >
           Continue Without Org Access
         </Button>

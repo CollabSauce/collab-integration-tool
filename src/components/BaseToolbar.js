@@ -12,6 +12,7 @@ const BaseToolbar = () => {
   const isAuthenticated = useSelector((state) => state.app.currentUserId);
   const gridlinesVisible = useSelector((state) => state.app.gridlinesVisible);
   const webPaintVisible = useSelector((state) => state.app.webPaintVisible);
+  const showTaskCreator = useSelector((state) => state.views.showTaskCreator);
 
   const currentProject = useCurrentProject();
   const hasAccessToProject = !!currentProject;
@@ -41,6 +42,20 @@ const BaseToolbar = () => {
     }
   };
 
+  const webPaintButtonClicked = () => {
+    dispatch.baseToolbar.setWebPaintButtonClicked(true);
+    if (webPaintVisible) {
+      dispatch.app.toggleWebPaint();
+    } else if (showTaskCreator || (isAuthenticated && hasAccessToProject)) {
+      // if we are already showing the task creator, or if the user is valid, just turn on web-paint mode
+      dispatch.app.toggleWebPaint();
+    } else if (!isAuthenticated) {
+      dispatch.app.enterLoginMode();
+    } else if (!hasAccessToProject) {
+      dispatch.app.enterNoProjectAccessMode();
+    }
+  };
+
   return (
     <div className="h-100 d-flex flex-column justify-content-between align-items-center pt-1 pb-3 w-60 min-w-60 bg-light">
       <div className="d-flex flex-column justify-content-between align-items-center">
@@ -61,12 +76,7 @@ const BaseToolbar = () => {
           Select Element
         </UncontrolledTooltip>
         <hr className="mt-5 mh-0 w-40" />
-        <Button
-          onClick={dispatch.app.toggleWebPaint}
-          color="dark"
-          id="collab-toggle-web-paint"
-          outline={webPaintVisible}
-        >
+        <Button onClick={webPaintButtonClicked} color="dark" id="collab-toggle-web-paint" outline={webPaintVisible}>
           <FontAwesomeIcon icon="paint-brush" />
         </Button>
         <UncontrolledTooltip placement="auto" target="collab-toggle-web-paint" innerClassName="collab-toolbar-tooltip">
