@@ -32,3 +32,11 @@ export const projectRelations = {
     },
   },
 };
+
+export const projectActions = {
+  // GET /projects/retrieve_project_key
+  retrieveProjectKey: {
+    pathname: 'retrieve_project_key',
+    method: 'GET',
+  },
+};

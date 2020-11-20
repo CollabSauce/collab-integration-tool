@@ -35,6 +35,7 @@ export const app = {
     targetInnerText: '', // the original innerText of the target
     targetInnerTextUpdated: '', // the updated innerText of the target
     projectKey: '',
+    isChromeExtension: false,
     taskDomMap: {},
     fetchDomMapIntervalId: null,
     // when in viewing mode, the user clicks "view design change",this is the css before design changes are applied
@@ -69,6 +70,9 @@ export const app = {
     },
     setProjectKey(state, projectKey) {
       return { ...state, projectKey };
+    },
+    setIsChromeExtension(state, isChromeExtension) {
+      return { ...state, isChromeExtension };
     },
     setTaskDomMap(state, taskDomMap) {
       return { ...state, taskDomMap };
@@ -153,6 +157,8 @@ export const app = {
           dispatch.app.setFullToolbarVisible(true);
         } else if (message.type === 'projectKey') {
           dispatch.app.setProjectKey(message.projectKey);
+        } else if (message.type === 'isChromeExtension') {
+          dispatch.app.handleChromeExtensionOnInit();
         } else if (message.type === 'createTaskWithInfo') {
           dispatch.app.createTaskWithInfo(message);
         } else if (message.type === 'taskDomMap') {
@@ -226,7 +232,7 @@ export const app = {
       const message = { type: 'getInfoForCreateTask', clickTargetRequired };
       window.parent.postMessage(JSON.stringify(message), parentOrigin);
     },
-    async createTaskWithInfo({ html, width, height, url_origin }, rootState) {
+    async createTaskWithInfo({ width, height, url_origin, ...rest }, rootState) {
       try {
         const { parsedResult } = Bowser.getParser(window.navigator.userAgent);
         const { browser, os } = parsedResult;
@@ -272,7 +278,12 @@ export const app = {
         const hasAccessToProject = !!currentProject;
         const actionMethod =
           isAuthenticated && hasAccessToProject ? 'createTaskFromWidget' : 'createTaskFromWidgetAnonymous';
-        await jsdataStore.getMapper('task')[actionMethod]({ data: { task, task_metadata, html } });
+        const baseData = { task, task_metadata };
+        const contextSpecificData = rootState.app.isChromeExtension
+          ? { data_url: rest.dataURL, element_data_url: rest.elementDataURL }
+          : { html: rest.html };
+        const data = { ...baseData, ...contextSpecificData };
+        await jsdataStore.getMapper('task')[actionMethod]({ data });
         let toastMessage = '',
           toastOptions = {};
         if (isAuthenticated && hasAccessToProject) {
@@ -497,6 +508,15 @@ export const app = {
         currentAppliedTextCopyChangeTask.id !== taskDetail.id
       ) {
         dispatch.app.restoreTextCopyChange();
+      }
+    },
+    async handleChromeExtensionOnInit(_, rootState) {
+      dispatch.app.setIsChromeExtension(true);
+      const response = await jsdataStore.getMapper('project').retrieveProjectKey({
+        params: { parent_origin: rootState.app.parentOrigin },
+      });
+      if (response.data.project_key) {
+        dispatch.app.setProjectKey(response.data.project_key);
       }
     },
   }),

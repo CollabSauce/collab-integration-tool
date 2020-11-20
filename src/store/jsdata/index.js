@@ -8,7 +8,7 @@ import { inviteSchema, inviteRelations, inviteActions } from 'src/store/jsdata/m
 import { membershipSchema, membershipRelations } from 'src/store/jsdata/models/Membership';
 import { organizationSchema, organizationRelations } from 'src/store/jsdata/models/Organization';
 import { profileSchema, profileRelations } from 'src/store/jsdata/models/Profile';
-import { projectSchema, projectRelations } from 'src/store/jsdata/models/Project';
+import { projectSchema, projectRelations, projectActions } from 'src/store/jsdata/models/Project';
 import { taskSchema, taskRelations, taskActions } from 'src/store/jsdata/models/Task';
 import { taskColumnSchema, taskColumnRelations } from 'src/store/jsdata/models/TaskColumn';
 import { taskCommentSchema, taskCommentRelations, taskCommentActions } from 'src/store/jsdata/models/TaskComment';
@@ -170,6 +170,7 @@ registerCustomActions('user', userActions);
 registerCustomActions('invite', inviteActions);
 registerCustomActions('task', taskActions);
 registerCustomActions('taskComment', taskCommentActions);
+registerCustomActions('project', projectActions);
 
 /////////////////////////////
 /// Create Mappers Object ///
