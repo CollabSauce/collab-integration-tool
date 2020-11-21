@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FormGroup, Button, Spinner, Input } from 'reactstrap';
 
@@ -19,6 +19,7 @@ const TaskCreator = () => {
   const createTaskEmailValue = useSelector((state) => state.app.createTaskEmailValue);
   const targetInnerText = useSelector((state) => state.app.targetInnerText);
   const targetInnerTextUpdated = useSelector((state) => state.app.targetInnerTextUpdated);
+  const targetDomPath = useSelector((state) => state.app.targetDomPath);
   const isAuthenticated = useSelector((state) => state.app.currentUserId);
   const currentProject = useCurrentProject();
   const textCopyChanges = targetInnerText !== targetInnerTextUpdated;
@@ -26,6 +27,8 @@ const TaskCreator = () => {
   const canShowAssignSelect = isAuthenticated && hasAccessToProject;
   const emailRequired = !canShowAssignSelect;
   const emailValid = createTaskEmailValue.length && createTaskEmailValue.includes('@');
+
+  const textCopyEditorAllowed = useMemo(() => targetDomPath.toUpperCase() !== 'BODY', [targetDomPath]);
 
   useEffect(() => {
     // upon entering this component, reset the `taskSuccessfullyCreated` property
@@ -73,7 +76,7 @@ const TaskCreator = () => {
 
       {showTaskCreatorEditors && (
         <>
-          <TextCopyEditor />
+          {textCopyEditorAllowed && <TextCopyEditor />}
           <CssEditor />
         </>
       )}

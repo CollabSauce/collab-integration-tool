@@ -28,6 +28,8 @@ const ExpandedToolbar = () => {
     return <TaskCreator />;
   } else if (showNoProjectAccess) {
     return <NoProjectAccess />;
+  } else {
+    return null;
   }
 };
 
