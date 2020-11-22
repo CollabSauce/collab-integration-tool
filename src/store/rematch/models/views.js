@@ -7,6 +7,7 @@ const InitialState = {
   showTasksSummary: false,
   showTaskDetail: false,
   showNoProjectAccess: false,
+  showChromeExtensionNoProject: false,
 };
 
 export const views = {
@@ -39,6 +40,9 @@ export const views = {
     },
     setShowNoProjectAccess(state, showNoProjectAccess) {
       return { ...InitialState, showNoProjectAccess };
+    },
+    setShowChromeExtensionNoProject(state, showChromeExtensionNoProject) {
+      return { ...InitialState, showChromeExtensionNoProject };
     },
     hideTaskCreator(state) {
       return { ...state, showTaskCreator: false };

@@ -193,6 +193,10 @@ export const app = {
       dispatch.app.showFullToolbar();
       dispatch.views.setShowNoProjectAccess(true);
     },
+    enterChromeExtensionNoProjectMode() {
+      dispatch.app.showFullToolbar();
+      dispatch.views.setShowChromeExtensionNoProject(true);
+    },
     showFullToolbar(_, rootState) {
       const parentOrigin = rootState.app.parentOrigin;
       const message = { type: 'showFullToolbar' };
@@ -520,6 +524,8 @@ export const app = {
       });
       if (response.data.project_key) {
         dispatch.app.setProjectKey(response.data.project_key);
+      } else {
+        dispatch.app.enterChromeExtensionNoProjectMode();
       }
     },
   }),

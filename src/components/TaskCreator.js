@@ -21,10 +21,12 @@ const TaskCreator = () => {
   const targetInnerTextUpdated = useSelector((state) => state.app.targetInnerTextUpdated);
   const targetDomPath = useSelector((state) => state.app.targetDomPath);
   const isAuthenticated = useSelector((state) => state.app.currentUserId);
+  const projectKey = useSelector((state) => state.app.projectKey);
   const currentProject = useCurrentProject();
   const textCopyChanges = targetInnerText !== targetInnerTextUpdated;
   const hasAccessToProject = !!currentProject;
   const canShowAssignSelect = isAuthenticated && hasAccessToProject;
+  const canShowEmailInput = !canShowAssignSelect && projectKey; // if the user isn't showing the assingSelect, but the projectKey exists.
   const emailRequired = !canShowAssignSelect;
   const emailValid = createTaskEmailValue.length && createTaskEmailValue.includes('@');
 
@@ -55,13 +57,15 @@ const TaskCreator = () => {
         />
       </FormGroup>
 
-      {canShowAssignSelect ? (
+      {canShowAssignSelect && (
         <AssignSelect
           value={createTaskAssigneeValue}
           onChange={(option) => dispatch.app.setCreateTaskAssigneeValue(option)}
           className="mb-3"
         />
-      ) : (
+      )}
+
+      {canShowEmailInput && (
         <div className="mt-2">
           <p className="mb-1 text-sans-serif font-weight-semi-bold">Email Address</p>
           <Input
@@ -102,7 +106,7 @@ const TaskCreator = () => {
   );
 
   return (
-    <FullToolbarLayout headerContent={headerContent} footerContent={footerContent}>
+    <FullToolbarLayout headerContent={headerContent} footerContent={projectKey ? footerContent : null}>
       {bodyContent}
     </FullToolbarLayout>
   );

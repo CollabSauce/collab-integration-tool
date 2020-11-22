@@ -9,6 +9,7 @@ import tasksIcon from 'src/assets/tasks.svg';
 
 const BaseToolbar = () => {
   const dispatch = useDispatch();
+  const projectKey = useSelector((state) => state.app.projectKey);
   const isAuthenticated = useSelector((state) => state.app.currentUserId);
   const gridlinesVisible = useSelector((state) => state.app.gridlinesVisible);
   const webPaintVisible = useSelector((state) => state.app.webPaintVisible);
@@ -23,6 +24,8 @@ const BaseToolbar = () => {
       dispatch.app.enterShowTasksSummaryMode();
     } else if (!isAuthenticated) {
       dispatch.app.enterLoginMode();
+    } else if (!projectKey) {
+      dispatch.app.enterChromeExtensionNoProjectMode();
     } else {
       dispatch.app.enterNoProjectAccessMode();
     }
@@ -37,6 +40,8 @@ const BaseToolbar = () => {
       dispatch.app.enterSelectionMode();
     } else if (!isAuthenticated) {
       dispatch.app.enterLoginMode();
+    } else if (!projectKey) {
+      dispatch.app.enterChromeExtensionNoProjectMode();
     } else if (!hasAccessToProject) {
       dispatch.app.enterNoProjectAccessMode();
     }
@@ -51,6 +56,8 @@ const BaseToolbar = () => {
       dispatch.app.toggleWebPaint();
     } else if (!isAuthenticated) {
       dispatch.app.enterLoginMode();
+    } else if (!projectKey) {
+      dispatch.app.enterChromeExtensionNoProjectMode();
     } else if (!hasAccessToProject) {
       dispatch.app.enterNoProjectAccessMode();
     }

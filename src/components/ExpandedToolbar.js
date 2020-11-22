@@ -7,6 +7,7 @@ import FailedLogin from 'src/components/FailedLogin';
 import TasksSummary from 'src/components/TasksSummary';
 import TaskCreator from 'src/components/TaskCreator';
 import NoProjectAccess from 'src/components/NoProjectAccess';
+import ChromeExtensionNoProject from 'src/components/ChromeExtensionNoProject';
 
 const ExpandedToolbar = () => {
   const showLogin = useSelector((state) => state.views.showLogin);
@@ -15,6 +16,7 @@ const ExpandedToolbar = () => {
   const showTasksSummary = useSelector((state) => state.views.showTasksSummary);
   const showTaskCreator = useSelector((state) => state.views.showTaskCreator);
   const showNoProjectAccess = useSelector((state) => state.views.showNoProjectAccess);
+  const showChromeExtensionNoProject = useSelector((state) => state.views.showChromeExtensionNoProject);
 
   if (showLogin) {
     return <Login />;
@@ -28,6 +30,8 @@ const ExpandedToolbar = () => {
     return <TaskCreator />;
   } else if (showNoProjectAccess) {
     return <NoProjectAccess />;
+  } else if (showChromeExtensionNoProject) {
+    return <ChromeExtensionNoProject />;
   } else {
     return null;
   }
